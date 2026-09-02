@@ -1,5 +1,33 @@
 ---
-title: "About"
+title: "Max Warriner"
+about:
+  template: jolla
+  image: images/me.jpg
+  links: 
+    - icon: envelope
+      text: Email 
+      href: mailto:mwarriner@colgate.edu
+    - icon: linkedin
+      text: LinkedIn 
+      href: https://www.linkedin.com/in/maxwarriner101/
+    - icon: github
+      text: Github
+      href: https://github.com/MaxWarriner
 ---
 
-About this site
+## Education
+
+I'm a student at Colgate University studying applied mathematics and biology. My anticipated graduation date is May 2027. 
+
+## Experience
+
+Colgate University | Epidemiology Researcher | 2024 - present
+
+Ionia County Health Department | Data Researcher | May - August 2026
+
+
+## Technical Skills
+
+* **Languages:** R, Python, MATLAB
+
+* **Tools:** Positron, Quarto, Git/GitHub, LaTeX

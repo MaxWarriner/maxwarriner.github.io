@@ -2,15 +2,72 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "mysite",
+    "title": "Coursework",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Here you’ll find examples of my work from recent courses I’ve taken, such as Data Analysis II."
   },
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "Max Warriner",
     "section": "",
-    "text": "About this site"
+    "text": "I’m a student at Colgate University studying applied mathematics and biology. My anticipated graduation date is May 2027.",
+    "crumbs": [
+      "About Me"
+    ]
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "Max Warriner",
+    "section": "",
+    "text": "I’m a student at Colgate University studying applied mathematics and biology. My anticipated graduation date is May 2027.",
+    "crumbs": [
+      "About Me"
+    ]
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "Max Warriner",
+    "section": "Experience",
+    "text": "Experience\nColgate University | Epidemiology Researcher | 2024 - present\nIonia County Health Department | Data Researcher | May - August 2026",
+    "crumbs": [
+      "About Me"
+    ]
+  },
+  {
+    "objectID": "about.html#technical-skills",
+    "href": "about.html#technical-skills",
+    "title": "Max Warriner",
+    "section": "Technical Skills",
+    "text": "Technical Skills\n\nLanguages: R, Python, MATLAB\nTools: Positron, Quarto, Git/GitHub, LaTeX",
+    "crumbs": [
+      "About Me"
+    ]
+  },
+  {
+    "objectID": "research.html",
+    "href": "research.html",
+    "title": "Research",
+    "section": "",
+    "text": "Here you’ll find examples of my research in areas like biostatistics and epidemiology."
+  },
+  {
+    "objectID": "Coursework.html",
+    "href": "Coursework.html",
+    "title": "Coursework",
+    "section": "",
+    "text": "Here you’ll find examples of my work from recent courses I’ve taken, such as Data Analysis II."
+  },
+  {
+    "objectID": "ai.html",
+    "href": "ai.html",
+    "title": "Statement on AI Use",
+    "section": "",
+    "text": "I think I feel the way most statistics and data science students/professionals feel about AI usage. I was among the last cohorts of students to begin learning statistical coding when large language models were early enough in their development to be consistently unreliable. I remember copying-and-pasting my error messages in ChatGPT only to be gaslit and/or led on a wild goose chase that ultimately led me to return back to a thread on substack or reddit. I struggled my way through hand coded assignments partly because of pride and partly because of necessity. Where things stand now, that way of learning is rapidly becoming obselete. LLMs have much greater ability than they once did, and students who are not recognizing this are being left behind.\nI now view AI and LLMs as an incredibly useful learning and working tool. I am very opposed to much of the AI industry, including the dot-com-bubble-esque vibes and the ways popular sovereignty are ignored when dealing with data centers. I also fully support prosecuting AI companies unlawfully training their models on copyrighted work. Humans make art for other humans.\nNow that this technology exists, I recognize that is in the best interests of my education and career to use the tools I have responsibly. Most coding is now done alongside LLMs, and I find them very useful when I get stuck on syntax or need help understanding the documentation. I believe that while you should understand what your code is doing on a basic level, using AI to save time writing it and debugging it is becoming the new norm. Coding is the assembly line we use that takes data and converts it into information we can make decisions with. With that, I don’t respect the use of AI in manuscripts or written interpretations of statistical results. Using AI for research and to find sources is not the same, as that’s basically an extension of a regular search engine. Statisticians and data scientists are trained to understand the language of data and become experts in interpreting data and making decisions. I don’t think that an LLM, with our current understanding of their abilities, will ever meaningfully replace the value of a trained professional in those areas.",
+    "crumbs": [
+      "Statement on AI Use"
+    ]
   }
 ]

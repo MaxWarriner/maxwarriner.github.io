@@ -2,12 +2,49 @@ project:
   type: website
 
 website:
-  title: "mysite"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+  title: "Max Warriner"
+  favicon: images/ColgateC.png
+  sidebar:
+    logo: images/ColgateSeal.png
+    style: "docked"
+    collapse-level: 1
+    search: false
+    contents:
+      - href: about.qmd
+        text: "About Me"
+        icon: person
+      # Coursework
+      - section: "Coursework"
+        icon: book
+        contents:
+        # Data Analysis I
+          - section: "Data Analysis I"
+            contents:
+              - href: homework1.qmd
+                text: "Homework 1"
+        # Data Analysis II
+          - section: "Data Analysis II"
+            contents:
+              - href: homework2.qmd
+                text: "Homework 2"
+      # Research
+      - section: "Research"
+        icon: bar-chart
+        contents:
+        - href: homework1.qmd
+          text: "Merrimack Sleep Study"
+        - href: homework2.qmd
+          text: "Bineyam Taye Epidemiology Lab"
+      # AI Use
+      - href: ai.qmd
+        text: "Statement on AI Use"
+        icon: anthropic
+
+
+  page-footer:
+    left: "© 2026 Colgate University Student Portfolio"
+    right: "[GitHub Source](https://github.com/MaxWarriner)"
+
 
 format:
   html:
@@ -17,5 +54,6 @@ format:
     css: styles.css
     toc: true
 
-
+execute:
+  freeze: auto
 

@@ -1,0 +1,6 @@
+---
+title: "Research"
+---
+
+Here you'll find examples of my research in areas like biostatistics and epidemiology.
+
