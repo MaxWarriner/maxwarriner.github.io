@@ -1,0 +1,23 @@
+\begin{thebibliography}{}
+
+\bibitem[Lenth, 2024]{emmeans}
+Lenth, R.~V. (2024).
+\newblock {\em emmeans: {E}stimated Marginal Means, aka Least-Squares Means}.
+\newblock R package version 1.10.3.
+
+\bibitem[Long, 2019]{interactions}
+Long, J.~A. (2019).
+\newblock {\em interactions: Comprehensive, User-Friendly Toolkit for Probing Interactions}.
+\newblock R package version 1.1.0.
+
+\bibitem[Lüdecke, 2018]{ggeffects}
+Lüdecke, D. (2018).
+\newblock ggeffects: {T}idy data frames of marginal effects from regression models.
+\newblock {\em Journal of Open Source Software}, 3(26):772.
+
+\bibitem[Su et~al., 2025]{Su25}
+Su, X., Yu, D., Yu, Y., and Lian, R. (2025).
+\newblock Well-being and emotional labor for preschool teachers: {T}he mediation of career commitment and the moderation of social support.
+\newblock {\em PLoS One}, 20(4):e0318027.
+
+\end{thebibliography}

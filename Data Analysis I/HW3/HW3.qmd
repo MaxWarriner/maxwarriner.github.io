@@ -1,0 +1,8 @@
+---
+title: "Homework 3"
+resources:
+  - mwarriner.pdf
+---
+
+{{< pdf mwarriner.pdf width=100% height=600 >}}
+

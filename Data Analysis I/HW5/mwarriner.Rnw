@@ -1,0 +1,439 @@
+\documentclass{article}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+                      % If you find yourself trying to replicate
+                      % something you found online, ensure you're
+                      % loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+                    % We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\usepackage[skins,breakable]{tcolorbox}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\begin{document}
+\noindent\textbf{Homework 5: Introduction to Regression}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each 
+question under that question (not altogether at the end). It will be easier for 
+me to give full credit if your answer is commented well, including comments 
+about where you are completing each sub-part of the question. For an example,
+see Homework 1.\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+<<echo=F, warning=F, message=F, results='hide'>>=
+library(tidyverse)
+@
+\begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 1
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{What are we doing?} Prompt PingPong TutorBot 2.0 with the 
+  following prompt:
+  \begin{quote}
+    \textit{Ask me to explain Ordinary Least Squares Regression. Ask me 
+    questions to determine my understanding. Then give me feedback on my 
+    understanding and offer suggestions to refine it.}
+  \end{quote}
+  Continue the conversation with the bot. You must go back and forth with the 
+  bot more than once (at least two follow-up questions/responses). Feel free to
+  ask for additional clarifications, practice questions, or anything else 
+  related to the concept.
+  
+  I provide a template for embedding your conversation in your LaTeX file. Note
+  that you will have to do some ``clean up" to get it to look reasonable. And,
+  I provide the \textit{minimum} number of boxes, you can copy and paste
+  to create more.\\
+  \textbf{Solution:}
+  \begin{tcolorbox}[breakable]
+    \textbf{Me:} Ask me to explain Ordinary Least Squares Regression. Ask me 
+    questions to determine my understanding. Then give me feedback on my 
+    understanding and offer suggestions to refine it.
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{TutorBot 2.0:} Great! Can you explain what Ordinary Least Squares (OLS) Regression is, in your own words?
+
+To help me understand your current grasp, here are a few questions:
+
+\begin{enumerate}
+\item What is the main goal of OLS regression?
+
+\item What assumptions does OLS make about the data?
+\item How does OLS determine the “best fit” line?
+\item What does the slope coefficient represent in a simple linear regression?
+\item Can you describe a situation where OLS might not be appropriate?
+\end{enumerate}
+Once you answer, I’ll give you feedback and suggestions for refining your understanding.
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{Me:} 
+    \begin{enumerate}
+    \item The main goal of OLS regression is to create the best fitting regression equation that minimizes the squared residuals of the data points with the regression line.
+    \item OLS assumes that the residual error terms are gaussian distributed and independent. It also assumes that the points have roughly constant leverage over the regression line. It also assumes that the variables aren't colinear. 
+    \item OLS determines the best fit line by creating a matrix of all the variables and the response and using linear algebra to find the vector of coefficients that minimizes the squared residuals. 
+    \item The slope coefficient in simple linear regression represents the change in the response variable coinciding with a one unit increase in the predictor variable. 
+    \item OLS would not be appropriate for fitting a linear model to data that is exponentially distributed. Also, OLS would not work for a response variable that is not continuous.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{TutorBot 2.0:} Thanks for your thoughtful answers! Here’s some feedback and suggestions to refine your understanding: \\
+
+Strengths: \\
+
+You clearly understand that OLS minimizes the sum of squared residuals.
+You mentioned key assumptions: normality, independence, and collinearity.
+Your explanation of the slope coefficient is accurate and concise.
+You recognize that OLS isn’t suitable for all types of data. \\
+
+Suggestions for Refinement: \\
+
+For assumptions, also mention homoscedasticity (constant variance of residuals) and linearity (the relationship between predictors and response is linear). \\
+
+When you say “constant leverage,” it’s more precise to say that OLS assumes no influential outliers and that leverage points don’t unduly affect the fit. \\
+
+For the matrix explanation, you’re right! You might add that OLS solves for coefficients using the normal equations: $(X^{T}X)\beta = X^{T}y$ \\
+
+For when OLS isn’t appropriate, you could mention heteroscedasticity, autocorrelation (in time series), or nonlinear relationships as common issues. \\
+
+Quick Check:
+Can you briefly explain what “homoscedasticity” means and why it matters for OLS regression?
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{Me:} Homoscedasticity refers to having a constant random dispersion of residuals across observations and not showing any dependence on the explanatory variable (x). It matters for OLS regression because if you had heteroscedasticity and had a distinct pattern of residuals dependent on x values, that could give indication that the observations are not independent of each other or that the model is not linear, meaning that the residuals would not be gaussian distributed.
+  \end{tcolorbox}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 2
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{Regression Estimation} Suppose we simulate regression data with 
+  Exponential error. Note that we can still fit an OLS line -- that is the line 
+  described here minimizes the sum of squared errors -- but the inference about 
+  the coefficients is compromised.
+<<size="scriptsize", warning=F, message=F>>=
+# Specify Coefficients
+beta0 <- -4.2
+beta1 <- 1.3
+# Specify Error Distribution
+mu.epsilon <- 0
+sigma.epsilon<-sqrt(5)
+# Simulate Regression Data
+set.seed(7272)
+n <- 50
+x <- runif(n=n, min=-5, max=5)
+epsilon <- rexp(n=n, rate = 1/sigma.epsilon)
+y <- beta0 + beta1*x + epsilon
+dat <- tibble(x=x, y=y)
+# Fit the Linear Model
+mod <- lm(y ~ x, data=dat)
+summary(mod)
+@
+\begin{enumerate}
+  \item We can fit an OLS regression model without the normality of error terms.
+  Write a function for computing 
+  \[Q(\beta_0,\beta_1) =  \sum_{i=1}^{n} \left[y_i - \left(\beta_0 + \beta_1 x_i\right)\right]^2.\]
+  Use the \texttt{optim()} function to minimize this function with respect
+  to $\beta_0$ and $\beta_1$.
+  
+  <<warning = F, message= F, size = 'scriptsize'>>=
+
+
+Q <- function(betas){
+  
+  beta0 <- betas[1]
+  
+  beta1 <- betas[2]
+  
+  residuals <- (y - (beta0 + beta1*x))^2
+  
+  sum <- sum(residuals)
+  
+}
+
+  (min_betas <- optim(c(1,1), Q)$par)
+
+
+@
+  
+  \item Compute the OLS estimates using matrix multiplication.
+  \[\hat{\boldsymbol{\beta}} = \left(\mathbf{x}'\mathbf{x}\right)^{-1} \mathbf{x}'\mathbf{y}\]
+  
+  <<warning=F, message=F, size='scriptsize'>>=
+
+x_1 <- tibble(x0 = rep(1, 50), 
+              x1 = x) |>
+  as.matrix()
+
+xxinv <- solve(t(x_1)%*%x_1)
+
+xty <- t(x_1)%*%y
+
+(betas <- xxinv %*% xty)
+
+@
+  
+  \item Note that the OLS coefficient estimates are off -- specifically the 
+  intercept -- due to the transgression of conditions for use, specifically the 
+  error terms are Exponentially distributed. Write a likelihood for fitting a 
+  regression model with Exponential error and use \texttt{optim()} to find the 
+  MLE estimates for $\beta_0$, $\beta_1$, and $\lambda$.\\
+  \textbf{Hint:} Note that residuals can only be positive under this setting, so 
+  you must select initial values of $\beta_0$ and $\beta_1$ that ensure all 
+  observations are \emph{above} the regression line.
+  
+  <<warning=F, message=F, size='scriptsize'>>=
+
+reg.loglike <- function(par, y, x, p=2, neg=F){
+  betas <- matrix(par[-length(par)]) # (betas, sigma)
+  lambda <- par[length(par)]
+  # Compute residual
+  resid <- y - (x %*% betas)
+  # Compute log likelihood
+  loglik <- sum(log(dexp(resid, rate = lambda)))
+  # return +/- loglikelihood
+  ifelse(neg, -loglik, loglik)
+}
+
+# Setup Data
+y <- matrix(y)
+x <- cbind(matrix(data=1, nrow=nrow(dat), ncol=1),
+           matrix(x))
+# Optimize
+(par <- optim(par = c(-10,0,1),
+      fn = reg.loglike,
+      neg=T,
+      y=y, x=x)$par)
+
+
+
+
+@
+  
+  \item Create a \texttt{ggplot} that plots the OLS and the MLE regression lines
+  on top of a scatterplot of the data. 
+  
+\begin{figure}[H] 
+
+\centering
+  
+  <<message=F, warning=F, size='scriptsize', fig.dim = c(6,4)>>=
+
+
+OLS <- function(x){
+  betas[1,1] + x*betas[2,1]
+}
+
+MLE <- function(x){
+  par[1] + x*par[2]
+}
+
+
+ggplot(data = dat, aes(x=x, y=y)) + 
+  geom_point() + 
+  geom_function(fun = OLS, aes(color = "OLS")) + 
+  geom_function(fun = MLE, aes(color = "MLE")) + 
+  theme_bw() + 
+  labs(title = "MLE vs. OLS Models", 
+       colour = "")
+
+@
+\label{model.comparison}
+\caption{Comparison of MLE vs. OLS Model Estimates}
+\end{figure}
+  
+  
+\end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 3
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{(Real Application)} \cite{Akinola18} investigate how group 
+  diversity impacts performance. Specifically, they hypothesized that higher 
+  testosterone, which correlates positively with competitiveness and negatively 
+  with cooperation, aids homogeneous groups, while lower testosterone benefits 
+  diverse ones.
+  
+  The researchers collected data on $n=370$ MBA students from Columbia 
+  Business School, who were randomly assigned to 74 groups of 3-6 people.
+  Each group completed a week-long task to advise a hypothetical blood-testing 
+  lab, and their relative performance on the task was measured by a combination 
+  of the profitability and number of contracts held by their lab at the end of 
+  the 7-day period.
+
+  You can load the cleaned data as follows.
+<<size="scriptsize", warning=F, message=F>>=
+dat <- read_csv(file = "cleaned_team_data.csv")
+@
+  \begin{enumerate}
+      \item Create a scatterplot matrix for the performance, time of day, team
+      size, proportion of females, log testosterone, and homogeneity.\\
+      \textbf{Note:} The homogeneity is recorded as \texttt{fau} in the data file.
+      
+      \begin{figure}[H]
+      \centering
+      <<warning=F, message=F, size='scriptsize', fig.dim = c(8,8)>>=
+library(GGally)
+upper <- list(continuous = "points", discrete = wrap("colbar", size = 0), combo = "box_no_facet", na = "na")
+lower <- list(continuous = "cor", discrete = wrap("colbar", size = 0), combo = "box_no_facet", na = "na")
+
+ggpairs(data = dat |> 
+          dplyr::select(final_performance, time_of_day, team_size, prop_female, log_testosterone, fau) |>
+          mutate(team_size = as.factor(team_size), 
+                 time_of_day = as.factor(time_of_day)), 
+        upper = upper, lower = lower) + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1)) + 
+  scale_fill_grey() + 
+  scale_color_grey()
+
+@
+
+\label{ggpairs}
+\caption{Scatterplot Matrix of the Data}
+\end{figure}
+      
+      \item Fit the following regression model.
+          \begin{align*}
+          \textrm{Performance} &= \textrm{Time of Day} + \textrm{Team size} + \textrm{Prop. female}\\
+                       &~~~~~~~~~~ + \log(\textrm{Testosterone}) + \textrm{Homogeneity}\\
+                       &~~~~~~~~~~ + \log(\textrm{Testosterone}) \times \textrm{Homogeneity}
+           \end{align*}
+           
+<<warning=F, message=F, size='scriptsize'>>=
+
+
+mod <- lm(final_performance ~ time_of_day + team_size + prop_female + log_testosterone + fau + log_testosterone*fau, data = dat)
+
+
+@
+           
+           
+      \item Conduct a residual analysis for the regression model. Do you have
+      any concerns?
+      
+      \begin{figure}[H]
+      \centering
+      
+      <<warning=F, message=F, size='scriptsize', fig.dim=c(6,5)>>=
+
+library(effectsize)
+source(file = "plotResiduals.R")
+source(file = "plotInfluence.R")
+
+plotResiduals(mod)
+
+
+@
+
+\label{residuals}
+\caption{Residual Analysis of the Model}
+
+\end{figure}
+      
+      \textcolor{red}{The residuals appear approximately normal with the histogram and density roughly following the gaussian assumption. The qqplot fits well except for the tails. The residuals are scattered across observation numbers and are also scattered across fitted values with a tendency to be more clustered towards fitted values of 0. There is one point that might have an unusually large residual compared to the rest of the data. }
+      
+      
+      \item Conduct a leverage/influence analysis for the regression model. Do
+      you have any concerns?
+      
+      \begin{figure}[H]
+      \centering
+      
+      <<warning=F, message=F, size='scriptsize', fig.dim=c(6,4)>>=
+
+plotInfluence(mod)
+
+@
+
+\label{influence}
+\caption{Leverage/Influence Analysis of the Model}
+
+\end{figure}
+
+\textcolor{red}{There are 2 points who appear to have large leverage and influence on the model based on the Leverage and DFFITs plots. There are also 2-3 points that have quite large negative residuals.}
+      
+      \item Does the model support the hypothesis that ``diversity will boost 
+      performance among groups collectively low in testosterone but harm 
+      performance among groups collectively high in testosterone"?\\
+      \textbf{Note:} We will learn more complicated approaches to answer this
+      question later in the semester. For now, use the techniques we discussed
+      during the first lecture on regression.
+      
+      <<warning=F, message=F, size='scriptsize'>>=
+library(xtable)
+
+sum_table <- data.frame(summary(mod)$coefficients) |>
+  mutate(significance = case_when(Pr...t.. < 0.001 ~ "***", 
+                                  Pr...t.. >= 0.001 & Pr...t.. < 0.01 ~ "**", 
+                                  Pr...t.. >= 0.01 & Pr...t.. < 0.05 ~ "*", 
+                                  Pr...t.. >= 0.05 ~ ""))
+
+effect_size <- omega_squared(mod, partial = T)
+sum_table$`Effect Size` <- c("", round(effect_size$Omega2_partial,3))
+
+sum_table$`Interpretation` <- c("",interpret_omega_squared(effect_size$Omega2_partial, rules = "cohen1992"))
+
+colnames(sum_table) <- c("Estimate", "Standard Error", "t", "p-value", "Significance", "Effect Size", "Interpretation")
+rownames(sum_table) <- c("Intercept", "Time of Day", "Team Size", "Proportion Female", "log(Testosterone)", "Homogeneity", "log(Testosterone) : Homogeneity")
+
+sum_table$`p-value` <- round(sum_table$`p-value`, 3)
+sum_table$`p-value` <- ifelse(sum_table$`p-value` == 0, "<0.001", sum_table$`p-value`)
+
+sum_table <- xtable(sum_table,label = "sum.tab", caption = "Model Summary", digits = 3)
+
+
+@
+
+<<results="asis", echo=F>>=
+print(sum_table,
+table.placement = "H", include.rownames=T, size = "scriptsize")
+@
+
+<<warning=F, message=F, size='scriptsize'>>=
+
+#Low testosterone
+coef.low <- data.frame(t(coef(mod))) |>   # A data frame of coefficients
+    mutate(X.Intercept. = X.Intercept. + (-sd(dat$log_testosterone)) * log_testosterone, # Adjust intercept and slope
+           fau = fau + (-sd(dat$log_testosterone)) * log_testosterone.fau) |>
+    dplyr::select(-c(log_testosterone,log_testosterone.fau)) # remove testosterone coefficients
+
+# When testerone is average
+coef.avg <- data.frame(t(coef(mod))) |>  # A data frame of coefficients
+    mutate(X.Intercept. = X.Intercept. + (mean(dat$log_testosterone)) * log_testosterone, # Adjust intercept and slope
+           fau = fau  + (mean(dat$log_testosterone)) * log_testosterone.fau)|>
+  dplyr::select(-c(log_testosterone,log_testosterone.fau)) # remove testosterone coefficients
+
+# High testosterone
+coef.high <- data.frame(t(coef(mod))) |> # A data frame of coefficients
+    mutate(X.Intercept. = X.Intercept. + (sd(dat$log_testosterone)) * log_testosterone, # Adjust intercept and slope 
+           fau = fau + (sd(dat$log_testosterone)) * log_testosterone.fau)|>
+  dplyr::select(-c(log_testosterone,log_testosterone.fau)) # remove testosterone coefficients
+
+
+interaction_tab <- tibble(`Testosterone Level` = c("low (-1 SD)", "average (mean)", "high (+1 SD)"), 
+                          `Homogeneity Estimate` = c(coef.low$fau, coef.avg$fau, coef.high$fau))
+
+
+interaction_tab <- xtable(interaction_tab,label = "interaction.tab", caption = "Interaction Summary", digits = 3)
+
+
+@
+
+<<results="asis", echo=F>>=
+print(interaction_tab,
+table.placement = "H", include.rownames=F, size = "normalsize")
+@
+
+\textcolor{red}{According to the linear model shown in Table: \ref{sum.tab}, the only factor with a statistically discernible effect on team performance is the interaction between the log(testosterone) and the homogeneity of the group ($t = 4.188$, $p < 0.001$, $\omega_{p} = 0.183$). We see in Table: \ref{interaction.tab} that the estimate of homogeneity on team performance changes substantially depending on testosterone level. The estimate of homogeneity on team performance is $-0.333$ when team testosterone levels are low (-1SD) and $0.440$ when team testosterone levels are high (+1SD). From this we can estimate that increased diversity hurts teams that have higher testosterone, while helping teams that have lower testosterone.}
+      
+      
+  \end{enumerate}
+  
+\end{enumerate}
+\bibliography{bib}
+\end{document}

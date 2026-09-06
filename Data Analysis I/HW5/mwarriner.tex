@@ -1,0 +1,576 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+                      % If you find yourself trying to replicate
+                      % something you found online, ensure you're
+                      % loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+                    % We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\usepackage[skins,breakable]{tcolorbox}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\noindent\textbf{Homework 5: Introduction to Regression}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each 
+question under that question (not altogether at the end). It will be easier for 
+me to give full credit if your answer is commented well, including comments 
+about where you are completing each sub-part of the question. For an example,
+see Homework 1.\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+
+\begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 1
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{What are we doing?} Prompt PingPong TutorBot 2.0 with the 
+  following prompt:
+  \begin{quote}
+    \textit{Ask me to explain Ordinary Least Squares Regression. Ask me 
+    questions to determine my understanding. Then give me feedback on my 
+    understanding and offer suggestions to refine it.}
+  \end{quote}
+  Continue the conversation with the bot. You must go back and forth with the 
+  bot more than once (at least two follow-up questions/responses). Feel free to
+  ask for additional clarifications, practice questions, or anything else 
+  related to the concept.
+  
+  I provide a template for embedding your conversation in your LaTeX file. Note
+  that you will have to do some ``clean up" to get it to look reasonable. And,
+  I provide the \textit{minimum} number of boxes, you can copy and paste
+  to create more.\\
+  \textbf{Solution:}
+  \begin{tcolorbox}[breakable]
+    \textbf{Me:} Ask me to explain Ordinary Least Squares Regression. Ask me 
+    questions to determine my understanding. Then give me feedback on my 
+    understanding and offer suggestions to refine it.
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{TutorBot 2.0:} Great! Can you explain what Ordinary Least Squares (OLS) Regression is, in your own words?
+
+To help me understand your current grasp, here are a few questions:
+
+\begin{enumerate}
+\item What is the main goal of OLS regression?
+
+\item What assumptions does OLS make about the data?
+\item How does OLS determine the “best fit” line?
+\item What does the slope coefficient represent in a simple linear regression?
+\item Can you describe a situation where OLS might not be appropriate?
+\end{enumerate}
+Once you answer, I’ll give you feedback and suggestions for refining your understanding.
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{Me:} 
+    \begin{enumerate}
+    \item The main goal of OLS regression is to create the best fitting regression equation that minimizes the squared residuals of the data points with the regression line.
+    \item OLS assumes that the residual error terms are gaussian distributed and independent. It also assumes that the points have roughly constant leverage over the regression line. It also assumes that the variables aren't colinear. 
+    \item OLS determines the best fit line by creating a matrix of all the variables and the response and using linear algebra to find the vector of coefficients that minimizes the squared residuals. 
+    \item The slope coefficient in simple linear regression represents the change in the response variable coinciding with a one unit increase in the predictor variable. 
+    \item OLS would not be appropriate for fitting a linear model to data that is exponentially distributed. Also, OLS would not work for a response variable that is not continuous.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{TutorBot 2.0:} Thanks for your thoughtful answers! Here’s some feedback and suggestions to refine your understanding: \\
+
+Strengths: \\
+
+You clearly understand that OLS minimizes the sum of squared residuals.
+You mentioned key assumptions: normality, independence, and collinearity.
+Your explanation of the slope coefficient is accurate and concise.
+You recognize that OLS isn’t suitable for all types of data. \\
+
+Suggestions for Refinement: \\
+
+For assumptions, also mention homoscedasticity (constant variance of residuals) and linearity (the relationship between predictors and response is linear). \\
+
+When you say “constant leverage,” it’s more precise to say that OLS assumes no influential outliers and that leverage points don’t unduly affect the fit. \\
+
+For the matrix explanation, you’re right! You might add that OLS solves for coefficients using the normal equations: $(X^{T}X)\beta = X^{T}y$ \\
+
+For when OLS isn’t appropriate, you could mention heteroscedasticity, autocorrelation (in time series), or nonlinear relationships as common issues. \\
+
+Quick Check:
+Can you briefly explain what “homoscedasticity” means and why it matters for OLS regression?
+  \end{tcolorbox}
+  \begin{tcolorbox}[breakable]
+    \textbf{Me:} Homoscedasticity refers to having a constant random dispersion of residuals across observations and not showing any dependence on the explanatory variable (x). It matters for OLS regression because if you had heteroscedasticity and had a distinct pattern of residuals dependent on x values, that could give indication that the observations are not independent of each other or that the model is not linear, meaning that the residuals would not be gaussian distributed.
+  \end{tcolorbox}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 2
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{Regression Estimation} Suppose we simulate regression data with 
+  Exponential error. Note that we can still fit an OLS line -- that is the line 
+  described here minimizes the sum of squared errors -- but the inference about 
+  the coefficients is compromised.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Specify Coefficients}
+\hldef{beta0} \hlkwb{<-} \hlopt{-}\hlnum{4.2}
+\hldef{beta1} \hlkwb{<-} \hlnum{1.3}
+\hlcom{# Specify Error Distribution}
+\hldef{mu.epsilon} \hlkwb{<-} \hlnum{0}
+\hldef{sigma.epsilon}\hlkwb{<-}\hlkwd{sqrt}\hldef{(}\hlnum{5}\hldef{)}
+\hlcom{# Simulate Regression Data}
+\hlkwd{set.seed}\hldef{(}\hlnum{7272}\hldef{)}
+\hldef{n} \hlkwb{<-} \hlnum{50}
+\hldef{x} \hlkwb{<-} \hlkwd{runif}\hldef{(}\hlkwc{n}\hldef{=n,} \hlkwc{min}\hldef{=}\hlopt{-}\hlnum{5}\hldef{,} \hlkwc{max}\hldef{=}\hlnum{5}\hldef{)}
+\hldef{epsilon} \hlkwb{<-} \hlkwd{rexp}\hldef{(}\hlkwc{n}\hldef{=n,} \hlkwc{rate} \hldef{=} \hlnum{1}\hlopt{/}\hldef{sigma.epsilon)}
+\hldef{y} \hlkwb{<-} \hldef{beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{x} \hlopt{+} \hldef{epsilon}
+\hldef{dat} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{x}\hldef{=x,} \hlkwc{y}\hldef{=y)}
+\hlcom{# Fit the Linear Model}
+\hldef{mod} \hlkwb{<-} \hlkwd{lm}\hldef{(y} \hlopt{~} \hldef{x,} \hlkwc{data}\hldef{=dat)}
+\hlkwd{summary}\hldef{(mod)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ x, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.4000 -1.6233 -0.6799  0.7226  8.3799 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  -1.7245     0.3445  -5.006 7.90e-06 ***
+## x             1.3285     0.1181  11.244 4.75e-15 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.411 on 48 degrees of freedom
+## Multiple R-squared:  0.7248,	Adjusted R-squared:  0.7191 
+## F-statistic: 126.4 on 1 and 48 DF,  p-value: 4.745e-15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\begin{enumerate}
+  \item We can fit an OLS regression model without the normality of error terms.
+  Write a function for computing 
+  \[Q(\beta_0,\beta_1) =  \sum_{i=1}^{n} \left[y_i - \left(\beta_0 + \beta_1 x_i\right)\right]^2.\]
+  Use the \texttt{optim()} function to minimize this function with respect
+  to $\beta_0$ and $\beta_1$.
+  
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{Q} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{betas}\hldef{)\{}
+
+\hldef{beta0} \hlkwb{<-} \hldef{betas[}\hlnum{1}\hldef{]}
+
+\hldef{beta1} \hlkwb{<-} \hldef{betas[}\hlnum{2}\hldef{]}
+
+\hldef{residuals} \hlkwb{<-} \hldef{(y} \hlopt{-} \hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{x))}\hlopt{^}\hlnum{2}
+
+\hldef{sum} \hlkwb{<-} \hlkwd{sum}\hldef{(residuals)}
+
+\hldef{\}}
+
+\hldef{(min_betas} \hlkwb{<-} \hlkwd{optim}\hldef{(}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{1}\hldef{), Q)}\hlopt{$}\hldef{par)}
+\end{alltt}
+\begin{verbatim}
+## [1] -1.724389  1.328435
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  
+  \item Compute the OLS estimates using matrix multiplication.
+  \[\hat{\boldsymbol{\beta}} = \left(\mathbf{x}'\mathbf{x}\right)^{-1} \mathbf{x}'\mathbf{y}\]
+  
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{x_1} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{x0} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,} \hlnum{50}\hldef{),}
+            \hlkwc{x1} \hldef{= x) |>}
+\hlkwd{as.matrix}\hldef{()}
+
+\hldef{xxinv} \hlkwb{<-} \hlkwd{solve}\hldef{(}\hlkwd{t}\hldef{(x_1)}\hlopt{%*%}\hldef{x_1)}
+
+\hldef{xty} \hlkwb{<-} \hlkwd{t}\hldef{(x_1)}\hlopt{%*%}\hldef{y}
+
+\hldef{(betas} \hlkwb{<-} \hldef{xxinv} \hlopt{%*%} \hldef{xty)}
+\end{alltt}
+\begin{verbatim}
+##        [,1]
+## x0 -1.72455
+## x1  1.32846
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  
+  \item Note that the OLS coefficient estimates are off -- specifically the 
+  intercept -- due to the transgression of conditions for use, specifically the 
+  error terms are Exponentially distributed. Write a likelihood for fitting a 
+  regression model with Exponential error and use \texttt{optim()} to find the 
+  MLE estimates for $\beta_0$, $\beta_1$, and $\lambda$.\\
+  \textbf{Hint:} Note that residuals can only be positive under this setting, so 
+  you must select initial values of $\beta_0$ and $\beta_1$ that ensure all 
+  observations are \emph{above} the regression line.
+  
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{reg.loglike} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{par}\hldef{,} \hlkwc{y}\hldef{,} \hlkwc{x}\hldef{,} \hlkwc{p}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{neg}\hldef{=F)\{}
+\hldef{betas} \hlkwb{<-} \hlkwd{matrix}\hldef{(par[}\hlopt{-}\hlkwd{length}\hldef{(par)])} \hlcom{# (betas, sigma)}
+\hldef{lambda} \hlkwb{<-} \hldef{par[}\hlkwd{length}\hldef{(par)]}
+\hlcom{# Compute residual}
+\hldef{resid} \hlkwb{<-} \hldef{y} \hlopt{-} \hldef{(x} \hlopt{%*%} \hldef{betas)}
+\hlcom{# Compute log likelihood}
+\hldef{loglik} \hlkwb{<-} \hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(}\hlkwd{dexp}\hldef{(resid,} \hlkwc{rate} \hldef{= lambda)))}
+\hlcom{# return +/- loglikelihood}
+\hlkwd{ifelse}\hldef{(neg,} \hlopt{-}\hldef{loglik, loglik)}
+\hldef{\}}
+
+\hlcom{# Setup Data}
+\hldef{y} \hlkwb{<-} \hlkwd{matrix}\hldef{(y)}
+\hldef{x} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlkwd{matrix}\hldef{(}\hlkwc{data}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{nrow}\hldef{=}\hlkwd{nrow}\hldef{(dat),} \hlkwc{ncol}\hldef{=}\hlnum{1}\hldef{),}
+         \hlkwd{matrix}\hldef{(x))}
+\hlcom{# Optimize}
+\hldef{(par} \hlkwb{<-} \hlkwd{optim}\hldef{(}\hlkwc{par} \hldef{=} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{10}\hldef{,}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),}
+    \hlkwc{fn} \hldef{= reg.loglike,}
+    \hlkwc{neg}\hldef{=T,}
+    \hlkwc{y}\hldef{=y,} \hlkwc{x}\hldef{=x)}\hlopt{$}\hldef{par)}
+\end{alltt}
+\begin{verbatim}
+## [1] -4.199444  1.355304  0.378430
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  
+  \item Create a \texttt{ggplot} that plots the OLS and the MLE regression lines
+  on top of a scatterplot of the data. 
+  
+\begin{figure}[H] 
+
+\centering
+  
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{OLS} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+\hldef{betas[}\hlnum{1}\hldef{,}\hlnum{1}\hldef{]} \hlopt{+} \hldef{x}\hlopt{*}\hldef{betas[}\hlnum{2}\hldef{,}\hlnum{1}\hldef{]}
+\hldef{\}}
+
+\hldef{MLE} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)\{}
+\hldef{par[}\hlnum{1}\hldef{]} \hlopt{+} \hldef{x}\hlopt{*}\hldef{par[}\hlnum{2}\hldef{]}
+\hldef{\}}
+
+
+\hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= dat,} \hlkwd{aes}\hldef{(}\hlkwc{x}\hldef{=x,} \hlkwc{y}\hldef{=y))} \hlopt{+}
+\hlkwd{geom_point}\hldef{()} \hlopt{+}
+\hlkwd{geom_function}\hldef{(}\hlkwc{fun} \hldef{= OLS,} \hlkwd{aes}\hldef{(}\hlkwc{color} \hldef{=} \hlsng{"OLS"}\hldef{))} \hlopt{+}
+\hlkwd{geom_function}\hldef{(}\hlkwc{fun} \hldef{= MLE,} \hlkwd{aes}\hldef{(}\hlkwc{color} \hldef{=} \hlsng{"MLE"}\hldef{))} \hlopt{+}
+\hlkwd{theme_bw}\hldef{()} \hlopt{+}
+\hlkwd{labs}\hldef{(}\hlkwc{title} \hldef{=} \hlsng{"MLE vs. OLS Models"}\hldef{,}
+     \hlkwc{colour} \hldef{=} \hlsng{""}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
+\end{knitrout}
+\label{model.comparison}
+\caption{Comparison of MLE vs. OLS Model Estimates}
+\end{figure}
+  
+  
+\end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 3
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{(Real Application)} \cite{Akinola18} investigate how group 
+  diversity impacts performance. Specifically, they hypothesized that higher 
+  testosterone, which correlates positively with competitiveness and negatively 
+  with cooperation, aids homogeneous groups, while lower testosterone benefits 
+  diverse ones.
+  
+  The researchers collected data on $n=370$ MBA students from Columbia 
+  Business School, who were randomly assigned to 74 groups of 3-6 people.
+  Each group completed a week-long task to advise a hypothetical blood-testing 
+  lab, and their relative performance on the task was measured by a combination 
+  of the profitability and number of contracts held by their lab at the end of 
+  the 7-day period.
+
+  You can load the cleaned data as follows.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{dat} \hlkwb{<-} \hlkwd{read_csv}\hldef{(}\hlkwc{file} \hldef{=} \hlsng{"cleaned_team_data.csv"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \begin{enumerate}
+      \item Create a scatterplot matrix for the performance, time of day, team
+      size, proportion of females, log testosterone, and homogeneity.\\
+      \textbf{Note:} The homogeneity is recorded as \texttt{fau} in the data file.
+      
+      \begin{figure}[H]
+      \centering
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(GGally)}
+\hldef{upper} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{continuous} \hldef{=} \hlsng{"points"}\hldef{,} \hlkwc{discrete} \hldef{=} \hlkwd{wrap}\hldef{(}\hlsng{"colbar"}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{0}\hldef{),} \hlkwc{combo} \hldef{=} \hlsng{"box_no_facet"}\hldef{,} \hlkwc{na} \hldef{=} \hlsng{"na"}\hldef{)}
+\hldef{lower} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{continuous} \hldef{=} \hlsng{"cor"}\hldef{,} \hlkwc{discrete} \hldef{=} \hlkwd{wrap}\hldef{(}\hlsng{"colbar"}\hldef{,} \hlkwc{size} \hldef{=} \hlnum{0}\hldef{),} \hlkwc{combo} \hldef{=} \hlsng{"box_no_facet"}\hldef{,} \hlkwc{na} \hldef{=} \hlsng{"na"}\hldef{)}
+
+\hlkwd{ggpairs}\hldef{(}\hlkwc{data} \hldef{= dat |>}
+    \hldef{dplyr}\hlopt{::}\hlkwd{select}\hldef{(final_performance, time_of_day, team_size, prop_female, log_testosterone, fau) |>}
+    \hlkwd{mutate}\hldef{(}\hlkwc{team_size} \hldef{=} \hlkwd{as.factor}\hldef{(team_size),}
+           \hlkwc{time_of_day} \hldef{=} \hlkwd{as.factor}\hldef{(time_of_day)),}
+  \hlkwc{upper} \hldef{= upper,} \hlkwc{lower} \hldef{= lower)} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{theme}\hldef{(}\hlkwc{axis.text.x} \hldef{=} \hlkwd{element_text}\hldef{(}\hlkwc{angle} \hldef{=} \hlnum{60}\hldef{,} \hlkwc{vjust} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{hjust} \hldef{=} \hlnum{1}\hldef{))} \hlopt{+}
+  \hlkwd{scale_fill_grey}\hldef{()} \hlopt{+}
+  \hlkwd{scale_color_grey}\hldef{()}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} 
+\end{knitrout}
+
+\label{ggpairs}
+\caption{Scatterplot Matrix of the Data}
+\end{figure}
+      
+      \item Fit the following regression model.
+          \begin{align*}
+          \textrm{Performance} &= \textrm{Time of Day} + \textrm{Team size} + \textrm{Prop. female}\\
+                       &~~~~~~~~~~ + \log(\textrm{Testosterone}) + \textrm{Homogeneity}\\
+                       &~~~~~~~~~~ + \log(\textrm{Testosterone}) \times \textrm{Homogeneity}
+           \end{align*}
+           
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{mod} \hlkwb{<-} \hlkwd{lm}\hldef{(final_performance} \hlopt{~} \hldef{time_of_day} \hlopt{+} \hldef{team_size} \hlopt{+} \hldef{prop_female} \hlopt{+} \hldef{log_testosterone} \hlopt{+} \hldef{fau} \hlopt{+} \hldef{log_testosterone}\hlopt{*}\hldef{fau,} \hlkwc{data} \hldef{= dat)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+           
+           
+      \item Conduct a residual analysis for the regression model. Do you have
+      any concerns?
+      
+      \begin{figure}[H]
+      \centering
+      
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(effectsize)}
+\hlkwd{source}\hldef{(}\hlkwc{file} \hldef{=} \hlsng{"plotResiduals.R"}\hldef{)}
+\hlkwd{source}\hldef{(}\hlkwc{file} \hldef{=} \hlsng{"plotInfluence.R"}\hldef{)}
+
+\hlkwd{plotResiduals}\hldef{(mod)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+\end{knitrout}
+
+\label{residuals}
+\caption{Residual Analysis of the Model}
+
+\end{figure}
+      
+      \textcolor{red}{The residuals appear approximately normal with the histogram and density roughly following the gaussian assumption. The qqplot fits well except for the tails. The residuals are scattered across observation numbers and are also scattered across fitted values with a tendency to be more clustered towards fitted values of 0. There is one point that might have an unusually large residual compared to the rest of the data. }
+      
+      
+      \item Conduct a leverage/influence analysis for the regression model. Do
+      you have any concerns?
+      
+      \begin{figure}[H]
+      \centering
+      
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plotInfluence}\hldef{(mod)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+\end{knitrout}
+
+\label{influence}
+\caption{Leverage/Influence Analysis of the Model}
+
+\end{figure}
+
+\textcolor{red}{There are 2 points who appear to have large leverage and influence on the model based on the Leverage and DFFITs plots. There are also 2-3 points that have quite large negative residuals.}
+      
+      \item Does the model support the hypothesis that ``diversity will boost 
+      performance among groups collectively low in testosterone but harm 
+      performance among groups collectively high in testosterone"?\\
+      \textbf{Note:} We will learn more complicated approaches to answer this
+      question later in the semester. For now, use the techniques we discussed
+      during the first lecture on regression.
+      
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(xtable)}
+
+\hldef{sum_table} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwd{summary}\hldef{(mod)}\hlopt{$}\hldef{coefficients) |>}
+  \hlkwd{mutate}\hldef{(}\hlkwc{significance} \hldef{=} \hlkwd{case_when}\hldef{(Pr...t..} \hlopt{<} \hlnum{0.001} \hlopt{~} \hlsng{"***"}\hldef{,}
+                            \hldef{Pr...t..} \hlopt{>=} \hlnum{0.001} \hlopt{&} \hldef{Pr...t..} \hlopt{<} \hlnum{0.01} \hlopt{~} \hlsng{"**"}\hldef{,}
+                            \hldef{Pr...t..} \hlopt{>=} \hlnum{0.01} \hlopt{&} \hldef{Pr...t..} \hlopt{<} \hlnum{0.05} \hlopt{~} \hlsng{"*"}\hldef{,}
+                            \hldef{Pr...t..} \hlopt{>=} \hlnum{0.05} \hlopt{~} \hlsng{""}\hldef{))}
+
+\hldef{effect_size} \hlkwb{<-} \hlkwd{omega_squared}\hldef{(mod,} \hlkwc{partial} \hldef{= T)}
+\hldef{sum_table}\hlopt{$}\hldef{`Effect Size`} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{""}\hldef{,} \hlkwd{round}\hldef{(effect_size}\hlopt{$}\hldef{Omega2_partial,}\hlnum{3}\hldef{))}
+
+\hldef{sum_table}\hlopt{$}\hldef{`Interpretation`} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{""}\hldef{,}\hlkwd{interpret_omega_squared}\hldef{(effect_size}\hlopt{$}\hldef{Omega2_partial,} \hlkwc{rules} \hldef{=} \hlsng{"cohen1992"}\hldef{))}
+
+\hlkwd{colnames}\hldef{(sum_table)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Estimate"}\hldef{,} \hlsng{"Standard Error"}\hldef{,} \hlsng{"t"}\hldef{,} \hlsng{"p-value"}\hldef{,} \hlsng{"Significance"}\hldef{,} \hlsng{"Effect Size"}\hldef{,} \hlsng{"Interpretation"}\hldef{)}
+\hlkwd{rownames}\hldef{(sum_table)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Intercept"}\hldef{,} \hlsng{"Time of Day"}\hldef{,} \hlsng{"Team Size"}\hldef{,} \hlsng{"Proportion Female"}\hldef{,} \hlsng{"log(Testosterone)"}\hldef{,} \hlsng{"Homogeneity"}\hldef{,} \hlsng{"log(Testosterone) : Homogeneity"}\hldef{)}
+
+\hldef{sum_table}\hlopt{$}\hldef{`p-value`} \hlkwb{<-} \hlkwd{round}\hldef{(sum_table}\hlopt{$}\hldef{`p-value`,} \hlnum{3}\hldef{)}
+\hldef{sum_table}\hlopt{$}\hldef{`p-value`} \hlkwb{<-} \hlkwd{ifelse}\hldef{(sum_table}\hlopt{$}\hldef{`p-value`} \hlopt{==} \hlnum{0}\hldef{,} \hlsng{"<0.001"}\hldef{, sum_table}\hlopt{$}\hldef{`p-value`)}
+
+\hldef{sum_table} \hlkwb{<-} \hlkwd{xtable}\hldef{(sum_table,}\hlkwc{label} \hldef{=} \hlsng{"sum.tab"}\hldef{,} \hlkwc{caption} \hldef{=} \hlsng{"Model Summary"}\hldef{,} \hlkwc{digits} \hldef{=} \hlnum{3}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+% latex table generated in R 4.5.1 by xtable 1.8-4 package
+% Thu Oct 30 19:28:38 2025
+\begin{table}[H]
+\centering
+\begingroup\scriptsize
+\begin{tabular}{rrrrllll}
+  \hline
+ & Estimate & Standard Error & t & p-value & Significance & Effect Size & Interpretation \\ 
+  \hline
+Intercept & -0.723 & 1.250 & -0.579 & 0.565 &  &  &  \\ 
+  Time of Day & 0.043 & 0.047 & 0.929 & 0.356 &  & 0 & very small \\ 
+  Team Size & 0.156 & 0.161 & 0.972 & 0.334 &  & 0.035 & small \\ 
+  Proportion Female & -1.498 & 1.016 & -1.474 & 0.145 &  & 0.055 & small \\ 
+  log(Testosterone) & 0.113 & 0.197 & 0.575 & 0.567 &  & 0 & very small \\ 
+  Homogeneity & 0.054 & 0.095 & 0.566 & 0.573 &  & 0 & very small \\ 
+  log(Testosterone) : Homogeneity & 0.741 & 0.177 & 4.188 & $<$0.001 & *** & 0.183 & medium \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Model Summary} 
+\label{sum.tab}
+\end{table}
+
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{#Low testosterone}
+\hldef{coef.low} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwd{t}\hldef{(}\hlkwd{coef}\hldef{(mod))) |>}   \hlcom{# A data frame of coefficients}
+    \hlkwd{mutate}\hldef{(}\hlkwc{X.Intercept.} \hldef{= X.Intercept.} \hlopt{+} \hldef{(}\hlopt{-}\hlkwd{sd}\hldef{(dat}\hlopt{$}\hldef{log_testosterone))} \hlopt{*} \hldef{log_testosterone,} \hlcom{# Adjust intercept and slope}
+           \hlkwc{fau} \hldef{= fau} \hlopt{+} \hldef{(}\hlopt{-}\hlkwd{sd}\hldef{(dat}\hlopt{$}\hldef{log_testosterone))} \hlopt{*} \hldef{log_testosterone.fau) |>}
+    \hldef{dplyr}\hlopt{::}\hlkwd{select}\hldef{(}\hlopt{-}\hlkwd{c}\hldef{(log_testosterone,log_testosterone.fau))} \hlcom{# remove testosterone coefficients}
+
+\hlcom{# When testerone is average}
+\hldef{coef.avg} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwd{t}\hldef{(}\hlkwd{coef}\hldef{(mod))) |>}  \hlcom{# A data frame of coefficients}
+    \hlkwd{mutate}\hldef{(}\hlkwc{X.Intercept.} \hldef{= X.Intercept.} \hlopt{+} \hldef{(}\hlkwd{mean}\hldef{(dat}\hlopt{$}\hldef{log_testosterone))} \hlopt{*} \hldef{log_testosterone,} \hlcom{# Adjust intercept and slope}
+           \hlkwc{fau} \hldef{= fau}  \hlopt{+} \hldef{(}\hlkwd{mean}\hldef{(dat}\hlopt{$}\hldef{log_testosterone))} \hlopt{*} \hldef{log_testosterone.fau)|>}
+  \hldef{dplyr}\hlopt{::}\hlkwd{select}\hldef{(}\hlopt{-}\hlkwd{c}\hldef{(log_testosterone,log_testosterone.fau))} \hlcom{# remove testosterone coefficients}
+
+\hlcom{# High testosterone}
+\hldef{coef.high} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwd{t}\hldef{(}\hlkwd{coef}\hldef{(mod))) |>} \hlcom{# A data frame of coefficients}
+    \hlkwd{mutate}\hldef{(}\hlkwc{X.Intercept.} \hldef{= X.Intercept.} \hlopt{+} \hldef{(}\hlkwd{sd}\hldef{(dat}\hlopt{$}\hldef{log_testosterone))} \hlopt{*} \hldef{log_testosterone,} \hlcom{# Adjust intercept and slope }
+           \hlkwc{fau} \hldef{= fau} \hlopt{+} \hldef{(}\hlkwd{sd}\hldef{(dat}\hlopt{$}\hldef{log_testosterone))} \hlopt{*} \hldef{log_testosterone.fau)|>}
+  \hldef{dplyr}\hlopt{::}\hlkwd{select}\hldef{(}\hlopt{-}\hlkwd{c}\hldef{(log_testosterone,log_testosterone.fau))} \hlcom{# remove testosterone coefficients}
+
+
+\hldef{interaction_tab} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{`Testosterone Level`} \hldef{=} \hlkwd{c}\hldef{(}\hlsng{"low (-1 SD)"}\hldef{,} \hlsng{"average (mean)"}\hldef{,} \hlsng{"high (+1 SD)"}\hldef{),}
+                          \hlkwc{`Homogeneity Estimate`} \hldef{=} \hlkwd{c}\hldef{(coef.low}\hlopt{$}\hldef{fau, coef.avg}\hlopt{$}\hldef{fau, coef.high}\hlopt{$}\hldef{fau))}
+
+
+\hldef{interaction_tab} \hlkwb{<-} \hlkwd{xtable}\hldef{(interaction_tab,}\hlkwc{label} \hldef{=} \hlsng{"interaction.tab"}\hldef{,} \hlkwc{caption} \hldef{=} \hlsng{"Interaction Summary"}\hldef{,} \hlkwc{digits} \hldef{=} \hlnum{3}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+% latex table generated in R 4.5.1 by xtable 1.8-4 package
+% Thu Oct 30 19:28:38 2025
+\begin{table}[H]
+\centering
+\begingroup\normalsize
+\begin{tabular}{lr}
+  \hline
+Testosterone Level & Homogeneity Estimate \\ 
+  \hline
+low (-1 SD) & -0.333 \\ 
+  average (mean) & 0.042 \\ 
+  high (+1 SD) & 0.440 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\caption{Interaction Summary} 
+\label{interaction.tab}
+\end{table}
+
+
+\textcolor{red}{According to the linear model shown in Table: \ref{sum.tab}, the only factor with a statistically discernible effect on team performance is the interaction between the log(testosterone) and the homogeneity of the group ($t = 4.188$, $p < 0.001$, $\omega_{p} = 0.183$). We see in Table: \ref{interaction.tab} that the estimate of homogeneity on team performance changes substantially depending on testosterone level. The estimate of homogeneity on team performance is $-0.333$ when team testosterone levels are low (-1SD) and $0.440$ when team testosterone levels are high (+1SD). From this we can estimate that increased diversity hurts teams that have higher testosterone, while helping teams that have lower testosterone.}
+      
+      
+  \end{enumerate}
+  
+\end{enumerate}
+\bibliography{bib}
+\end{document}

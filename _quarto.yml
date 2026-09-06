@@ -3,9 +3,7 @@ project:
 
 website:
   title: "Max Warriner"
-  favicon: images/ColgateC.png
   sidebar:
-    logo: images/ColgateSeal.png
     style: "docked"
     collapse-level: 1
     search: false
@@ -20,20 +18,30 @@ website:
         # Data Analysis I
           - section: "Data Analysis I"
             contents:
-              - href: homework1.qmd
+              - href: Data Analysis I\HW1\HW1.qmd
                 text: "Homework 1"
+              - href: Data Analysis I\HW2\HW2.qmd
+                text: "Homework 2"
+              - href: Data Analysis I\HW3\HW3.qmd
+                text: "Homework 3"
+              - href: Data Analysis I\HW4\HW4.qmd
+                text: "Homework 4"
+              - href: Data Analysis I\HW5\HW5.qmd
+                text: "Homework 5"
+              - href: Data Analysis I\HW6\HW6.qmd
+                text: "Homework 6"
+              - href: Data Analysis I\HW7\HW7.qmd
+                text: "Homework 7"
         # Data Analysis II
           - section: "Data Analysis II"
             contents:
-              - href: homework2.qmd
-                text: "Homework 2"
       # Research
       - section: "Research"
         icon: bar-chart
         contents:
-        - href: homework1.qmd
-          text: "Merrimack Sleep Study"
-        - href: homework2.qmd
+        - href: dog_research.qmd.qmd
+          text: "Study on Dog Mitochondria with Ana Jimenez (Published)"
+        - href: Taye_Lab\quarto.qmd
           text: "Bineyam Taye Epidemiology Lab"
       # AI Use
       - href: ai.qmd

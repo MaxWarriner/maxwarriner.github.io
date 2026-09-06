@@ -1,0 +1,524 @@
+\documentclass{article}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+% If you find yourself trying to replicate
+% something you found online, ensure you're
+% loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+% We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\begin{document}
+\noindent\textbf{Homework 3: One-Sample Tests and ANOVA}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each 
+question under that question (not altogether at the end). It will be easier for 
+me to give full credit if your answer is commented well, including comments 
+about where you are completing each sub-part of the question. For an example,
+see Homework 1.\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+\begin{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item On Homework 2, you developed an exact test for $E(X)=\mu_X=\lambda$
+for data drawn from an exponential distribution with mean $\lambda$.
+
+For context, we did this because the Central Limit Theorem,
+\[T = \frac{\bar{X}-\lambda}{s/\sqrt{n}} \sim \mathcal{AT}(v=n-1),\]
+can only be used when $n$ is large. That is, this approximation is 
+``good" when $n$ is large. However, the \emph{exact} sampling distribution 
+of $\bar{X}$,
+\[\bar{X} \sim \textrm{Gamma}\left(\alpha=n, \beta=\frac{n}{\lambda}\right),\]
+works regardless of $n$.
+
+When asked to compute a $p$-value, many of you used the information you found
+using a large language model. Namely, you used the suggested $p$-value 
+calculation
+\[p\textrm{-value} = 2 \times \min\left(F_{\bar{X}}(\bar{x}),1-F_{\bar{X}}(\bar{x})\right)\]
+instead of simply directly computing
+\begin{align*}
+p\textrm{-value} &= P(\bar{X} \leq \lambda_0 - \lvert \lambda_0 - \bar{x}\rvert)
++ P(\bar{X} \geq \lambda_0 + \lvert \lambda_0 - \bar{x}\rvert)\\
+&= P(\bar{X} \leq \lambda_0 - \lvert \lambda_0 - \bar{x}\rvert)
++ (1 - P(\bar{X} \leq \lambda_0 + \lvert \lambda_0 - \bar{x}\rvert))\\
+&= F_{\bar{X}}(\lambda_0 - \lvert \lambda_0 - \bar{x}\rvert)
++ (1-F_{\bar{X}}(\lambda_0 + \lvert \lambda_0 - \bar{x}\rvert)).
+\end{align*}
+My professor once told me ``you don't have to remember anything, you can just 
+derive what you need." To be equally annoying, I will retool this to say ``you 
+don't have to blindly trust anything, you can simulate it to check!"
+\begin{enumerate}
+\item Conduct a simulation to evaluate the probability of Type I error
+using both approaches by completing the following in a loop. Report the 
+resulting Type I error estimate.
+\begin{enumerate}
+\item Generate a random sample of $n=10$ observations from an exponential 
+distribution with mean $\lambda=2$.
+\item Compute $\Delta = \lvert \bar{x}-\lambda_0 \rvert$, where $\lambda_0=2$.
+\item Compute the lower part of the $p$-value.
+\[p_L = P(\bar{X} \leq \lambda_0 - \Delta)\]
+\item Compute the upper part of the $p$-value.
+\[p_U = P(\bar{X} \geq \lambda_0 + \Delta)\]
+\item Compute the exact $p$-value.
+\item Compute the $p$-value suggested by the large language model.
+\end{enumerate}
+<<message=F, warning=F, size ='scriptsize'>>=
+
+set.seed(131313)
+
+exact_rejection_rate <- rep(NA, 10000)
+LLM_rejection_rate <- rep(NA, 10000)
+
+n = 10
+lambda = 2
+lambda0 = 2
+
+for (i in 1:10000){
+  
+  # part i
+  rsamp <- rexp(n = n, rate = 1/lambda)
+  
+  # part ii
+  delta = abs(mean(rsamp) - lambda0)
+  
+  #part iii
+  pL = pgamma(q = lambda0-delta, shape = n, rate = n/lambda0, lower.tail = T)
+  
+  # part iv
+  pU = pgamma(q = lambda0+delta, shape = n, rate = n/lambda0, lower.tail = F)
+  
+  #part v
+  exact_p = pL + pU
+  exact_rejection_rate[i] = ifelse(exact_p < 0.05, 1, 0)
+  
+  #part vi
+  LLM_lower = pgamma(mean(rsamp), shape = n, rate = n/lambda0)
+  LLM_upper = 1 - pgamma(mean(rsamp), shape = n, rate = n/lambda0)
+  LLM_p = 2*min(LLM_lower, LLM_upper)
+  LLM_rejection_rate[i] = ifelse(LLM_p < 0.05, 1, 0)
+  
+}
+
+(mean(exact_rejection_rate))
+
+(mean(LLM_rejection_rate))
+
+@
+
+\textcolor{red}{The $\alpha$ of the exact method is 0.0498. The $\alpha$ of the LLM approach is 0.0479}
+
+\item Conduct a simulated power analysis to evaluate the power and 
+probability of Type II error using both approaches by completing the 
+following in a loop. Report the resulting Power estimate.
+\begin{enumerate}
+\item Generate a random sample of $n=10$ observations from an exponential 
+distribution with mean $\lambda=2.3$.
+\item Compute $\Delta = \lvert \bar{x}-\lambda_0 \rvert$, where $\lambda_0=2$.
+\item Compute the lower part of the $p$-value.
+\[p_L = P(\bar{X} \leq \lambda_0 - \Delta)\]
+\item Compute the upper part of the $p$-value.
+\[p_U = P(\bar{X} \geq \lambda_0 + \Delta)\]
+\item Compute the exact $p$-value.
+\item Compute the $p$-value suggested by the large language model.
+
+<<warning=F, message=F, size ='scriptsize'>>=
+
+exact_power <- rep(NA, 10000)
+LLM_power <- rep(NA, 10000)
+
+n = 10
+lambda = 2.3
+lambda0 = 2
+
+for (i in 1:10000){
+  
+  # part i
+  rsamp <- rexp(n = n, rate = 1/lambda)
+  
+  # part ii
+  delta = abs(mean(rsamp) - lambda0)
+  
+  #part iii
+  pL = pgamma(q = lambda0-delta, shape = n, rate = n/lambda0, lower.tail = T)
+  
+  # part iv
+  pU = pgamma(q = lambda0+delta, shape = n, rate = n/lambda0, lower.tail = F)
+  
+  #part v
+  exact_p = pL + pU
+  exact_power[i] = ifelse(exact_p < 0.05, 1, 0)
+  
+  #part vi
+  LLM_lower = pgamma(mean(rsamp), shape = n, rate = n/lambda0)
+  LLM_upper = 1 - pgamma(mean(rsamp), shape = n, rate = n/lambda0)
+  LLM_p = 2*min(LLM_lower, LLM_upper)
+  LLM_power[i] = ifelse(LLM_p < 0.05, 1, 0)
+  
+}
+
+(mean(exact_power))
+
+(mean(LLM_power))
+
+@
+
+\textcolor{red}{The power of our exact method is 0.1125. The power of the LLM approximation is 0.0853.}
+
+\end{enumerate}
+\item To gain insight into your results, compute the exact $p$-value and
+the $p$-value suggested by the large language model for a fine grid of
+values of $\Delta$ from 0 to 4 for $\lambda_0=2$. Plot the resulting $p$-values against
+a $y=x$ line. Explain how the visual maps onto the results of the simulations.
+
+<<p_value_plot, message=F, warning=F, eval=F, size ='scriptsize'>>=
+
+lambda0 = 2
+n = 10
+
+delta <- seq(0,4,length.out = 1000)
+
+exact_p <- rep(NA, 1000)
+
+LLM_p_high <- rep(NA, 1000)
+LLM_p_low <- rep(NA, 1000)
+
+for(i in 1:1000){
+  
+  #exact p-value calculation
+  exact_lower <- pgamma(lambda0-delta[i], shape = n, rate = n/lambda0, lower.tail = T)
+  exact_upper <- pgamma(lambda0+delta[i], shape = n, rate = n/lambda0, lower.tail = F)
+  exact_p[i] = exact_lower + exact_upper
+  
+  #LLM p-value calculation
+  xbar_approx_low = lambda0-delta[i]
+  xbar_approx_high = lambda0 + delta[i]
+  LLM_p_low[i] = 2 * pgamma(xbar_approx_low, shape = n, rate = n/lambda0, lower.tail = T)
+  LLM_p_high[i] = 2 * pgamma(xbar_approx_high, shape = n, rate = n/lambda0, lower.tail = F)
+  
+}
+
+
+library(tidyverse)
+library(ggplot2) 
+
+p_values <- tibble(exact = exact_p, 
+                   LLM_low = LLM_p_low, 
+                   LLM_high = LLM_p_high)
+
+
+ggplot(data = p_values) + 
+  geom_point(aes(x = exact, y = LLM_low, color = "Low Estimate")) + 
+  geom_point(aes(x = exact, y = LLM_high, color = "High Estimate")) +
+  geom_abline(intercept = 0, slope = 1, color = "black", linetype = "dashed") + 
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab('Exact p-value') +
+  ylab('LLM p-value') +
+  ggtitle('Exact vs. LLM Approach') +
+  theme(legend.title=element_blank()) + 
+  xlim(0,1) + 
+  ylim(0,1)
+
+
+@
+
+\begin{figure}[H]
+
+<<fig.dim = c(7,4), echo=F, warning=F, message=F, size ='scriptsize'>>= 
+
+<<p_value_plot>>
+
+@
+
+
+\label{p-value_plot}
+\caption{p-value Comparison}
+
+\end{figure}
+
+\item Rerun the simulations when $n=1000$. Just rerun your code above with
+the sample size changed and report the results here -- no need to copy and
+paste the code again here. Provide the results and comment on how they have
+changed from $n=10$. What did students who used the large language model 
+unwittingly assume, and is it problematic?
+\end{enumerate}
+
+\textcolor{red}{As the sample size increases to $n = 1000$, the two methods are virtually identical in terms of $\alpha$ and Power. Students who used the LLM version of the calculation assumed that the LLM method would be approximately robust even with a low sample size, as the exact version is. This can be problematic as most datasets used in statistics are not as large as $n = 1000$, so the difference in $\alpha$ and power could make a difference in the hypothesis test.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Under the alternative hypothesis, the distribution of the ANOVA $F$ 
+statistic follows a non-central $F$ distribution. An added non-centrality 
+parameter ($\lambda$) shifts the mean of the usual $F$ distribution away 
+from 1 (what we expect under $H_0$). Use this fact to conduct a power analysis 
+for the ANOVA test.
+\begin{enumerate}
+\item Let $N=542$ and $k=5$ based on the MFAP4 example from class. Find the 
+$F$ statistic that starts the rejection region for the usual ANOVA test.\\
+\textbf{Hint:} The degrees of freedom are $df_1=k-1$, $df_2=N-k=k(n-1)$when the sample sizes are the same.
+
+<<warning=F, message=F, size ='scriptsize'>>=
+
+N = 542
+k = 5
+
+(rejection_statistic <- qf(0.95, df1 = k-1, df2 = N-k, lower.tail = T))
+
+@
+\item Convert the effect size of the ANOVA test -- $\omega^2 = 0.23$ for the 
+MFAP4 data -- to Cohen's $f$ using the following formula.
+\[\text{Cohen's}~f = \sqrt{\frac{\omega^2}{1-\omega^2}}\]
+
+<<size ='scriptsize'>>=
+
+omega2 <- 0.23
+
+(cohensf <- sqrt(omega2/(1-omega2)))
+
+@
+\item Let $N=542$ and $k=5$ based on the MFAP4 example from class. Use 
+Cohen's $f$ from the previous part to compute the non-centrality parameter.
+\begin{align*}
+\lambda &=N \times (\textrm{Cohen's}~f)^2 \\
+&=k \times n \times (\textrm{Cohen's}~f)^2 \tag{Equal sample size $n$}
+\end{align*}
+
+<<size ='scriptsize'>>=
+
+(lambda = N * cohensf^2)
+
+@
+\item Let $n=542$ and $k=5$ based on the MFAP4 example from class. What is 
+the probability that we observe the $F$ statistic in (a) under the $F$ 
+distribution with $df_1=k-1$, $df_2=N-k=k(n-1)$ or one that provides more
+support for the alternative when the sample sizes are the same, and 
+non-centrality parameter $\lambda$ from the previous part?
+
+<<size ='scriptsize'>>=
+
+n = 542
+k = 5
+
+pf(q=rejection_statistic, df1 = k-1, df2 = n-k, ncp = lambda, lower.tail = F)
+
+@
+
+\item Write a function that takes $k$, and $\omega^2$ and computes the power:
+\[P\left(F \geq F_{k-1, k(n-1), \lambda=0}|k-1, k(n-1), \lambda=\lambda\right).\]
+\textbf{Hint:} A loop should be helpful here.
+
+<<size ='scriptsize'>>=
+
+power <- function(k, omega2, desired_power){
+  
+  cohensf <- sqrt(omega2/(1-omega2))
+  
+  n = 3
+  
+  repeat{
+    
+    rejection <- rep(NA, 1000)
+    
+    lambda = n * k * cohensf^2
+    
+    rejection_stat = qf(0.95, df1 = k-1, df2 = k*(n-1))
+    
+    p = pf(q = rejection_stat, df1 = k-1, df2 = k*(n-1), ncp = lambda, lower.tail = F)
+    
+    if(p >= desired_power){
+      return(n)
+      break
+    }else{
+      n = n + 1
+    }
+    
+  }
+}
+
+@
+
+\item Use the function in the previous part to find what $n$ has to be to 
+ensure this probability is 80\% when $k=5$ and $\omega^2=0.14$ (a moderate 
+effect)?\\
+\textbf{Hint:} You can check your answer using \texttt{pwr::pwr.anova.test()}.
+
+<<warning=F, message=F, size ='scriptsize'>>=
+
+power(k = 5, omega2 = 0.14, desired_power = 0.8)
+
+pwr::pwr.anova.test(k = 5, power = 0.8, f = sqrt(0.14/(1-0.14)))
+
+@
+
+\textcolor{red}{To ensure 80\% power, you'd need a group size n of at least 16.}
+
+\item For the sample size determined in the previous part, plot the 
+distribution of $F$ under the null and under the alternative specified 
+by $\omega^2=0.14$.
+
+\begin{figure}[H]
+
+<<warning=F, message=F, fig.dim=c(6,3), size ='scriptsize'>>=
+
+library(tidyverse)
+
+n = 16
+
+omega2 = 0.14
+
+cohensf <- sqrt(omega2/(1-omega2))
+
+lambda = n * k * cohensf^2
+
+ggdat <- tibble(x = seq(0, 12, length.out = 10000), 
+                h0 = df(x = x, df1 = k-1, df2 = k*(n-1)), 
+                ha = df(x = x, df1 = k-1, df2 = k*(n-1), ncp = lambda))
+
+ggplot(data = ggdat) + 
+  geom_point(aes(x = x, y = h0, color = "Null")) + 
+  geom_point(aes(x = x, y = ha, color = "Alternative")) + 
+  theme_bw() + 
+  xlab('F') + 
+  ylab('Density') +
+  ggtitle('Null vs. Alternative F Distribution') + 
+  theme(legend.title=element_blank()) + 
+  geom_hline(yintercept = 0)
+
+@
+
+\label{F_distribution_plots}
+\caption{Comparison of F Distributions}
+
+\end{figure}
+
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \cite{Garofalo23} investigated how the immune system communicates with 
+the brain in mice. Specifically, they genetically modified or treated mice to 
+block certain immune cells or signaling pathways.
+\begin{itemize}
+\item The aNK1.1 mice have depleted natural killer (NK) cells, which form an 
+important part of the immune system.
+\item The aVLA4 mice have the function of a protein called VLA-4 blocked, 
+which inhibits the effect of NK cells on the brain.
+\item Rag2$-/-$ mice are genetically modified to lack mature T and B cells, 
+and have NK cells.
+\item Rag2$-/-\gamma$c$-/-$ mice are genetically modified to lack T, B, and 
+NK cells.
+\item IgG2a and IgG2b are control groups.
+\end{itemize}
+In a open-field test, each mouse was placed in an enclosed platform (40 cm 
+$\times$ 40 cm $\times$ 30cm) for 10 minutes. The researchers recorded the 
+distance traveled, the movement duration, and time spent in the center area 
+(20 cm $\times$ 20 cm).
+
+The researchers hypothesized that the mice with inhibited immune system 
+functionality would exhibit increased explorative behavior. This would suggest 
+reduced anxiety-like responses to open spaces. I have provided data about 
+distance traveled in meters, do these data support their hypothesis?\\
+\textbf{Hint 1:} You will have to \texttt{pivot\_longer()} the data I copied 
+from their posted source data.\\
+\textbf{Hint 2:} Their data do not appear to match the data plotted in their
+figure for at least the Rag2$-/-\gamma$c$-/-$ group. I've emailed the author 
+for updated data (holds breath). Continue as if the data are correct.
+\end{enumerate}
+
+\begin{figure}[H]
+
+<<warning=F, message=F, fig.dim=c(10,4), size ='scriptsize'>>=
+
+dat <- read_csv('Garofalo.csv')
+
+dat <- dat |>
+  rename(control_1 = IgG2a, 
+         depleted_nk = aNK1.1, 
+         control_2 = IgG2b, 
+         blocked_vla = `aVLA-4`, 
+         lack_T_B = `Rag2-/-`, 
+         lack_T_B_nk = `Rag2-/-gc-/-`) |>
+  pivot_longer(cols = everything(), values_to = "distance", names_to = "treatment")
+
+norm <- ggplot(data = dat, aes(x = treatment, y = distance)) + 
+  geom_violin(width = 1) + 
+  geom_boxplot(width = 0.25) + 
+  theme_bw() + 
+  geom_hline(yintercept = 0) + 
+  xlab('Treatment Group') + 
+  ylab('Distance Travelled') + 
+  ggtitle('Distance Travelled by Treatment Group')
+
+logged <- ggplot(data = dat, aes(x = treatment, y = log2(distance))) + 
+  geom_violin(width = 1) + 
+  geom_boxplot(width = 0.25) + 
+  theme_bw() + 
+  geom_hline(yintercept = 0) + 
+  xlab('Treatment Group') + 
+  ylab('Distance Travelled (log2)') + 
+  ggtitle('Log2 Transformed')
+
+library(patchwork)
+
+norm + logged
+
+@
+
+
+\label{mouse_summary}
+\caption{Distance Travelled by Mice Across Treatments}
+
+\end{figure}
+
+The data appears to be more normally distributed under a $log_{2}$ transformation, and it helps with outliers in several of the groups. Also, the variances are clearly not similar across groups so we'll be using a Welch's ANOVA, which does not assume equal variances across groups. 
+
+<<message=F, warning=F, size='scriptsize'>>=
+
+library(rstatix)
+(aov.test <- welch_anova_test(data = dat, log2(distance) ~ treatment))
+
+
+@
+
+After performing a Welch's ANOVA on our $log_{2}$ transformed data, we obtain a test statistic $F = 12.7$, $p \textless 0.0001$. Because $p \textless 0.05 = \alpha$, we have indication that the true population means of distance traveled among the treatment groups are not all equal. 
+
+
+<<message=F, warning=F, size='scriptsize'>>= 
+
+dat$log2 <- log2(dat$distance)
+
+(games_howell_test(data = dat, log2 ~ treatment))
+
+@
+
+After performing a Games-Howell pairwise follow-up to Welch's ANOVA, we can see that there are statistically discernible differences of $log_{2}$ transformed means between 5 of the pairwise comparisons:
+
+\begin{enumerate}
+
+\item{Mice with the blocked VLA-4 protein travel greater $log_{2}$ transformed distance than mice that lack T, B, and natural killer cells: 95 $\%$ CI [0.33, 1.37] ($p = 0.001$).}
+
+\item{Mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than control group 1 mice: 95$\%$ CI [-2.74, -0.68] ($p = 0.001$).}
+
+\item{Mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than control group 2 mice: 95$\%$ CI [-2.39, -0.61] ($p = 0.002$).}
+
+\item{Mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than mice that have depleted natural killer cells: 95$\%$ CI [-1.46, -0.43] ($p \textless 0.001$).}
+
+\item{Finally, mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than mice that lack T and B cells: 95$\%$ CI [-1.39, -0.42] ($p \textless 0.001$).}
+
+\end{enumerate}
+
+
+\bibliography{bib}
+\end{document}

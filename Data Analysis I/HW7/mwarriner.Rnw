@@ -1,0 +1,780 @@
+\documentclass{article}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+                      % If you find yourself trying to replicate
+                      % something you found online, ensure you're
+                      % loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+                    % We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\usepackage[skins,breakable]{tcolorbox}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\begin{document}
+\noindent\textbf{Homework 7: Robust Regression}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each 
+question under that question (not altogether at the end). It will be easier for 
+me to give full credit if your answer is commented well, including comments 
+about where you are completing each sub-part of the question. For an example,
+see Homework 1.\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+<<echo=F, warning=F, message=F, results='hide'>>=
+library(tidyverse)
+@
+\begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 1
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Below, I simulate data with heteroskedastic error, noting the variance
+  is a function of the predictor $x$.
+<<size="scriptsize", warning=F, message=F>>=
+set.seed(1933)
+x <- 1:10
+(beta0 <- runif(1, -5, 5))
+(beta1 <- runif(1, -5, 5))
+y <- beta0 + beta1 * x + rnorm(10, mean = 0, sd = x)  # Variance is x^2
+
+dat <- tibble(x = x,
+              y = y)
+@
+When I fit an OLS model, it doesn't ``pick up" the regression equation.
+<<size="scriptsize", warning=F, message=F>>=
+mod.ols <- lm(y~x, data=dat)
+summary(mod.ols)$coefficients
+@  
+In Figure \ref{plotq1}, we see that the increased variance almost creates a 
+quadratic (if we ignore the observation at $x=10$)
+<<eval=F, plotq1, size="scriptsize">>=
+ggplot(data=dat)+
+  geom_point(aes(x=x, y=y))+
+  theme_bw() +
+  geom_abline(aes(intercept=coef(mod.ols)[1],
+                  slope=coef(mod.ols)[2],
+                  color="OLS"))+
+  geom_abline(aes(intercept=beta0,
+                  slope=beta1,
+                  color="Truth"))+
+  labs(color="")
+@
+\begin{figure}[H]
+\centering
+<<echo=F, message=F, warning=F, fig.dim=c(4,2)>>=
+<<plotq1>>
+@
+\caption{Heteroskedastic regression data generated for Question 1.}\label{plotq1}
+\end{figure}
+\begin{enumerate}
+  \item Conduct a residual and influence analysis on the \texttt{mod.ols}.\\
+  \textbf{Note:} The \emph{known} issue may not be obvious.
+  
+  \begin{figure}[H]
+  \centering
+  
+  <<warning=F, message=F, size='scriptsize', fig.dim=c(5,4)>>=
+
+source("plotResiduals.R")
+source("plotInfluence.R")
+
+plotResiduals(mod.ols)
+
+
+
+@
+  
+  \label{residual.mod}
+  \caption{Residual Analysis on \texttt{mod.ols}}
+  \end{figure}
+  
+  \textcolor{red}{If I was analyzing the residuals of this model I would assume there was a non-linear relationship between the predictors and the response variable due to the clear curved pattern in the residuals. The histogram of the residuals looks a little skewed but it's not terrible for 10 observations. The qqplot indicates a potential non-linear relationship with the quadratic looking pattern on the right tail.}
+  
+  \begin{figure}[H]
+  \centering
+  
+  <<warning=F, message=F, size='scriptsize', fig.dim=c(5,4)>>=
+
+plotInfluence(mod.ols)
+
+@
+  
+  \label{influence.mod}
+  \caption{Influence Analysis on \texttt{mod.ols}}
+  \end{figure}
+  
+  \textcolor{red}{Looking at the influence, the thing that stands out is the clear leverage pattern across observation numbers, which would indicate to me that the leverage is dependent on $x$. The studentized residuals show similar problems to the residuals in Figure: \ref{influence.mod}. Additionally, with there only being 10 observations, several of them having large Cook's d and DFFITs is a bit concerning due to the sheer proportion of potentially high influence points making up a large part of the model.}
+  
+  \item Fit a weighted least squares (WLS) regression model.
+  \begin{enumerate}
+    \item Why is $w_i = 1/x_i^2$ a sensible choice for the weights?\\
+    \textbf{Hint:} Why is the RMSE $\approx 1$?
+
+\textcolor{red}{In the setup of the regression equation the variance at each point $x$(1:10) is $x^2$, so weighting each point by $\frac{1}{x^2}$ should make each point have an equal weighted variance of 1.}
+
+    
+    \item Fit the model with these weights, how does the result change?
+    
+      <<warning=F, message=F, size='scriptsize'>>=
+
+weights = 1/x^2
+
+mod_weighted <- lm(y ~ x, data = dat, weights = weights)
+
+(sum <- summary(mod_weighted))
+
+@
+ 
+ \textcolor{red}{Now that we used the weighted model, the coefficent $\beta_1$ associated with $x$ is estimated to be -1.8698 ($p = 0.00868$). This is only a few tenths greater than the true value of $\beta_1 = -2.1169$. The intercept $\beta_0$ is estimated to be -1.7035 while the true $\beta_0$ is 0.0887, indicating that the estimate for the intercept is still quite off. This would probably be better if the data extended more for $x \leq 0$.}
+    
+    \item Add the WLS line to the scatterplot.
+    
+    \begin{figure}[H]
+    \centering
+    
+    <<warning=F, message=F, size='scriptsize', fig.dim=c(7,4)>>=
+
+betas <- sum$coefficients
+beta0_w <- betas[1,1]
+beta1_w <- betas[2,1]
+
+ggplot(data=dat)+
+  geom_point(aes(x=x, y=y))+
+  theme_bw() +
+  geom_abline(aes(intercept=coef(mod.ols)[1],
+                  slope=coef(mod.ols)[2],
+                  color="OLS"))+
+  geom_abline(aes(intercept=beta0,
+                  slope=beta1,
+                  color="Truth"))+
+  geom_abline(aes(intercept = beta0_w, 
+                  slope=beta1_w, 
+                  color="WLS")) + 
+  labs(color="") + 
+  geom_hline(yintercept = 0, linetype="dashed")
+
+
+
+@
+    
+    \label{new.mod}
+    \caption{Scatterplot with Estimated Regression Lines (Updated With Weighted OLS Model)}
+    
+    \end{figure}
+    
+    \textcolor{red}{The weighted model worked as intended here, as clearly the WLS regression line is much closer to the truth than the OLS regression line.}
+    
+  \end{enumerate}
+\end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 2
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Explore fitting a regression model to the data simulated below.
+<<size="scriptsize", warning=F, message=F>>=
+n <- 50
+set.seed(7272)
+x <- sample(x=seq(0,100,0.01), size=n, replace=TRUE)
+e <- rnorm(n=50, mean=0, sd=5)
+y <- 3.5 + 2.1*x + e
+
+first_dat <- tibble(x = x, 
+                    y = y)
+
+# Add a misbehaved point
+x2 <- c(x, 100)
+y2 <- c(y, 25)
+@
+\begin{enumerate}
+	\item Fit an OLS model based on \texttt{x} and \texttt{y}. Check the assumptions of the model and interpret the 
+	coefficients of the model; are they what you would expect?
+	
+	<<warning=F, message=F, size='scriptsize'>>=
+
+first_mod <- lm(y ~ x, data = first_dat)
+
+
+@
+	
+	\begin{figure}[H]
+	\centering
+	
+		<<warning=F, message=F, size='scriptsize', fig.dim=c(5,4)>>=
+
+first_mod <- lm(y ~ x, data = first_dat)
+
+plotResiduals(first_mod)
+
+
+@
+	
+	\label{first.mod.residual}
+	\caption{Residual Analysis on \texttt{x} and \texttt{y} OLS model}
+	\end{figure}
+	
+	\textcolor{red}{The residuals look perfect. They're centered at 0 with good normality. The qqplot is very reasonable. Finally, the residuals are indiscriminantly scattered with constant variance.}
+	
+	\begin{figure}[H]
+	\centering
+	
+		<<warning=F, message=F, size='scriptsize', fig.dim=c(5,4)>>=
+
+plotInfluence(first_mod)
+
+@
+	
+	\label{first.mod.influence}
+	\caption{Influence Analysis on \texttt{x} and \texttt{y} OLS model}
+	\end{figure}
+	
+	\textcolor{red}{The influence analysis on the OLS model looks good as well, with reasonable leverage, DFFITs and Cook's d, with only one point having a potentially unusually high studentized residual (not unusual even for normal, randomized $\epsilon$'s).}
+	
+<<warning=F,message=F, size='scriptsize'>>=
+
+library(xtable)
+library(effectsize)
+
+first_sum <- data.frame(summary(first_mod)$coefficients)
+
+colnames(first_sum) <- c("Estimate", "SE", "t", "p-value")
+rownames(first_sum) <- c("Intercept", "x")
+
+first_sum$`p-value` <- ifelse(first_sum$`p-value` < 0.001, "<0.001", first_sum$`p-value`)
+
+first_sum <- xtable(first_sum,
+                    label = "first.model.sum",
+                    caption = "OLS Model Summary (Without Outlier)",
+                    digits = 3)
+
+@
+
+
+<<results="asis", echo=F>>=
+print(first_sum,
+table.placement = "H", include.rownames=T, size = "normalsize")
+@
+
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(6,4)>>=
+
+ggplot(data = first_dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_abline(aes(intercept = first_sum$Estimate[1], 
+                  slope = first_sum$Estimate[2], 
+                  color = "OLS Estimate")) + 
+  geom_abline(aes(intercept = 3.5, 
+                  slope = 2.1, 
+                  color = "True Line")) + 
+  theme_bw() + 
+  labs(color = "") + 
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  geom_vline(xintercept = 0, linetype = "dashed") + 
+  ggtitle(bquote(
+  "OLS estimate: " ~ 
+    .(round(first_sum$Estimate[1], 3)) + 
+    .(round(first_sum$Estimate[2], 3)) * x
+))
+
+
+@
+	
+	\label{first.mod.plot}
+	\caption{Scatterplot of the Data with the OLS Regression Line}
+	
+	\end{figure}
+	
+	\textcolor{red}{The coefficient for \texttt{x} is very close to the true value. The intercept is reasonably close when looking at the plot. Overall, the two lines are almost visually indistinguishable.}
+	
+	
+	\item Fit an OLS model based on \texttt{x2} and \texttt{y2}. Check the assumptions of the model and interpret the 
+	coefficients of the model; are they what you would expect?
+\end{enumerate}
+
+
+	<<warning=F, message=F, size='scriptsize'>>=
+
+second_dat <- tibble(x = x2, 
+                     y = y2)
+
+second_mod <- lm(y ~ x, data = second_dat)
+
+
+@
+	
+	\begin{figure}[H]
+	\centering
+	
+		<<warning=F, message=F, size='scriptsize', fig.dim=c(5,4)>>=
+
+plotResiduals(second_mod)
+
+
+@
+	
+	\label{second.mod.residual}
+	\caption{Residual Analysis on \texttt{x2} and \texttt{2} OLS model}
+	\end{figure}
+	
+
+\textcolor{red}{The residuals are pretty hard to analyze here. They're centered around 0 with pretty good normality, just with that huge left tail. We can also see in the qqplot that the data fits perfectly except for the most negative quantile. If we don't focus on the huge outlier, I think the residuals look homoskedastic.}
+
+	
+	\begin{figure}[H]
+	\centering
+	
+		<<warning=F, message=F, size='scriptsize', fig.dim=c(5,4)>>=
+
+plotInfluence(second_mod)
+
+@
+	
+	\label{second.mod.influence}
+	\caption{Influence Analysis on \texttt{x2} and \texttt{y2} OLS model}
+	\end{figure}
+	
+	\textcolor{red}{Again, it's quite hard to see everything but besides the huge outlier we don't see any other points on the boundaries of Cook's d, DFFITs, and the studentized residuals. Of course, the $x$ value for our outlier isn't strange so there are no points with concering leverage.}
+
+	
+<<warning=F,message=F, size='scriptsize'>>=
+
+second_sum <- data.frame(summary(second_mod)$coefficients)
+
+colnames(second_sum) <- c("Estimate", "SE", "t", "p-value")
+rownames(second_sum) <- c("Intercept", "x")
+
+second_sum$`p-value` <- ifelse(second_sum$`p-value` < 0.001, "<0.001", round(second_sum$`p-value`,3))
+
+second_sum <- xtable(second_sum,
+                     label = "second.model.sum",
+                     caption = "OLS Model Summary (With Outlier)",
+                     digits = 3)
+
+@
+
+
+<<results="asis", echo=F>>=
+print(second_sum,
+table.placement = "H", include.rownames=T, size = "normalsize")
+@
+
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(6,4)>>=
+
+ggplot(data = second_dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_abline(aes(intercept = second_sum$Estimate[1], 
+                  slope = second_sum$Estimate[2], 
+                  color = "OLS Estimate")) + 
+  geom_abline(aes(intercept = 3.5, 
+                  slope = 2.1, 
+                  color = "True Line")) + 
+  theme_bw() + 
+  labs(color = "") + 
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  geom_vline(xintercept = 0, linetype = "dashed") + 
+  ggtitle(bquote(
+  "OLS estimate: " ~ 
+    .(round(second_sum$Estimate[1], 3)) + 
+    .(round(second_sum$Estimate[2], 3)) * x
+))
+
+
+@
+	
+	\label{second.mod.plot}
+	\caption{Scatterplot of the Data with the OLS Regression Line}
+	
+	\end{figure}
+	
+	\textcolor{red}{Now that the outlier point is included in the model, the $\beta_1$ estimate for $x$ goes from 2.061 to 1.891, pulling it from the true value of 2.1. Also, the $\beta_0$ estimate of the intercept goes from 5.223 to 10.742, more than doubling and sliding further from the true value of 3.5. We can see those difference in the plot, as the OLS estimate has been dragged down by the outlying point and that makes the OLS estimate worse and worse as $x$ increases.}
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 3
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Continue with Question 2.
+\begin{enumerate}
+  \item Fit an IRWLS model based on \texttt{x2} and \texttt{y2} using Huber 
+  weights. Interpret the coefficients of the model; are they what you would expect?
+  
+  
+  	<<warning=F, message=F, size='scriptsize'>>=
+
+
+IWH_mod <- MASS::rlm(y ~ x, data = second_dat, psi = 'psi.huber')
+
+IWH_sum <- data.frame(summary(IWH_mod)$coefficients)
+
+colnames(IWH_sum) <- c("Estimate", "SE", "t")
+rownames(IWH_sum) <- c("Intercept", "x")
+
+IWH_sum <- xtable(IWH_sum,
+                  label = "IWH.model.sum", 
+                  caption = "IRLWS Model Summary (With Outlier and Huber Weights)",
+                  digits = 3)
+
+@
+
+
+<<results="asis", echo=F>>=
+print(IWH_sum,
+table.placement = "H", include.rownames=T, size = "normalsize")
+@
+
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(7,4)>>=
+
+ggplot(data = second_dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_abline(aes(intercept = IWH_sum$Estimate[1], 
+                  slope = IWH_sum$Estimate[2], 
+                  color = "Huber IRWLS Estimate")) + 
+  geom_abline(aes(intercept = 3.5, 
+                  slope = 2.1, 
+                  color = "True Line")) + 
+  theme_bw() + 
+  labs(color = "") + 
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  geom_vline(xintercept = 0, linetype = "dashed") + 
+  ggtitle(bquote(
+  "Huber IRWLS estimate: " ~ 
+    .(round(IWH_sum$Estimate[1], 3)) + 
+    .(round(IWH_sum$Estimate[2], 3)) * x
+))
+
+
+@
+	
+	\label{IWH.mod.plot}
+	\caption{Scatterplot of the Data with the IRWLS Regression Line (Huber Weights)}
+	
+	\end{figure}
+  
+  \textcolor{red}{The IRWLS model with Huber weights $\beta$'s are much closer to the true value than the OLS model. The IRWLS with Huber weights estimate for $\beta_0$ is 6.039 versus the 10.742 of the OLS (true value is 3.5). Also, the $\beta_1$ is 2.042 versus the 1.891 in the OLS model (true value is 2.1). So while the regression is still being pulled down slightly by the outlier, it's noticeable better performing empirically and visually than the standard OLS model.}
+  
+  \item Fit an IRWLS model based on \texttt{x2} and \texttt{y2} using Bisquare 
+  weights. Interpret the coefficients of the model; are they what you would expect?
+  
+    	<<warning=F, message=F, size='scriptsize'>>=
+
+
+IWB_mod <- MASS::rlm(y ~ x, data = second_dat, psi = "psi.bisquare")
+
+IWB_sum <- data.frame(summary(IWB_mod)$coefficients)
+
+colnames(IWB_sum) <- c("Estimate", "SE", "t")
+rownames(IWB_sum) <- c("Intercept", "x")
+
+IWB_sum <- xtable(IWB_sum,
+                  label = "IWB.model.sum",
+                  caption = "IRLWS Model Summary (With Outlier and Bisquare Weights)",
+                  digits = 3)
+
+@
+
+
+<<results="asis", echo=F>>=
+print(IWB_sum,
+table.placement = "H", include.rownames=T, size = "normalsize")
+@
+
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(7,4)>>=
+
+ggplot(data = second_dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_abline(aes(intercept = IWB_sum$Estimate[1], 
+                  slope = IWB_sum$Estimate[2], 
+                  color = "Bisquare IRWLS Estimate")) + 
+  geom_abline(aes(intercept = 3.5, 
+                  slope = 2.1, 
+                  color = "True Line")) + 
+  theme_bw() + 
+  labs(color = "") + 
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  geom_vline(xintercept = 0, linetype = "dashed") + 
+  ggtitle(bquote(
+  "Bisquare IRWLS estimate: " ~ 
+    .(round(IWB_sum$Estimate[1], 3)) + 
+    .(round(IWB_sum$Estimate[2], 3)) * x
+))
+
+
+@
+	
+	\label{IWB.mod.plot}
+	\caption{Scatterplot of the Data with the IRWLS Regression Line (Bisquare Weights)}
+	
+	\end{figure}
+	
+	\textcolor{red}{The IWRLS model with Bisquare $\beta$'s are also very close to the true values and are very close to the Huber weighted IRWLS. The $\beta_0$ estimate is 5.702 compared to the Huber estimate of 6.039 and the true value of 3.5. The $\beta_1$ estimate is 2.050 compared to the Huber estimate of 2.042 and the true value of 2.1. So in this case, the Bisquare estimates are a tiny bit closer than the Huber estimate.}
+  
+  
+  \item Fit an IRWLS model based on \texttt{x2} and \texttt{y2} using \texttt{lmrob()} 
+  from the \texttt{robustbase} package for \texttt{R}. Interpret the coefficients 
+  of the model; are they what you would expect?
+  
+  
+<<warning=F, message=F, size='scriptsize'>>=
+
+
+rob_mod <- robustbase::lmrob(y ~ x, data = second_dat)
+
+rob_sum <- data.frame(summary(rob_mod)$coefficients)
+
+colnames(rob_sum) <- c("Estimate", "SE", "t", "p-value")
+rownames(rob_sum) <- c("Intercept", "x")
+
+rob_sum$`p-value` <- ifelse(rob_sum$`p-value` < 0.001, "<0.001", round(rob_sum$`p-value`,3))
+
+rob_sum <- xtable(rob_sum,
+                  label = "rob.model.sum",
+                  caption = "IRLWS Model Summary (With Outlier and RobustBase Package)",
+                  digits = 3)
+
+@
+
+
+<<results="asis", echo=F>>=
+print(rob_sum,
+table.placement = "H", include.rownames=T, size = "normalsize")
+@
+
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(7,4)>>=
+
+ggplot(data = second_dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_abline(aes(intercept = rob_sum$Estimate[1], 
+                  slope = rob_sum$Estimate[2], 
+                  color = "RobustBase IRWLS Estimate")) + 
+  geom_abline(aes(intercept = 3.5, 
+                  slope = 2.1, 
+                  color = "True Line")) + 
+  theme_bw() + 
+  labs(color = "") + 
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  geom_vline(xintercept = 0, linetype = "dashed") + 
+  ggtitle(bquote(
+  "RobustBase IRWLS estimate: " ~ 
+    .(round(rob_sum$Estimate[1], 3)) + 
+    .(round(rob_sum$Estimate[2], 3)) * x
+))
+
+
+@
+	
+	\label{rob.mod.plot}
+	\caption{Scatterplot of the Data with the IRWLS Regression Line (\texttt{robustbase} package)}
+	
+	\end{figure}
+  
+  \textcolor{red}{The $\beta$ estimates are very close to the other weighted methods and fairly close to the true values, with the $\beta_0$ estimate of 5.633 (true value is 3.5) and $\beta_1$ estimate of 2.052 (true value is 2.1).}
+  
+  
+  \item Fit a Quantile regression model based on \texttt{x2} and \texttt{y2}.
+  Interpret the coefficients of the model; are they what you would expect?
+  
+  <<warning=F, message=F, size='scriptsize'>>=
+
+
+quant_mod <- quantreg::rq(y ~ x, data = second_dat, tau = 0.5)
+
+quant_sum <- data.frame(summary(quant_mod, se = "boot")$coefficients)
+
+colnames(quant_sum) <- c("Estimate", "SE", "t", "p-value")
+rownames(quant_sum) <- c("Intercept", "x")
+
+quant_sum$`p-value` <- ifelse(quant_sum$`p-value` < 0.001, "<0.001", round(quant_sum$`p-value`,3))
+
+quant_sum <- xtable(quant_sum,
+                    label = "quant.model.sum"
+                    , caption = "Quantile Model Summary (With Outlier)"
+                    , digits = 3)
+
+@
+
+
+<<results="asis", echo=F>>=
+print(quant_sum,
+table.placement = "H", include.rownames=T, size = "normalsize")
+@
+
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(7,4)>>=
+
+ggplot(data = second_dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_abline(aes(intercept = quant_sum$Estimate[1], 
+                  slope = quant_sum$Estimate[2], 
+                  color = "Quantile Estimate")) + 
+  geom_abline(aes(intercept = 3.5, 
+                  slope = 2.1, 
+                  color = "True Line")) + 
+  theme_bw() + 
+  labs(color = "") + 
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  geom_vline(xintercept = 0, linetype = "dashed") + 
+  ggtitle(bquote(
+  "Quantile estimate: " ~ 
+    .(round(quant_sum$Estimate[1], 3)) + 
+    .(round(quant_sum$Estimate[2], 3)) * x
+))
+
+
+@
+	
+	\label{quant.mod.plot}
+	\caption{Scatterplot of the Data with the Quantile Regression Line}
+	
+	\end{figure}
+	
+	\textcolor{red}{The estimates of the $\beta$'s for the quantile regression are very close to the true values: $\beta_0$ = 5.529 (true value is 3.5), $\beta_1$ = 2.053 (true value is 2.1). Visually, the regression lines are very similar as well.}
+  
+\end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 4
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textbf{Optional, but recommended} Plot the results! Create a scatterplot
+of \texttt{x2} and \texttt{y2}. Superimpose the true regression line, the OLS
+estimate, the IRWLS estimates, and the quantile regression estimate. Interpret
+the results.
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(7,4)>>=
+
+ggplot(data = second_dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  geom_abline(aes(intercept = second_sum$Estimate[1], 
+                  slope = second_sum$Estimate[2], 
+                  color = "OLS")) + 
+  geom_abline(aes(intercept = IWH_sum$Estimate[1], 
+                  slope = IWH_sum$Estimate[2], 
+                  color = "Huber IRWLS")) + 
+  geom_abline(aes(intercept = IWB_sum$Estimate[1], 
+                  slope = IWB_sum$Estimate[2], 
+                  color = "Bisquare IRWLS")) + 
+  geom_abline(aes(intercept = rob_sum$Estimate[1], 
+                  slope = rob_sum$Estimate[2], 
+                  color = "RobustBase IRWLS")) +
+  geom_abline(aes(intercept = quant_sum$Estimate[1], 
+                  slope = quant_sum$Estimate[2], 
+                  color = "Quantile")) + 
+  geom_abline(aes(intercept = 3.5, 
+                  slope = 2.1, 
+                  color = "True Line")) + 
+  theme_bw() + 
+  labs(color = "") + 
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  ggtitle('Comparison of Model Regression Equations') + 
+  scale_color_manual(values = c("OLS" = "red",
+                                "Huber IRWLS" = "orange",
+                                "Bisquare IRWLS" = "yellow2", 
+                                "RobustBase IRWLS" = "green3", 
+                                "Quantile" = "blue", 
+                                "True Line" = "purple3"),
+                     breaks = c("OLS",
+                                "Huber IRWLS",
+                                "Bisquare IRWLS", 
+                                "RobustBase IRWLS", 
+                                "Quantile", 
+                                "True Line"))
+
+
+@
+
+
+\label{all.models.plot}
+\caption{Scatterplot of the Data and Each Model}
+
+\end{figure}
+
+\textcolor{red}{When comparing all of the models visually, the only one that stands out is the standard OLS model, with very little variation amongst the true line and the robust methods.}
+
+<<warning=F, message=F, size='scriptsize'>>=
+
+
+total_sum <- tibble(Method = c("OLS", 
+                               "Huber IRWLS", 
+                               "Bisquare IRWLS", 
+                               "RobustBase IRWLS",
+                               "Quantile", 
+                               "True Values"), 
+                    Intercept = c(second_sum$Estimate[1],
+                                  IWH_sum$Estimate[1], 
+                                  IWB_sum$Estimate[1], 
+                                  rob_sum$Estimate[1], 
+                                  quant_sum$Estimate[1], 
+                                  3.5), 
+                    Slope = c(second_sum$Estimate[2],
+                                  IWH_sum$Estimate[2], 
+                                  IWB_sum$Estimate[2], 
+                                  rob_sum$Estimate[2], 
+                                  quant_sum$Estimate[2], 
+                                  2.1))
+
+total_sum <- total_sum |>
+  mutate("Intercept Error" = Intercept - total_sum$Intercept[6], 
+         "Slope Error" = Slope - total_sum$Slope[6])
+
+total_sum <- total_sum[,c(1,2,4,3,5)]
+
+total_sum <- xtable(total_sum,
+                    label = "total.model.sum", 
+                    caption = "Comparison of Each Model",
+                    digits = 3)
+
+
+@
+
+
+<<results="asis", echo=F>>=
+print(total_sum,
+table.placement = "H", include.rownames=F, size = "normalsize")
+@
+
+\textcolor{red}{Likely coincidentally, each successive model we tested is closer to the true value than the last, with the biggest difference being after we moved from OLS to the robust methods.}
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 5
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textbf{Optional, but recommended} Complete Questions 3-4, but use $n=1000$.
+What changes? Why do you think that is?
+
+\end{enumerate}
+\bibliography{bib}
+\end{document}
+

@@ -1,0 +1,629 @@
+\documentclass{article}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+                      % If you find yourself trying to replicate
+                      % something you found online, ensure you're
+                      % loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+                    % We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\usepackage[skins,breakable]{tcolorbox}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\begin{document}
+\noindent\textbf{Homework 6: Regression}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each 
+question under that question (not altogether at the end). It will be easier for 
+me to give full credit if your answer is commented well, including comments 
+about where you are completing each sub-part of the question. For an example,
+see Homework 1.\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+<<echo=F, warning=F, message=F, results='hide'>>=
+library(tidyverse)
+@
+\begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 1
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item In Lecture 13, we discussed the linear algebra formulation of linear regression.
+  For example, we can set up perfectly simulated regression data as follows:
+<<size="scriptsize">>=
+simulate.reg <- function(n=100,
+                         betas=c(4.35, 1.73, 0.02, 2.78),
+                         sigma=4.16, 
+                         set.seed=F){
+  # Specify Coefficients
+  beta <- matrix(data = betas, nrow=4)
+  # Specify Error Distribution
+  mu.epsilon <- 0
+  sigma.epsilon<-sqrt(sigma)
+  # Simulate Regression Data
+  if(set.seed){set.seed(7272)}
+  x1 <- runif(n=n, min=-5, max=5)
+  x2 <- runif(n=n, min=-5, max=5)
+  x <- cbind(1, x1, x2, x1*x2)
+  epsilon <- rnorm(n=n, mean=0, sd=sigma.epsilon)
+  y <- x %*% beta + epsilon
+  # Return simulated data
+  dat <- tibble(y=y, x1=x1, x2=x2)
+  return(dat)
+}
+@
+  In Lecture 15, we discussed regression-based inference. During office hours, 
+  I had some discussions about the mathematical statistics behind these results. 
+  Although we don't do the real-analysis style derivations in this course that 
+  we might in Mathematical Statistics, we have plenty of tools to investigate 
+  these ideas numerically. Complete the parts below to conduct this exploration.
+  \begin{enumerate}
+    \item Use the \texttt{simulate.reg()} function to simulate regression data 
+    using the default set of coefficients over a grid of $\sigma_\epsilon$ 
+    values from $\sigma_\epsilon=0$ to $\sigma_\epsilon=5$. Compute the
+    $SS_{res}$ and $SS_{reg}$ from the resulting regression model, and plot
+    the points using color to denote the $\sigma_\epsilon$ value. Make sure you
+    set \texttt{set.seed} to \texttt{T} so you can compare the output at
+    fixed $\mathbf{x}$ and $\mathbf{Y}$. \textbf{Why do you see the pattern
+    that emerges?}\\
+    \textbf{Hint:} I found it was easier to manually compute $SS_{res}$ and
+    $SS_{reg}$ than it was to extract them from the result of an \texttt{aov}
+    call.
+    
+    \begin{figure}[H]
+    \centering
+    
+    <<warning=F, message=F, size='scriptsize', fig.dim = c(6,4)>>=
+asim <- tibble(sigma = rep(NA, 1000), 
+               SSres = rep(NA, 1000), 
+               SSreg = rep(NA, 1000))
+
+sigmas <- seq(from = 0, to = 5, length.out = 1000)
+
+for(i in 1:1000){
+  
+  dat <- simulate.reg(sigma = sigmas[i], set.seed=T)
+  
+  asim$sigma[i] <- sigmas[i]
+  
+  anova <- aov(y ~ x1 + x2 + x1*x2, data = dat)
+  
+  asim$SSres[i] <- sum((anova$residuals)^2)
+  
+  asim$SSreg[i] <- sum((predict(anova) - mean(dat$y))^2)
+  
+}
+
+ggplot(data = asim, aes(x = SSres, y = SSreg, color = sigma)) + 
+  geom_point() + 
+  xlab(bquote(SS[res])) + 
+  ylab(bquote(SS[reg])) +
+  labs(color = bquote(sigma[epsilon])) + 
+  theme_bw()
+
+
+@
+    
+    
+    \label{sigma.fig}
+    \caption{$\sigma$ across levels of $SS_{res}$ and $SS_{reg}$ (fixed $\mathbf{x}$ and $\mathbf{Y}$)}
+    \end{figure}
+    
+    \textcolor{red}{We see that higher values of $SS_{res}$ and $SS_{reg}$ are associated with higher values of $\sigma_{\epsilon}$. This makes sense as $\sigma_{\epsilon}$ affects the variation around how the data fits the model, and higher variation in $\sigma_{\epsilon}$ will result in higher levels of variation in the regression residuals and against $\bar{Y}$.}
+    
+    \item Use the \texttt{simulate.reg()} function to simulate regression data 
+    using the default set of coefficients. Create a plot that shows the 
+    distribution of the $\beta$s. Make sure you set \texttt{set.seed} to 
+    \texttt{F} so you can compare the output for differing samples of
+    $\mathbf{x}$ and $\mathbf{Y}$. \textbf{What do you notice about their 
+    distributions?}
+    
+    \begin{figure}[H]
+    \centering
+    
+    <<warning=F, message=F, size='scriptsize', fig.dim = c(7,3)>>=
+
+bsim <- tibble(Beta0 = rep(NA, 1000),
+               Beta1 = rep(NA, 1000), 
+               Beta2 = rep(NA, 1000), 
+               Beta3 = rep(NA, 1000))
+
+for (i in 1:1000){
+  
+  dat <- simulate.reg(set.seed=F)
+  
+  mod <- data.frame(summary(lm(y ~ x1 + x2 + x1*x2, data = dat))$coefficients)
+  
+  bsim$Beta0[i] <- mod$Estimate[1]
+  bsim$Beta1[i] <- mod$Estimate[2]
+  bsim$Beta2[i] <- mod$Estimate[3]
+  bsim$Beta3[i] <- mod$Estimate[4]
+  
+  
+}
+
+bsim <- bsim |>
+  pivot_longer(cols = colnames(bsim), 
+               names_to = "Beta", 
+               values_to = "Value")
+
+
+library(ggridges)
+ggplot(data = bsim, aes(x = Value, y = fct_rev(as.factor(Beta)))) +
+  geom_density_ridges(alpha = 0.5) +
+  theme_bw() + 
+  xlab("Estimate") + 
+  geom_hline(yintercept = 0) + 
+  ylab('') +
+  scale_y_discrete(
+    labels = c(
+      "Beta0" = bquote(beta[0]),
+      "Beta1" = bquote(beta[1]),
+      "Beta2" = bquote(beta[2]),
+      "Beta3" = bquote(beta[3])
+    )
+  )
+
+
+@
+    
+    \label{beta.dist}
+    \caption{Distribution of the $\beta$ coefficients}
+    
+    \end{figure}
+    
+    \textcolor{red}{The spread of their distributions is very different. $\beta_{0}$ has the widest spread, followed by non-interaction terms $\beta_{1}$ and $\beta_{2}$. Then, the coefficient with the least spread is clearly the interaction term $\beta_{3}$}
+    
+    \item Use the \texttt{simulate.reg()} function to simulate regression data 
+    using the default set of coefficients. Create a plot that shows the 
+    distribution of the $\hat{y}$s at $x_1=3.6$ and $x_2=-1.9$. Make sure you 
+    set \texttt{set.seed} to \texttt{F} so you can compare the output for 
+    differing samples of $\mathbf{x}$ and $\mathbf{Y}$. \textbf{What do you 
+    notice about the distribution?}
+    
+    \begin{figure}[H]
+    \centering
+    
+    <<warning=F, message=F, size='scriptsize', fig.dim = c(6,4)>>=
+
+csim <- tibble(yhat = rep(NA, 1000))
+
+for (i in 1:1000){
+  
+  
+  dat <- simulate.reg(set.seed=F)
+  
+  mod <- data.frame(summary(lm(y ~ x1 + x2 + x1*x2, data = dat))$coefficients)
+  
+  betas <- mod$Estimate
+  
+  csim$yhat[i] <- betas[1] + 3.6*betas[2] - 1.9*betas[3] - 3.6*1.9*betas[4]
+  
+}
+
+hist <- ggplot(data = csim, aes(x = yhat, y = after_stat(density))) + 
+  geom_histogram(bins = 15, color = "black", fill = "lightgrey") + 
+  theme_bw() + 
+  geom_hline(yintercept = 0) +
+  xlab(bquote(hat(y))) + 
+  ylab('Density')
+  scale_x_continuous(breaks = c(-10, -9, round(median(csim$yhat),2), -8, -7), limits = c(-10,-7))
+  
+boxplot <- ggplot(data = csim, aes(x = "", y = yhat)) + 
+  geom_boxplot() + 
+  coord_flip() + 
+  xlab('') + 
+  ylab(bquote(hat(y))) + 
+  theme_bw() + 
+  scale_y_continuous(breaks = c(-10, -9, round(median(csim$yhat), 2), -8, -7), limits = c(-10,-7))
+
+library(patchwork)
+hist + boxplot + 
+  plot_layout(nrow = 2, heights = c(3, 1))
+
+
+
+@
+    
+    \label{predict.dist}
+    \caption{Distribution of $\hat{y}$'s at $x_{1} = 3.6$ and $x_{2} = -1.9$}
+    
+    \end{figure}
+    
+    \textcolor{red}{The distribution of the $\hat{y}$ is Gaussian and centered at -8.5. The IQR is 0.53 [-8.74, -8.21] which is similar to the initial parameter $\sigma$.}
+    
+    \item Describe why using $t$-based inference makes sense when conducting 
+    hypothesis tests or computing confidence intervals for a coefficient $\beta_j$, 
+    and the conditional expectation or prediction of $Y$?
+    
+    \textcolor{red}{Based on the condition of linear regression that the residual $\epsilon$'s are normally distributed, the $\beta$'s are calculated off of fixed data and random gaussian $\epsilon$'s, so their distribution should be normal and therefore appropriate to $t$-test. Also based off of Figure: \ref{beta.dist}, we can see that each of the $\beta$'s are normally distributed in a simulated context. The same is true for for $\hat{y}$ in the way it's based off of fixed data and a normally distributed $\epsilon$, and is clearly normally distributed in Figure: \ref{predict.dist}.}
+    
+  \end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 2
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \cite{Su25} investigate how well-being of preschool teachers influences 
+  the effort they put into managing their emotions at work (emotional labor).
+  They found that how committed a teacher is to their career (career commitment)
+  plays a key role in linking well-being to emotional labor, and this connection 
+  gets stronger when they have more social support from colleagues or the community.\\
+
+  As part of this work, they aimed to replicate findings that the level of social support moderates the impact of 
+  preschool teachers' career commitment on emotional labor. Below, we will assess this piece to the puzzle.\\
+
+  Fit a regression model predicting \texttt{Emotional Labor} using 
+  \texttt{career commitment}, \texttt{social support}, and their interaction.
+  Also include Gender, Age, and teaching experience.
+  
+  <<warning=F, message=F, size='scriptsize'>>=
+
+dat <- read_csv('sudata-cleaned.csv')
+
+mod <- lm(EmotionalLabor ~ CareerCommitment*SocialSupport + Gender + Age + TeachingExp, data = dat)
+
+@
+  
+  \begin{enumerate}
+    \item Perform a residual analysis. Do you have any concerns about the model
+    fit?
+    
+    \begin{figure}[H]
+    \centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(6,5)>>=
+
+source('plotResiduals.R')
+source('plotInfluence.R')
+
+plotResiduals(mod)
+
+
+@
+    
+    \label{residual.plot}
+    \caption{Residual Analysis of the Model}
+    
+    \end{figure}
+    
+    \textcolor{red}{The residuals fit a normal distribution well as indicated by the histogram and the qqplot. There are 3 residuals that are potentially unusually low, but otherwise the residuals are scattered irregularly as we'd hope. I'd say this is very typical for a regression model of this size.}
+    
+    \item Perform an analysis of leverage/influence. Do you have any concerns 
+    about the model fit?
+    
+    \begin{figure}[H]
+    \centering
+    
+    <<warning=F, message=F, size='scriptsize', fig.dim=c(6,4)>>=
+
+plotInfluence(mod)
+
+@
+    
+    \label{influence.plot}
+    \caption{Leverage/Influence analysis of the model}
+    
+    \end{figure}
+    
+    \textcolor{red}{There are several things to potentially be wary of here. There are 6-7 points with potentially high leverage, 4 points with large positive/negative DFFITs, and 3 points with large negative studentized residuals. For a positive, there are no points with large Cook's D. I'd maybe suggest testing a robust model to make sure these points don't heavily influence the model, but these results aren't super unusual for a model of this size.}
+    
+    \item Provide the results of the overall $F$ test. What does this tell you
+    about the model you fit?
+    
+    <<warning=F, message=F, size='scriptsize'>>=
+library(xtable)
+library(effectsize)
+
+ftest <- summary(aov(mod))[[1]][-7,] |>
+  mutate(significance = case_when(`Pr(>F)` < 0.001 ~ "***", 
+                                  `Pr(>F)` >= 0.001 & `Pr(>F)` < 0.01 ~ "**", 
+                                  `Pr(>F)` >= 0.01 & `Pr(>F)` < 0.05 ~ "*", 
+                                  `Pr(>F)` >= 0.05 ~ ""),
+    omega2 = omega_squared(mod)$Omega2_partial, 
+    interpretation = interpret_omega_squared(omega2, rules = "cohen1992"))
+
+colnames(ftest) <- c("df", "Sum Sq", "Mean Sq", "F", "p-value",
+                     "Significance", "Effect Size", "Interpretation")
+rownames(ftest) <- c("Career Commitment", "Social Support", "Gender", "Age", "Teaching Experience",
+                     "Career Commitment : Social Support")
+
+ftest$`p-value` <- ifelse(ftest$`p-value` < 0.001, '<0.001', round(ftest$`p-value`, 3))
+
+ftest$`Effect Size` <- ifelse(ftest$`Effect Size` == 0, '<0.001', round(ftest$`Effect Size`, 3))
+
+ftest <- xtable(ftest,label = "model.f.tab", caption = "Model F-Test", digits = 3)
+
+
+@
+
+<<results="asis", echo=F>>=
+print(ftest,
+table.placement = "H", include.rownames=T, size = "scriptsize")
+@
+
+\textcolor{red}{From the model fit, we see two terms that have a statistically discernible effect on Emotional Labor: Career Commitment ($F = 110.811$, $p < 0.001$, $\omega^2 = 0.235$) and the interaction between Career Commitment \& Social Support ($F = 7.789$, $p = 0.006$, $\omega^2 = 0.019$). We can clearly see that Career Commitment has a direct effect on Emotional Labor, but we'll need further probing to investigate what's going on with the interaction term.}
+
+    
+    \item Based on the model fit, does the amount of social support impact the 
+    effect of career commitment on emotional labor?
+    
+    <<warning=F, message=F, size='scriptsize'>>=
+
+
+#Low Social Support
+coef.low <- data.frame(t(coef(mod))) |>   # A data frame of coefficients
+    mutate(X.Intercept. = X.Intercept. + 
+             (mean(dat$SocialSupport)-sd(dat$SocialSupport)) * SocialSupport, # Adjust intercept and slope
+           CareerCommitment = CareerCommitment + 
+             (mean(dat$SocialSupport)-sd(dat$SocialSupport)) * CareerCommitment.SocialSupport) |>
+    dplyr::select(-c(SocialSupport,CareerCommitment.SocialSupport))
+
+# When Social Support is average
+coef.avg <- data.frame(t(coef(mod))) |>  # A data frame of coefficients
+    mutate(X.Intercept. = X.Intercept. + 
+             (mean(dat$SocialSupport)) * SocialSupport, # Adjust intercept and slope
+           CareerCommitment = CareerCommitment  + 
+             (mean(dat$SocialSupport)) * CareerCommitment.SocialSupport)|>
+  dplyr::select(-c(SocialSupport,CareerCommitment.SocialSupport))
+
+# High Social Support
+coef.high <- data.frame(t(coef(mod))) |> # A data frame of coefficients
+    mutate(X.Intercept. = X.Intercept. + 
+             (mean(dat$SocialSupport)+sd(dat$SocialSupport)) * SocialSupport, # Adjust intercept and slope 
+           CareerCommitment = CareerCommitment + 
+             (mean(dat$SocialSupport)+sd(dat$SocialSupport)) * CareerCommitment.SocialSupport)|>
+  dplyr::select(-c(SocialSupport,CareerCommitment.SocialSupport))
+
+
+interaction_tab <- tibble(`Social Support Level` = c("low (-1 SD)", "average (mean)", "high (+1 SD)"), 
+                          `Career Commitment Slope  Estimate` = c(coef.low$CareerCommitment, 
+                                                           coef.avg$CareerCommitment, 
+                                                           coef.high$CareerCommitment))
+
+
+interaction_tab <- xtable(interaction_tab,label = "interaction.tab", caption = "Career Commitment and Social Support Interaction Summary (Averaged Across Gender)", digits = 3)
+
+
+@
+    
+    
+    <<results="asis", echo=F>>=
+print(interaction_tab,
+table.placement = "H", include.rownames=F, size = "normalsize")
+@
+    
+    
+    \textcolor{red}{We can see that the slope estimate of career commitment on emotional labor increases substantially as social support level increases.}
+    
+  \end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 3
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Continue with the regression from Question 2.
+  \begin{enumerate}
+    \item Use \texttt{emmeans()} from the \texttt{emmeans} package
+    for \texttt{R} \citep{emmeans} to compute the estimated marginal means of
+    \texttt{Emotional Labor} for low, average and high \texttt{career commitment}
+    and \texttt{social support}. Report the results in a table and a figure.
+    
+    
+    <<warning=F, message=F, size='scriptsize'>>=
+
+library(emmeans)
+
+emm <- data.frame(summary(emmeans(mod, ~ CareerCommitment*SocialSupport,
+               at = list(
+                 CareerCommitment = c(mean(dat$CareerCommitment) - sd(dat$CareerCommitment),
+                                      mean(dat$CareerCommitment), 
+                                      mean(dat$CareerCommitment) + sd(dat$CareerCommitment)),
+                 SocialSupport = c(mean(dat$SocialSupport) - sd(dat$SocialSupport), 
+                                   mean(dat$SocialSupport),
+                                   mean(dat$SocialSupport) + sd(dat$SocialSupport))
+               ))))
+
+
+emm_dat <- tibble(Career_Commitment = rep(c("Low", "Average", "High"), times = 3), 
+                  Social_Support = rep(c("Low", "Average", "High"), each = 3), 
+                  emmean = emm$emmean, 
+                  CI_low = emm$lower.CL, 
+                  CI_high = emm$upper.CL) |>
+  mutate(Career_Commitment = factor(Career_Commitment, levels = c("Low", "Average", "High")), 
+         Social_Support = factor(Social_Support, levels = c("Low", "Average", "High")))
+
+
+colnames(emm) <- c("Career Commitment", "Social Support", 
+                   "EMM of Emotional Labor", "SE", 
+                   "df", "Lower CL", "Upper CL")
+
+
+emm <- xtable(emm,label = "emm.tab", caption = "Estimated Marginal Means (Averaged Across Gender)", digits = 3)
+
+
+@
+    
+    
+        <<results="asis", echo=F>>=
+print(emm,
+table.placement = "H", include.rownames=F, size = "normalsize")
+@
+ 
+ 
+ \begin{figure}[H]
+ 
+ \centering
+ 
+<<warning=F, message=F, size='scriptsize', fig.dim=c(8,5)>>=
+
+
+ggplot(data = emm_dat) + 
+  geom_point(aes(x = Social_Support, 
+                 y = emmean, 
+                 color = Career_Commitment), 
+             position = position_dodge(width = 0.5)) + 
+  geom_errorbar(aes(x = Social_Support, 
+                    ymin=CI_low, 
+                    ymax = CI_high, 
+                    color = Career_Commitment), 
+                position = position_dodge(width = 0.5),
+                width = 0.1) + 
+  theme_bw() + 
+  labs(x = "Social Support", 
+       y = "Estimated Marginal Mean of Emotional Labor", 
+       color = "Career Commitment")
+
+
+@
+ 
+    \label{emm.plot}
+    \caption{Estimated Marginal Means of Emotional Labor Across Low (Mean-SD), Average (Mean), and High (Mean+SD) Levels of Career Commitment and Social Support (Averaged Across Gender)}
+    
+    \end{figure}
+    
+    
+    \item Use \texttt{emtrends()} from the \texttt{emmeans} package
+    for \texttt{R} \citep{emmeans} to compute the slope for \texttt{career commitment}
+    at low, average, and high \texttt{social support}. Report the results in a 
+    table and use \texttt{ggeffect()} from the \texttt{ggeffects} package for
+    \texttt{R} \citep{ggeffects} to create a plot. 
+    
+    <<warning=F, message=F, size='scriptsize'>>=
+
+
+emt <- data.frame(test(emtrends(mod, ~ CareerCommitment*SocialSupport, var="CareerCommitment",
+         at = list(SocialSupport = c(mean(dat$SocialSupport) - sd(dat$SocialSupport), 
+                                     mean(dat$SocialSupport), 
+                                     mean(dat$SocialSupport) + sd(dat$SocialSupport))))))
+
+
+colnames(emt) <- c("Career Commitment", "Social Support", 
+                   "Career Commitment Slope", "SE", 
+                   "df", "t", "p-value")
+
+emt$`p-value` <- ifelse(emt$`p-value` < 0.001, "< 0.001", emt$`p-value`)
+
+emt <- xtable(emt,label = "emt.tab", caption = "Estimated Marginal Slope of Career Commitment 
+Across Low (Mean-SD), Average (Mean), and High (Mean+SD)
+              Levels of Social Support (Averaged
+              Across Gender)", digits = 3)
+
+
+@
+    
+    
+        <<results="asis", echo=F>>=
+print(emt,
+table.placement = "H", include.rownames=F, size = "normalsize")
+@
+
+\begin{figure}[H]
+\centering
+
+<<warning=F, message=F, size='scriptsize', fig.dim=c(8,5)>>=
+
+library(ggeffects)
+
+ggeff <- ggeffect(mod, ~ CareerCommitment*SocialSupport,
+                        at = list(SocialSupport = c(mean(dat$SocialSupport) - sd(dat$SocialSupport), 
+                                     mean(dat$SocialSupport), 
+                                     mean(dat$SocialSupport) + sd(dat$SocialSupport)))) |>
+  tibble()
+
+ggplot(data=ggeff)+
+  geom_line(aes(x=x, y=predicted, color=group))+
+  geom_ribbon(aes(x=x, ymin=conf.low, ymax=conf.high, fill=group),
+              alpha=0.1)+
+  theme_bw()+
+  ylab("Predicted Emotional Labor") + 
+  xlab("Career Commitment") + 
+  scale_color_discrete("Social Support", labels = c("Low", "Average", "High")) + 
+  guides(fill = "none") + 
+  labs(color = "Social Support")
+
+
+
+
+
+@
+
+\label{emt.plot}
+\caption{Marginal Trend of Career Commitment across Low(Mean-SD), Average(Mean), and High(Mean+SD) Levels of Social Support (Averaged Across Gender)}
+
+\end{figure}
+    
+    
+    \item Use \texttt{pairs()} to compare the slopes for \texttt{career commitment}
+    at low, average, and high \texttt{social support}. What does this tell us?
+    
+    
+    <<warning=F, message=F, size='scriptsize'>>=
+
+
+pairs <- data.frame(summary(pairs(emtrends(mod, ~ CareerCommitment*SocialSupport, var="CareerCommitment",
+               at = list(SocialSupport = c(mean(dat$SocialSupport)-sd(dat$SocialSupport),
+                                           mean(dat$SocialSupport),
+                                           mean(dat$SocialSupport) + sd(dat$SocialSupport)))))))
+
+pairs$contrast <- c("Low - Average", "Low - High", "Average - High")
+
+colnames(pairs) <- c("Contrast (Social Support)", "Slope Difference",
+                     "SE", "df", 
+                     "t", "p-value")
+
+
+pairs <- xtable(pairs,label = "pairs.tab", caption = "Contrasts of Career Commitment Slopes at 
+                Low(Mean-SD), Average(Mean), 
+                and High(Mean+SD) Levels of Social Support (Averaged Across Gender)", digits = 3)
+
+
+@
+
+
+        <<results="asis", echo=F>>=
+print(pairs,
+table.placement = "H", include.rownames=F, size = "normalsize")
+@
+    
+    
+    \textcolor{red}{Each of the pairwise comparisons of Career Commitment slopes is discernibly different, indicating that the effect of Social Support on Career Commitment generally extends far across every of Social Support. There isn't, for example, a point where the effect of Social Support on Career Commitment doesn't seem to make much of a difference anymore, the effect is pretty linear across the whole model.}
+    
+    \item Use \texttt{johnson\_neyman()} from the \texttt{interactions} package
+    for \texttt{R} \citep{interactions} to evaluate which values of 
+    \text{social suppport} yield slopes for  \texttt{career commitment} that
+    are statistically discernible from zero. What does this tell us?
+    
+    \begin{figure}[H]
+    \centering
+    
+    <<warning=F, message=F, size='scriptsize', fig.dim=c(8,5)>>=
+
+library(interactions)
+johnson_neyman(mod,
+                             pred="CareerCommitment", modx="SocialSupport",
+                             control.fdr = T,
+       modx.label = "Social Support", 
+       y.label = "Slope of Career Commitment")
+
+
+
+
+
+@
+    
+    \label{jn.plot}
+    \caption{Johnson-Neyman Plot of Statistical Discernibility of the Slope of Career Commitment Across Values of Social Support (Averaged Across Gender)}
+    
+    \end{figure}
+    
+    \textcolor{red}{From the Johnson-Neyman plot, we can see that in the range of our observed data, the effect of Career Commitment on Emotional Labor is significant for levels of Social Support $> 24.86$. The slope of Career Commitment is linearly monotone increasing as well, which suggests that the effect of Career Commitment on Emotional Labor is heavily impacted by having a high level of Social Support and for people in the sample with low levels of Social Support, their Career Commitment doesn't discernibly affect their Emotional Labor.}
+    
+  \end{enumerate}
+\end{enumerate}
+\bibliography{bib}
+\end{document}

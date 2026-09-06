@@ -1,0 +1,668 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+% If you find yourself trying to replicate
+% something you found online, ensure you're
+% loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+% We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\noindent\textbf{Homework 3: One-Sample Tests and ANOVA}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each 
+question under that question (not altogether at the end). It will be easier for 
+me to give full credit if your answer is commented well, including comments 
+about where you are completing each sub-part of the question. For an example,
+see Homework 1.\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+\begin{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item On Homework 2, you developed an exact test for $E(X)=\mu_X=\lambda$
+for data drawn from an exponential distribution with mean $\lambda$.
+
+For context, we did this because the Central Limit Theorem,
+\[T = \frac{\bar{X}-\lambda}{s/\sqrt{n}} \sim \mathcal{AT}(v=n-1),\]
+can only be used when $n$ is large. That is, this approximation is 
+``good" when $n$ is large. However, the \emph{exact} sampling distribution 
+of $\bar{X}$,
+\[\bar{X} \sim \textrm{Gamma}\left(\alpha=n, \beta=\frac{n}{\lambda}\right),\]
+works regardless of $n$.
+
+When asked to compute a $p$-value, many of you used the information you found
+using a large language model. Namely, you used the suggested $p$-value 
+calculation
+\[p\textrm{-value} = 2 \times \min\left(F_{\bar{X}}(\bar{x}),1-F_{\bar{X}}(\bar{x})\right)\]
+instead of simply directly computing
+\begin{align*}
+p\textrm{-value} &= P(\bar{X} \leq \lambda_0 - \lvert \lambda_0 - \bar{x}\rvert)
++ P(\bar{X} \geq \lambda_0 + \lvert \lambda_0 - \bar{x}\rvert)\\
+&= P(\bar{X} \leq \lambda_0 - \lvert \lambda_0 - \bar{x}\rvert)
++ (1 - P(\bar{X} \leq \lambda_0 + \lvert \lambda_0 - \bar{x}\rvert))\\
+&= F_{\bar{X}}(\lambda_0 - \lvert \lambda_0 - \bar{x}\rvert)
++ (1-F_{\bar{X}}(\lambda_0 + \lvert \lambda_0 - \bar{x}\rvert)).
+\end{align*}
+My professor once told me ``you don't have to remember anything, you can just 
+derive what you need." To be equally annoying, I will retool this to say ``you 
+don't have to blindly trust anything, you can simulate it to check!"
+\begin{enumerate}
+\item Conduct a simulation to evaluate the probability of Type I error
+using both approaches by completing the following in a loop. Report the 
+resulting Type I error estimate.
+\begin{enumerate}
+\item Generate a random sample of $n=10$ observations from an exponential 
+distribution with mean $\lambda=2$.
+\item Compute $\Delta = \lvert \bar{x}-\lambda_0 \rvert$, where $\lambda_0=2$.
+\item Compute the lower part of the $p$-value.
+\[p_L = P(\bar{X} \leq \lambda_0 - \Delta)\]
+\item Compute the upper part of the $p$-value.
+\[p_U = P(\bar{X} \geq \lambda_0 + \Delta)\]
+\item Compute the exact $p$-value.
+\item Compute the $p$-value suggested by the large language model.
+\end{enumerate}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hldef{(}\hlnum{131313}\hldef{)}
+
+\hldef{exact_rejection_rate} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{10000}\hldef{)}
+\hldef{LLM_rejection_rate} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{10000}\hldef{)}
+
+\hldef{n} \hlkwb{=} \hlnum{10}
+\hldef{lambda} \hlkwb{=} \hlnum{2}
+\hldef{lambda0} \hlkwb{=} \hlnum{2}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{10000}\hldef{)\{}
+
+  \hlcom{# part i}
+  \hldef{rsamp} \hlkwb{<-} \hlkwd{rexp}\hldef{(}\hlkwc{n} \hldef{= n,} \hlkwc{rate} \hldef{=} \hlnum{1}\hlopt{/}\hldef{lambda)}
+
+  \hlcom{# part ii}
+  \hldef{delta} \hlkwb{=} \hlkwd{abs}\hldef{(}\hlkwd{mean}\hldef{(rsamp)} \hlopt{-} \hldef{lambda0)}
+
+  \hlcom{#part iii}
+  \hldef{pL} \hlkwb{=} \hlkwd{pgamma}\hldef{(}\hlkwc{q} \hldef{= lambda0}\hlopt{-}\hldef{delta,} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= T)}
+
+  \hlcom{# part iv}
+  \hldef{pU} \hlkwb{=} \hlkwd{pgamma}\hldef{(}\hlkwc{q} \hldef{= lambda0}\hlopt{+}\hldef{delta,} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= F)}
+
+  \hlcom{#part v}
+  \hldef{exact_p} \hlkwb{=} \hldef{pL} \hlopt{+} \hldef{pU}
+  \hldef{exact_rejection_rate[i]} \hlkwb{=} \hlkwd{ifelse}\hldef{(exact_p} \hlopt{<} \hlnum{0.05}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
+
+  \hlcom{#part vi}
+  \hldef{LLM_lower} \hlkwb{=} \hlkwd{pgamma}\hldef{(}\hlkwd{mean}\hldef{(rsamp),} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0)}
+  \hldef{LLM_upper} \hlkwb{=} \hlnum{1} \hlopt{-} \hlkwd{pgamma}\hldef{(}\hlkwd{mean}\hldef{(rsamp),} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0)}
+  \hldef{LLM_p} \hlkwb{=} \hlnum{2}\hlopt{*}\hlkwd{min}\hldef{(LLM_lower, LLM_upper)}
+  \hldef{LLM_rejection_rate[i]} \hlkwb{=} \hlkwd{ifelse}\hldef{(LLM_p} \hlopt{<} \hlnum{0.05}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
+
+\hldef{\}}
+
+\hldef{(}\hlkwd{mean}\hldef{(exact_rejection_rate))}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.0498
+\end{verbatim}
+\begin{alltt}
+\hldef{(}\hlkwd{mean}\hldef{(LLM_rejection_rate))}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.0479
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\textcolor{red}{The $\alpha$ of the exact method is 0.0498. The $\alpha$ of the LLM approach is 0.0479}
+
+\item Conduct a simulated power analysis to evaluate the power and 
+probability of Type II error using both approaches by completing the 
+following in a loop. Report the resulting Power estimate.
+\begin{enumerate}
+\item Generate a random sample of $n=10$ observations from an exponential 
+distribution with mean $\lambda=2.3$.
+\item Compute $\Delta = \lvert \bar{x}-\lambda_0 \rvert$, where $\lambda_0=2$.
+\item Compute the lower part of the $p$-value.
+\[p_L = P(\bar{X} \leq \lambda_0 - \Delta)\]
+\item Compute the upper part of the $p$-value.
+\[p_U = P(\bar{X} \geq \lambda_0 + \Delta)\]
+\item Compute the exact $p$-value.
+\item Compute the $p$-value suggested by the large language model.
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{exact_power} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{10000}\hldef{)}
+\hldef{LLM_power} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{10000}\hldef{)}
+
+\hldef{n} \hlkwb{=} \hlnum{10}
+\hldef{lambda} \hlkwb{=} \hlnum{2.3}
+\hldef{lambda0} \hlkwb{=} \hlnum{2}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{10000}\hldef{)\{}
+
+  \hlcom{# part i}
+  \hldef{rsamp} \hlkwb{<-} \hlkwd{rexp}\hldef{(}\hlkwc{n} \hldef{= n,} \hlkwc{rate} \hldef{=} \hlnum{1}\hlopt{/}\hldef{lambda)}
+
+  \hlcom{# part ii}
+  \hldef{delta} \hlkwb{=} \hlkwd{abs}\hldef{(}\hlkwd{mean}\hldef{(rsamp)} \hlopt{-} \hldef{lambda0)}
+
+  \hlcom{#part iii}
+  \hldef{pL} \hlkwb{=} \hlkwd{pgamma}\hldef{(}\hlkwc{q} \hldef{= lambda0}\hlopt{-}\hldef{delta,} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= T)}
+
+  \hlcom{# part iv}
+  \hldef{pU} \hlkwb{=} \hlkwd{pgamma}\hldef{(}\hlkwc{q} \hldef{= lambda0}\hlopt{+}\hldef{delta,} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= F)}
+
+  \hlcom{#part v}
+  \hldef{exact_p} \hlkwb{=} \hldef{pL} \hlopt{+} \hldef{pU}
+  \hldef{exact_power[i]} \hlkwb{=} \hlkwd{ifelse}\hldef{(exact_p} \hlopt{<} \hlnum{0.05}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
+
+  \hlcom{#part vi}
+  \hldef{LLM_lower} \hlkwb{=} \hlkwd{pgamma}\hldef{(}\hlkwd{mean}\hldef{(rsamp),} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0)}
+  \hldef{LLM_upper} \hlkwb{=} \hlnum{1} \hlopt{-} \hlkwd{pgamma}\hldef{(}\hlkwd{mean}\hldef{(rsamp),} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0)}
+  \hldef{LLM_p} \hlkwb{=} \hlnum{2}\hlopt{*}\hlkwd{min}\hldef{(LLM_lower, LLM_upper)}
+  \hldef{LLM_power[i]} \hlkwb{=} \hlkwd{ifelse}\hldef{(LLM_p} \hlopt{<} \hlnum{0.05}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
+
+\hldef{\}}
+
+\hldef{(}\hlkwd{mean}\hldef{(exact_power))}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1125
+\end{verbatim}
+\begin{alltt}
+\hldef{(}\hlkwd{mean}\hldef{(LLM_power))}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.0853
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\textcolor{red}{The power of our exact method is 0.1125. The power of the LLM approximation is 0.0853.}
+
+\end{enumerate}
+\item To gain insight into your results, compute the exact $p$-value and
+the $p$-value suggested by the large language model for a fine grid of
+values of $\Delta$ from 0 to 4 for $\lambda_0=2$. Plot the resulting $p$-values against
+a $y=x$ line. Explain how the visual maps onto the results of the simulations.
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{lambda0} \hlkwb{=} \hlnum{2}
+\hldef{n} \hlkwb{=} \hlnum{10}
+
+\hldef{delta} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlnum{0}\hldef{,}\hlnum{4}\hldef{,}\hlkwc{length.out} \hldef{=} \hlnum{1000}\hldef{)}
+
+\hldef{exact_p} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{)}
+
+\hldef{LLM_p_high} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{)}
+\hldef{LLM_p_low} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{)}
+
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{1000}\hldef{)\{}
+
+  \hlcom{#exact p-value calculation}
+  \hldef{exact_lower} \hlkwb{<-} \hlkwd{pgamma}\hldef{(lambda0}\hlopt{-}\hldef{delta[i],} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= T)}
+  \hldef{exact_upper} \hlkwb{<-} \hlkwd{pgamma}\hldef{(lambda0}\hlopt{+}\hldef{delta[i],} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= F)}
+  \hldef{exact_p[i]} \hlkwb{=} \hldef{exact_lower} \hlopt{+} \hldef{exact_upper}
+
+  \hlcom{#LLM p-value calculation}
+  \hldef{xbar_approx_low} \hlkwb{=} \hldef{lambda0}\hlopt{-}\hldef{delta[i]}
+  \hldef{xbar_approx_high} \hlkwb{=} \hldef{lambda0} \hlopt{+} \hldef{delta[i]}
+  \hldef{LLM_p_low[i]} \hlkwb{=} \hlnum{2} \hlopt{*} \hlkwd{pgamma}\hldef{(xbar_approx_low,} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= T)}
+  \hldef{LLM_p_high[i]} \hlkwb{=} \hlnum{2} \hlopt{*} \hlkwd{pgamma}\hldef{(xbar_approx_high,} \hlkwc{shape} \hldef{= n,} \hlkwc{rate} \hldef{= n}\hlopt{/}\hldef{lambda0,} \hlkwc{lower.tail} \hldef{= F)}
+
+\hldef{\}}
+
+
+\hlkwd{library}\hldef{(tidyverse)}
+\hlkwd{library}\hldef{(ggplot2)}
+
+\hldef{p_values} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{exact} \hldef{= exact_p,}
+                   \hlkwc{LLM_low} \hldef{= LLM_p_low,}
+                   \hlkwc{LLM_high} \hldef{= LLM_p_high)}
+
+
+\hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= p_values)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= exact,} \hlkwc{y} \hldef{= LLM_low,} \hlkwc{color} \hldef{=} \hlsng{"Low Estimate"}\hldef{))} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= exact,} \hlkwc{y} \hldef{= LLM_high,} \hlkwc{color} \hldef{=} \hlsng{"High Estimate"}\hldef{))} \hlopt{+}
+  \hlkwd{geom_abline}\hldef{(}\hlkwc{intercept} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{slope} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{linetype} \hldef{=} \hlsng{"dashed"}\hldef{)} \hlopt{+}
+  \hlkwd{geom_hline}\hldef{(}\hlkwc{yintercept} \hldef{=} \hlnum{0}\hldef{)} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlsng{'Exact p-value'}\hldef{)} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlsng{'LLM p-value'}\hldef{)} \hlopt{+}
+  \hlkwd{ggtitle}\hldef{(}\hlsng{'Exact vs. LLM Approach'}\hldef{)} \hlopt{+}
+  \hlkwd{theme}\hldef{(}\hlkwc{legend.title}\hldef{=}\hlkwd{element_blank}\hldef{())} \hlopt{+}
+  \hlkwd{xlim}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{ylim}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{figure}[H]
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-3-1} 
+\end{knitrout}
+
+
+\label{p-value_plot}
+\caption{p-value Comparison}
+
+\end{figure}
+
+\item Rerun the simulations when $n=1000$. Just rerun your code above with
+the sample size changed and report the results here -- no need to copy and
+paste the code again here. Provide the results and comment on how they have
+changed from $n=10$. What did students who used the large language model 
+unwittingly assume, and is it problematic?
+\end{enumerate}
+
+\textcolor{red}{As the sample size increases to $n = 1000$, the two methods are virtually identical in terms of $\alpha$ and Power. Students who used the LLM version of the calculation assumed that the LLM method would be approximately robust even with a low sample size, as the exact version is. This can be problematic as most datasets used in statistics are not as large as $n = 1000$, so the difference in $\alpha$ and power could make a difference in the hypothesis test.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Under the alternative hypothesis, the distribution of the ANOVA $F$ 
+statistic follows a non-central $F$ distribution. An added non-centrality 
+parameter ($\lambda$) shifts the mean of the usual $F$ distribution away 
+from 1 (what we expect under $H_0$). Use this fact to conduct a power analysis 
+for the ANOVA test.
+\begin{enumerate}
+\item Let $N=542$ and $k=5$ based on the MFAP4 example from class. Find the 
+$F$ statistic that starts the rejection region for the usual ANOVA test.\\
+\textbf{Hint:} The degrees of freedom are $df_1=k-1$, $df_2=N-k=k(n-1)$when the sample sizes are the same.
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{N} \hlkwb{=} \hlnum{542}
+\hldef{k} \hlkwb{=} \hlnum{5}
+
+\hldef{(rejection_statistic} \hlkwb{<-} \hlkwd{qf}\hldef{(}\hlnum{0.95}\hldef{,} \hlkwc{df1} \hldef{= k}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{df2} \hldef{= N}\hlopt{-}\hldef{k,} \hlkwc{lower.tail} \hldef{= T))}
+\end{alltt}
+\begin{verbatim}
+## [1] 2.388533
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\item Convert the effect size of the ANOVA test -- $\omega^2 = 0.23$ for the 
+MFAP4 data -- to Cohen's $f$ using the following formula.
+\[\text{Cohen's}~f = \sqrt{\frac{\omega^2}{1-\omega^2}}\]
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{omega2} \hlkwb{<-} \hlnum{0.23}
+
+\hldef{(cohensf} \hlkwb{<-} \hlkwd{sqrt}\hldef{(omega2}\hlopt{/}\hldef{(}\hlnum{1}\hlopt{-}\hldef{omega2)))}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.5465357
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\item Let $N=542$ and $k=5$ based on the MFAP4 example from class. Use 
+Cohen's $f$ from the previous part to compute the non-centrality parameter.
+\begin{align*}
+\lambda &=N \times (\textrm{Cohen's}~f)^2 \\
+&=k \times n \times (\textrm{Cohen's}~f)^2 \tag{Equal sample size $n$}
+\end{align*}
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{(lambda} \hlkwb{=} \hldef{N} \hlopt{*} \hldef{cohensf}\hlopt{^}\hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 161.8961
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\item Let $n=542$ and $k=5$ based on the MFAP4 example from class. What is 
+the probability that we observe the $F$ statistic in (a) under the $F$ 
+distribution with $df_1=k-1$, $df_2=N-k=k(n-1)$ or one that provides more
+support for the alternative when the sample sizes are the same, and 
+non-centrality parameter $\lambda$ from the previous part?
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{=} \hlnum{542}
+\hldef{k} \hlkwb{=} \hlnum{5}
+
+\hlkwd{pf}\hldef{(}\hlkwc{q}\hldef{=rejection_statistic,} \hlkwc{df1} \hldef{= k}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{df2} \hldef{= n}\hlopt{-}\hldef{k,} \hlkwc{ncp} \hldef{= lambda,} \hlkwc{lower.tail} \hldef{= F)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\item Write a function that takes $k$, and $\omega^2$ and computes the power:
+\[P\left(F \geq F_{k-1, k(n-1), \lambda=0}|k-1, k(n-1), \lambda=\lambda\right).\]
+\textbf{Hint:} A loop should be helpful here.
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{power} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{k}\hldef{,} \hlkwc{omega2}\hldef{,} \hlkwc{desired_power}\hldef{)\{}
+
+  \hldef{cohensf} \hlkwb{<-} \hlkwd{sqrt}\hldef{(omega2}\hlopt{/}\hldef{(}\hlnum{1}\hlopt{-}\hldef{omega2))}
+
+  \hldef{n} \hlkwb{=} \hlnum{3}
+
+  \hlkwa{repeat}\hldef{\{}
+
+    \hldef{rejection} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{)}
+
+    \hldef{lambda} \hlkwb{=} \hldef{n} \hlopt{*} \hldef{k} \hlopt{*} \hldef{cohensf}\hlopt{^}\hlnum{2}
+
+    \hldef{rejection_stat} \hlkwb{=} \hlkwd{qf}\hldef{(}\hlnum{0.95}\hldef{,} \hlkwc{df1} \hldef{= k}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{df2} \hldef{= k}\hlopt{*}\hldef{(n}\hlopt{-}\hlnum{1}\hldef{))}
+
+    \hldef{p} \hlkwb{=} \hlkwd{pf}\hldef{(}\hlkwc{q} \hldef{= rejection_stat,} \hlkwc{df1} \hldef{= k}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{df2} \hldef{= k}\hlopt{*}\hldef{(n}\hlopt{-}\hlnum{1}\hldef{),} \hlkwc{ncp} \hldef{= lambda,} \hlkwc{lower.tail} \hldef{= F)}
+
+    \hlkwa{if}\hldef{(p} \hlopt{>=} \hldef{desired_power)\{}
+      \hlkwd{return}\hldef{(n)}
+      \hlkwa{break}
+    \hldef{\}}\hlkwa{else}\hldef{\{}
+      \hldef{n} \hlkwb{=} \hldef{n} \hlopt{+} \hlnum{1}
+    \hldef{\}}
+
+  \hldef{\}}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\item Use the function in the previous part to find what $n$ has to be to 
+ensure this probability is 80\% when $k=5$ and $\omega^2=0.14$ (a moderate 
+effect)?\\
+\textbf{Hint:} You can check your answer using \texttt{pwr::pwr.anova.test()}.
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{power}\hldef{(}\hlkwc{k} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{omega2} \hldef{=} \hlnum{0.14}\hldef{,} \hlkwc{desired_power} \hldef{=} \hlnum{0.8}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 16
+\end{verbatim}
+\begin{alltt}
+\hldef{pwr}\hlopt{::}\hlkwd{pwr.anova.test}\hldef{(}\hlkwc{k} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{power} \hldef{=} \hlnum{0.8}\hldef{,} \hlkwc{f} \hldef{=} \hlkwd{sqrt}\hldef{(}\hlnum{0.14}\hlopt{/}\hldef{(}\hlnum{1}\hlopt{-}\hlnum{0.14}\hldef{)))}
+\end{alltt}
+\begin{verbatim}
+## 
+##      Balanced one-way analysis of variance power calculation 
+## 
+##               k = 5
+##               n = 15.64184
+##               f = 0.4034733
+##       sig.level = 0.05
+##           power = 0.8
+## 
+## NOTE: n is number in each group
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\textcolor{red}{To ensure 80\% power, you'd need a group size n of at least 16.}
+
+\item For the sample size determined in the previous part, plot the 
+distribution of $F$ under the null and under the alternative specified 
+by $\omega^2=0.14$.
+
+\begin{figure}[H]
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(tidyverse)}
+
+\hldef{n} \hlkwb{=} \hlnum{16}
+
+\hldef{omega2} \hlkwb{=} \hlnum{0.14}
+
+\hldef{cohensf} \hlkwb{<-} \hlkwd{sqrt}\hldef{(omega2}\hlopt{/}\hldef{(}\hlnum{1}\hlopt{-}\hldef{omega2))}
+
+\hldef{lambda} \hlkwb{=} \hldef{n} \hlopt{*} \hldef{k} \hlopt{*} \hldef{cohensf}\hlopt{^}\hlnum{2}
+
+\hldef{ggdat} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{x} \hldef{=} \hlkwd{seq}\hldef{(}\hlnum{0}\hldef{,} \hlnum{12}\hldef{,} \hlkwc{length.out} \hldef{=} \hlnum{10000}\hldef{),}
+                \hlkwc{h0} \hldef{=} \hlkwd{df}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{df1} \hldef{= k}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{df2} \hldef{= k}\hlopt{*}\hldef{(n}\hlopt{-}\hlnum{1}\hldef{)),}
+                \hlkwc{ha} \hldef{=} \hlkwd{df}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{df1} \hldef{= k}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{df2} \hldef{= k}\hlopt{*}\hldef{(n}\hlopt{-}\hlnum{1}\hldef{),} \hlkwc{ncp} \hldef{= lambda))}
+
+\hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= ggdat)} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= h0,} \hlkwc{color} \hldef{=} \hlsng{"Null"}\hldef{))} \hlopt{+}
+  \hlkwd{geom_point}\hldef{(}\hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= x,} \hlkwc{y} \hldef{= ha,} \hlkwc{color} \hldef{=} \hlsng{"Alternative"}\hldef{))} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlsng{'F'}\hldef{)} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlsng{'Density'}\hldef{)} \hlopt{+}
+  \hlkwd{ggtitle}\hldef{(}\hlsng{'Null vs. Alternative F Distribution'}\hldef{)} \hlopt{+}
+  \hlkwd{theme}\hldef{(}\hlkwc{legend.title}\hldef{=}\hlkwd{element_blank}\hldef{())} \hlopt{+}
+  \hlkwd{geom_hline}\hldef{(}\hlkwc{yintercept} \hldef{=} \hlnum{0}\hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-10-1} 
+\end{knitrout}
+
+\label{F_distribution_plots}
+\caption{Comparison of F Distributions}
+
+\end{figure}
+
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \cite{Garofalo23} investigated how the immune system communicates with 
+the brain in mice. Specifically, they genetically modified or treated mice to 
+block certain immune cells or signaling pathways.
+\begin{itemize}
+\item The aNK1.1 mice have depleted natural killer (NK) cells, which form an 
+important part of the immune system.
+\item The aVLA4 mice have the function of a protein called VLA-4 blocked, 
+which inhibits the effect of NK cells on the brain.
+\item Rag2$-/-$ mice are genetically modified to lack mature T and B cells, 
+and have NK cells.
+\item Rag2$-/-\gamma$c$-/-$ mice are genetically modified to lack T, B, and 
+NK cells.
+\item IgG2a and IgG2b are control groups.
+\end{itemize}
+In a open-field test, each mouse was placed in an enclosed platform (40 cm 
+$\times$ 40 cm $\times$ 30cm) for 10 minutes. The researchers recorded the 
+distance traveled, the movement duration, and time spent in the center area 
+(20 cm $\times$ 20 cm).
+
+The researchers hypothesized that the mice with inhibited immune system 
+functionality would exhibit increased explorative behavior. This would suggest 
+reduced anxiety-like responses to open spaces. I have provided data about 
+distance traveled in meters, do these data support their hypothesis?\\
+\textbf{Hint 1:} You will have to \texttt{pivot\_longer()} the data I copied 
+from their posted source data.\\
+\textbf{Hint 2:} Their data do not appear to match the data plotted in their
+figure for at least the Rag2$-/-\gamma$c$-/-$ group. I've emailed the author 
+for updated data (holds breath). Continue as if the data are correct.
+\end{enumerate}
+
+\begin{figure}[H]
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{dat} \hlkwb{<-} \hlkwd{read_csv}\hldef{(}\hlsng{'Garofalo.csv'}\hldef{)}
+
+\hldef{dat} \hlkwb{<-} \hldef{dat |>}
+  \hlkwd{rename}\hldef{(}\hlkwc{control_1} \hldef{= IgG2a,}
+         \hlkwc{depleted_nk} \hldef{= aNK1.1,}
+         \hlkwc{control_2} \hldef{= IgG2b,}
+         \hlkwc{blocked_vla} \hldef{= `aVLA-4`,}
+         \hlkwc{lack_T_B} \hldef{= `Rag2-/-`,}
+         \hlkwc{lack_T_B_nk} \hldef{= `Rag2-/-gc-/-`) |>}
+  \hlkwd{pivot_longer}\hldef{(}\hlkwc{cols} \hldef{=} \hlkwd{everything}\hldef{(),} \hlkwc{values_to} \hldef{=} \hlsng{"distance"}\hldef{,} \hlkwc{names_to} \hldef{=} \hlsng{"treatment"}\hldef{)}
+
+\hldef{norm} \hlkwb{<-} \hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= dat,} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= treatment,} \hlkwc{y} \hldef{= distance))} \hlopt{+}
+  \hlkwd{geom_violin}\hldef{(}\hlkwc{width} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{geom_boxplot}\hldef{(}\hlkwc{width} \hldef{=} \hlnum{0.25}\hldef{)} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{geom_hline}\hldef{(}\hlkwc{yintercept} \hldef{=} \hlnum{0}\hldef{)} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlsng{'Treatment Group'}\hldef{)} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlsng{'Distance Travelled'}\hldef{)} \hlopt{+}
+  \hlkwd{ggtitle}\hldef{(}\hlsng{'Distance Travelled by Treatment Group'}\hldef{)}
+
+\hldef{logged} \hlkwb{<-} \hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= dat,} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= treatment,} \hlkwc{y} \hldef{=} \hlkwd{log2}\hldef{(distance)))} \hlopt{+}
+  \hlkwd{geom_violin}\hldef{(}\hlkwc{width} \hldef{=} \hlnum{1}\hldef{)} \hlopt{+}
+  \hlkwd{geom_boxplot}\hldef{(}\hlkwc{width} \hldef{=} \hlnum{0.25}\hldef{)} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{geom_hline}\hldef{(}\hlkwc{yintercept} \hldef{=} \hlnum{0}\hldef{)} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlsng{'Treatment Group'}\hldef{)} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlsng{'Distance Travelled (log2)'}\hldef{)} \hlopt{+}
+  \hlkwd{ggtitle}\hldef{(}\hlsng{'Log2 Transformed'}\hldef{)}
+
+\hlkwd{library}\hldef{(patchwork)}
+
+\hldef{norm} \hlopt{+} \hldef{logged}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-11-1} 
+\end{knitrout}
+
+
+\label{mouse_summary}
+\caption{Distance Travelled by Mice Across Treatments}
+
+\end{figure}
+
+The data appears to be more normally distributed under a $log_{2}$ transformation, and it helps with outliers in several of the groups. Also, the variances are clearly not similar across groups so we'll be using a Welch's ANOVA, which does not assume equal variances across groups. 
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(rstatix)}
+\hldef{(aov.test} \hlkwb{<-} \hlkwd{welch_anova_test}\hldef{(}\hlkwc{data} \hldef{= dat,} \hlkwd{log2}\hldef{(distance)} \hlopt{~} \hldef{treatment))}
+\end{alltt}
+\begin{verbatim}
+## # A tibble: 1 x 7
+##   .y.                n statistic   DFn   DFd         p method     
+## * <chr>          <int>     <dbl> <dbl> <dbl>     <dbl> <chr>      
+## 1 log2(distance)    60      12.7     5  20.1 0.0000122 Welch ANOVA
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+After performing a Welch's ANOVA on our $log_{2}$ transformed data, we obtain a test statistic $F = 12.7$, $p \textless 0.0001$. Because $p \textless 0.05 = \alpha$, we have indication that the true population means of distance traveled among the treatment groups are not all equal. 
+
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{dat}\hlopt{$}\hldef{log2} \hlkwb{<-} \hlkwd{log2}\hldef{(dat}\hlopt{$}\hldef{distance)}
+
+\hldef{(}\hlkwd{games_howell_test}\hldef{(}\hlkwc{data} \hldef{= dat, log2} \hlopt{~} \hldef{treatment))}
+\end{alltt}
+\begin{verbatim}
+## # A tibble: 15 x 8
+##    .y.   group1      group2     estimate conf.low conf.high   p.adj p.adj.signif
+##  * <chr> <chr>       <chr>         <dbl>    <dbl>     <dbl>   <dbl> <chr>       
+##  1 log2  blocked_vla control_1   -0.858    -1.88      0.164 1.2 e-1 ns          
+##  2 log2  blocked_vla control_2   -0.654    -1.54      0.228 1.89e-1 ns          
+##  3 log2  blocked_vla depleted_~  -0.0937   -0.575     0.388 9.87e-1 ns          
+##  4 log2  blocked_vla lack_T_B    -0.0570   -0.502     0.388 9.98e-1 ns          
+##  5 log2  blocked_vla lack_T_B_~   0.850     0.331     1.37  1   e-3 ***         
+##  6 log2  control_1   control_2    0.204    -0.971     1.38  9.92e-1 ns          
+##  7 log2  control_1   depleted_~   0.764    -0.257     1.79  1.92e-1 ns          
+##  8 log2  control_1   lack_T_B     0.801    -0.212     1.81  1.51e-1 ns          
+##  9 log2  control_1   lack_T_B_~   1.71      0.679     2.74  1   e-3 ***         
+## 10 log2  control_2   depleted_~   0.560    -0.321     1.44  3.12e-1 ns          
+## 11 log2  control_2   lack_T_B     0.597    -0.277     1.47  2.39e-1 ns          
+## 12 log2  control_2   lack_T_B_~   1.50      0.614     2.39  2   e-3 **          
+## 13 log2  depleted_nk lack_T_B     0.0366   -0.400     0.474 1   e+0 ns          
+## 14 log2  depleted_nk lack_T_B_~   0.944     0.430     1.46  3.74e-4 ***         
+## 15 log2  lack_T_B    lack_T_B_~   0.907     0.423     1.39  5.65e-4 ***
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+After performing a Games-Howell pairwise follow-up to Welch's ANOVA, we can see that there are statistically discernible differences of $log_{2}$ transformed means between 5 of the pairwise comparisons:
+
+\begin{enumerate}
+
+\item{Mice with the blocked VLA-4 protein travel greater $log_{2}$ transformed distance than mice that lack T, B, and natural killer cells: 95 $\%$ CI [0.33, 1.37] ($p = 0.001$).}
+
+\item{Mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than control group 1 mice: 95$\%$ CI [-2.74, -0.68] ($p = 0.001$).}
+
+\item{Mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than control group 2 mice: 95$\%$ CI [-2.39, -0.61] ($p = 0.002$).}
+
+\item{Mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than mice that have depleted natural killer cells: 95$\%$ CI [-1.46, -0.43] ($p \textless 0.001$).}
+
+\item{Finally, mice that lack T, B, and natural killer cells travel less $log_{2}$ transformed distance than mice that lack T and B cells: 95$\%$ CI [-1.39, -0.42] ($p \textless 0.001$).}
+
+\end{enumerate}
+
+
+\bibliography{bib}
+\end{document}

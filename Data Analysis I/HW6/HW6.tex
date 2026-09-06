@@ -1,0 +1,354 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+                      % If you find yourself trying to replicate
+                      % something you found online, ensure you're
+                      % loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+                    % We had to run tlmgr_install("enumitem") in R
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\usepackage[skins,breakable]{tcolorbox}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\noindent\textbf{Homework 6: Regression}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each 
+question under that question (not altogether at the end). It will be easier for 
+me to give full credit if your answer is commented well, including comments 
+about where you are completing each sub-part of the question. For an example,
+see Homework 1.\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+
+\begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 1
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item In Lecture 13, we discussed the linear algebra formulation of linear regression.
+  For example, we can set up perfectly simulated regression data as follows:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{simulate.reg} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{100}\hldef{,}
+                         \hlkwc{betas}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{4.35}\hldef{,} \hlnum{1.73}\hldef{,} \hlnum{0.02}\hldef{,} \hlnum{2.78}\hldef{),}
+                         \hlkwc{sigma}\hldef{=}\hlnum{4.16}\hldef{,}
+                         \hlkwc{set.seed}\hldef{=F)\{}
+  \hlcom{# Specify Coefficients}
+  \hldef{beta} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwc{data} \hldef{= betas,} \hlkwc{nrow}\hldef{=}\hlnum{4}\hldef{)}
+  \hlcom{# Specify Error Distribution}
+  \hldef{mu.epsilon} \hlkwb{<-} \hlnum{0}
+  \hldef{sigma.epsilon}\hlkwb{<-}\hlkwd{sqrt}\hldef{(sigma)}
+  \hlcom{# Simulate Regression Data}
+  \hlkwa{if}\hldef{(set.seed)\{}\hlkwd{set.seed}\hldef{(}\hlnum{7272}\hldef{)\}}
+  \hldef{x1} \hlkwb{<-} \hlkwd{runif}\hldef{(}\hlkwc{n}\hldef{=n,} \hlkwc{min}\hldef{=}\hlopt{-}\hlnum{5}\hldef{,} \hlkwc{max}\hldef{=}\hlnum{5}\hldef{)}
+  \hldef{x2} \hlkwb{<-} \hlkwd{runif}\hldef{(}\hlkwc{n}\hldef{=n,} \hlkwc{min}\hldef{=}\hlopt{-}\hlnum{5}\hldef{,} \hlkwc{max}\hldef{=}\hlnum{5}\hldef{)}
+  \hldef{x} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlnum{1}\hldef{, x1, x2, x1}\hlopt{*}\hldef{x2)}
+  \hldef{epsilon} \hlkwb{<-} \hlkwd{rnorm}\hldef{(}\hlkwc{n}\hldef{=n,} \hlkwc{mean}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{sd}\hldef{=sigma.epsilon)}
+  \hldef{y} \hlkwb{<-} \hldef{x} \hlopt{%*%} \hldef{beta} \hlopt{+} \hldef{epsilon}
+  \hlcom{# Return simulated data}
+  \hldef{dat} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{x1}\hldef{=x1,} \hlkwc{x2}\hldef{=x2)}
+  \hlkwd{return}\hldef{(dat)}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  In Lecture 15, we discussed regression-based inference. During office hours, 
+  I had some discussions about the mathematical statistics behind these results. 
+  Although we don't do the real-analysis style derivations in this course that 
+  we might in Mathematical Statistics, we have plenty of tools to investigate 
+  these ideas numerically. Complete the parts below to conduct this exploration.
+  \begin{enumerate}
+    \item Use the \texttt{simulate.reg()} function to simulate regression data 
+    using the default set of coefficients over a grid of $\sigma_\epsilon$ 
+    values from $\sigma_\epsilon=0$ to $\sigma_\epsilon=5$. Compute the
+    $SS_{res}$ and $SS_{reg}$ from the resulting regression model, and plot
+    the points using color to denote the $\sigma_\epsilon$ value. Make sure you
+    set \texttt{set.seed} to \texttt{T} so you can compare the output at
+    fixed $\mathbf{x}$ and $\mathbf{Y}$. \textbf{Why do you see the pattern
+    that emerges?}\\
+    \textbf{Hint:} I found it was easier to manually compute $SS_{res}$ and
+    $SS_{reg}$ than it was to extract them from the result of an \texttt{aov}
+    call.
+    
+    \begin{figure}[H]
+    \centering
+    
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{asim} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{sigma} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{),}
+           \hlkwc{SSres} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{),}
+           \hlkwc{SSreg} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{))}
+
+\hldef{sigmas} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlkwc{from} \hldef{=} \hlnum{0}\hldef{,} \hlkwc{to} \hldef{=} \hlnum{5}\hldef{,} \hlkwc{length.out} \hldef{=} \hlnum{1000}\hldef{)}
+
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{1000}\hldef{)\{}
+
+  \hldef{dat} \hlkwb{<-} \hlkwd{simulate.reg}\hldef{(}\hlkwc{sigma} \hldef{= sigmas[i],} \hlkwc{set.seed}\hldef{=T)}
+
+  \hldef{asim}\hlopt{$}\hldef{sigma[i]} \hlkwb{<-} \hldef{sigmas[i]}
+
+  \hldef{anova} \hlkwb{<-} \hlkwd{aov}\hldef{(y} \hlopt{~} \hldef{x1} \hlopt{+} \hldef{x2} \hlopt{+} \hldef{x1}\hlopt{*}\hldef{x2,} \hlkwc{data} \hldef{= dat)}
+
+  \hldef{asim}\hlopt{$}\hldef{SSres[i]} \hlkwb{<-} \hlkwd{sum}\hldef{((dat}\hlopt{$}\hldef{y} \hlopt{-} \hldef{anova}\hlopt{$}\hldef{residuals)}\hlopt{^}\hlnum{2}\hldef{)}
+
+  \hldef{asim}\hlopt{$}\hldef{SSreg[i]} \hlkwb{<-} \hlkwd{sum}\hldef{((anova}\hlopt{$}\hldef{residuals} \hlopt{-} \hlkwd{mean}\hldef{(dat}\hlopt{$}\hldef{y))}\hlopt{^}\hlnum{2}\hldef{)}
+
+\hldef{\}}
+
+\hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= asim,} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= SSres,} \hlkwc{y} \hldef{= SSreg,} \hlkwc{color} \hldef{= sigma))} \hlopt{+}
+  \hlkwd{geom_point}\hldef{()} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlkwd{bquote}\hldef{(SS[res]))} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlkwd{bquote}\hldef{(SS[reg]))} \hlopt{+}
+  \hlkwd{labs}\hldef{(}\hlkwc{color} \hldef{=} \hlkwd{bquote}\hldef{(sigma[epsilon]))} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-3-1} 
+\end{knitrout}
+    
+    
+    \label{sigma.fig}
+    \caption{$\sigma$ across levels of $SS_{res}$ and $SS_{reg}$ (fixed $\mathbf{x}$ and $\mathbf{Y}$)}
+    \end{figure}
+    
+    \textcolor{red}{We see that higher values of $SS_{res}$ and $SS_{reg}$ are associated with higher values of $\sigma_{\epsilon}$. This makes sense as $\sigma_{\epsilon}$ affects the variation around how the data fits the model, and higher variation in $\sigma_{\epsilon}$ will result in higher levels of variation in the regression residuals and against $\bar{Y}$.}
+    
+    \item Use the \texttt{simulate.reg()} function to simulate regression data 
+    using the default set of coefficients. Create a plot that shows the 
+    distribution of the $\beta$s. Make sure you set \texttt{set.seed} to 
+    \texttt{F} so you can compare the output for differing samples of
+    $\mathbf{x}$ and $\mathbf{Y}$. \textbf{What do you notice about their 
+    distributions?}
+    
+    \begin{figure}[H]
+    \centering
+    
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{bsim} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{Beta0} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{),}
+           \hlkwc{Beta1} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{),}
+           \hlkwc{Beta2} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{),}
+           \hlkwc{Beta3} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{))}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{1000}\hldef{)\{}
+
+  \hldef{dat} \hlkwb{<-} \hlkwd{simulate.reg}\hldef{(}\hlkwc{set.seed}\hldef{=F)}
+
+  \hldef{mod} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwd{summary}\hldef{(}\hlkwd{lm}\hldef{(y} \hlopt{~} \hldef{x1} \hlopt{+} \hldef{x2} \hlopt{+} \hldef{x1}\hlopt{*}\hldef{x2,} \hlkwc{data} \hldef{= dat))}\hlopt{$}\hldef{coefficients)}
+
+  \hldef{bsim}\hlopt{$}\hldef{Beta0[i]} \hlkwb{<-} \hldef{mod}\hlopt{$}\hldef{Estimate[}\hlnum{1}\hldef{]}
+  \hldef{bsim}\hlopt{$}\hldef{Beta1[i]} \hlkwb{<-} \hldef{mod}\hlopt{$}\hldef{Estimate[}\hlnum{2}\hldef{]}
+  \hldef{bsim}\hlopt{$}\hldef{Beta2[i]} \hlkwb{<-} \hldef{mod}\hlopt{$}\hldef{Estimate[}\hlnum{3}\hldef{]}
+  \hldef{bsim}\hlopt{$}\hldef{Beta3[i]} \hlkwb{<-} \hldef{mod}\hlopt{$}\hldef{Estimate[}\hlnum{4}\hldef{]}
+
+
+\hldef{\}}
+
+\hldef{bsim} \hlkwb{<-} \hldef{bsim |>}
+  \hlkwd{pivot_longer}\hldef{(}\hlkwc{cols} \hldef{=} \hlkwd{colnames}\hldef{(bsim),}
+           \hlkwc{names_to} \hldef{=} \hlsng{"Beta"}\hldef{,}
+           \hlkwc{values_to} \hldef{=} \hlsng{"Value"}\hldef{)}
+
+
+\hlkwd{library}\hldef{(ggridges)}
+\hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= bsim,} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= Value,} \hlkwc{y} \hldef{=} \hlkwd{fct_rev}\hldef{(}\hlkwd{as.factor}\hldef{(Beta))))} \hlopt{+}
+  \hlkwd{geom_density_ridges}\hldef{(}\hlkwc{alpha} \hldef{=} \hlnum{0.5}\hldef{)} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlsng{"Estimate"}\hldef{)} \hlopt{+}
+  \hlkwd{geom_hline}\hldef{(}\hlkwc{yintercept} \hldef{=} \hlnum{0}\hldef{)} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlsng{''}\hldef{)} \hlopt{+}
+  \hlkwd{scale_y_discrete}\hldef{(}
+\hlkwc{labels} \hldef{=} \hlkwd{c}\hldef{(}
+  \hlsng{"Beta0"} \hldef{=} \hlkwd{bquote}\hldef{(beta[}\hlnum{0}\hldef{]),}
+  \hlsng{"Beta1"} \hldef{=} \hlkwd{bquote}\hldef{(beta[}\hlnum{1}\hldef{]),}
+  \hlsng{"Beta2"} \hldef{=} \hlkwd{bquote}\hldef{(beta[}\hlnum{2}\hldef{]),}
+  \hlsng{"Beta3"} \hldef{=} \hlkwd{bquote}\hldef{(beta[}\hlnum{3}\hldef{])}
+\hldef{)}
+  \hldef{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-1} 
+\end{knitrout}
+    
+    \label{beta.dist}
+    \caption{Distribution of the $\beta$ coefficients}
+    
+    \end{figure}
+    
+    \textcolor{red}{The spread of their distributions is very different. $\beta_{0}$ has the widest spread, followed by non-interaction terms $\beta_{1}$ and $\beta_{2}$. Then, the coefficient with the least spread is clearly the interaction term $\beta_{3}$}
+    
+    \item Use the \texttt{simulate.reg()} function to simulate regression data 
+    using the default set of coefficients. Create a plot that shows the 
+    distribution of the $\hat{y}$s at $x_1=3.6$ and $x_2=-1.9$. Make sure you 
+    set \texttt{set.seed} to \texttt{F} so you can compare the output for 
+    differing samples of $\mathbf{x}$ and $\mathbf{Y}$. \textbf{What do you 
+    notice about the distribution?}
+    
+    \begin{figure}[H]
+    \centering
+    
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{csim} \hlkwb{<-} \hlkwd{tibble}\hldef{(}\hlkwc{yhat} \hldef{=} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{,} \hlnum{1000}\hldef{))}
+
+\hlkwa{for} \hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{1000}\hldef{)\{}
+
+
+  \hldef{dat} \hlkwb{<-} \hlkwd{simulate.reg}\hldef{(}\hlkwc{set.seed}\hldef{=F)}
+
+  \hldef{mod} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwd{summary}\hldef{(}\hlkwd{lm}\hldef{(y} \hlopt{~} \hldef{x1} \hlopt{+} \hldef{x2} \hlopt{+} \hldef{x1}\hlopt{*}\hldef{x2,} \hlkwc{data} \hldef{= dat))}\hlopt{$}\hldef{coefficients)}
+
+  \hldef{betas} \hlkwb{<-} \hldef{mod}\hlopt{$}\hldef{Estimate}
+
+  \hldef{csim}\hlopt{$}\hldef{yhat[i]} \hlkwb{<-} \hldef{betas[}\hlnum{1}\hldef{]} \hlopt{+} \hlnum{3.6}\hlopt{*}\hldef{betas[}\hlnum{2}\hldef{]} \hlopt{-} \hlnum{1.9}\hlopt{*}\hldef{betas[}\hlnum{3}\hldef{]} \hlopt{-} \hlnum{3.6}\hlopt{*}\hlnum{1.9}\hlopt{*}\hldef{betas[}\hlnum{4}\hldef{]}
+
+\hldef{\}}
+
+\hldef{hist} \hlkwb{<-} \hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= csim,} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{= yhat,} \hlkwc{y} \hldef{=} \hlkwd{after_stat}\hldef{(density)))} \hlopt{+}
+  \hlkwd{geom_histogram}\hldef{(}\hlkwc{bins} \hldef{=} \hlnum{15}\hldef{,} \hlkwc{color} \hldef{=} \hlsng{"black"}\hldef{,} \hlkwc{fill} \hldef{=} \hlsng{"lightgrey"}\hldef{)} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{geom_hline}\hldef{(}\hlkwc{yintercept} \hldef{=} \hlnum{0}\hldef{)} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlkwd{bquote}\hldef{(}\hlkwd{hat}\hldef{(y)))} \hlopt{+}
+  \hlkwd{scale_x_continuous}\hldef{(}\hlkwc{breaks} \hldef{=} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{10}\hldef{,} \hlopt{-}\hlnum{9}\hldef{,} \hlkwd{round}\hldef{(}\hlkwd{median}\hldef{(csim}\hlopt{$}\hldef{yhat),}\hlnum{2}\hldef{),} \hlopt{-}\hlnum{8}\hldef{,} \hlopt{-}\hlnum{7}\hldef{),} \hlkwc{limits} \hldef{=} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{10}\hldef{,}\hlopt{-}\hlnum{7}\hldef{))}
+
+\hldef{boxplot} \hlkwb{<-} \hlkwd{ggplot}\hldef{(}\hlkwc{data} \hldef{= csim,} \hlkwd{aes}\hldef{(}\hlkwc{x} \hldef{=} \hlsng{""}\hldef{,} \hlkwc{y} \hldef{= yhat))} \hlopt{+}
+  \hlkwd{geom_boxplot}\hldef{()} \hlopt{+}
+  \hlkwd{coord_flip}\hldef{()} \hlopt{+}
+  \hlkwd{xlab}\hldef{(}\hlsng{''}\hldef{)} \hlopt{+}
+  \hlkwd{ylab}\hldef{(}\hlkwd{bquote}\hldef{(}\hlkwd{hat}\hldef{(y)))} \hlopt{+}
+  \hlkwd{theme_bw}\hldef{()} \hlopt{+}
+  \hlkwd{scale_y_continuous}\hldef{(}\hlkwc{breaks} \hldef{=} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{10}\hldef{,} \hlopt{-}\hlnum{9}\hldef{,} \hlkwd{round}\hldef{(}\hlkwd{median}\hldef{(csim}\hlopt{$}\hldef{yhat),} \hlnum{2}\hldef{),} \hlopt{-}\hlnum{8}\hldef{,} \hlopt{-}\hlnum{7}\hldef{),} \hlkwc{limits} \hldef{=} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{10}\hldef{,}\hlopt{-}\hlnum{7}\hldef{))}
+
+\hlkwd{library}\hldef{(patchwork)}
+\hldef{hist} \hlopt{+} \hldef{boxplot} \hlopt{+}
+  \hlkwd{plot_layout}\hldef{(}\hlkwc{nrow} \hldef{=} \hlnum{2}\hldef{,} \hlkwc{heights} \hldef{=} \hlkwd{c}\hldef{(}\hlnum{3}\hldef{,} \hlnum{1}\hldef{))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
+\end{knitrout}
+    
+    \label{predict.dist}
+    \caption{Distribution of $\hat{y}$'s at $x_{1} = 3.6$ and $x_{2} = -1.9$}
+    
+    \end{figure}
+    
+    \textcolor{red}{The distribution of the $\hat{y}$ is Gaussian and centered at -8.5. The IQR is 0.53 [-8.74, -8.21] which is similar to the initial parameter $\sigma$.}
+    
+    \item Describe why using $t$-based inference makes sense when conducting 
+    hypothesis tests or computing confidence intervals for a coefficient $\beta_j$, 
+    and the conditional expectation or prediction of $Y$?
+  \end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 2
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \cite{Su25} investigate how well-being of preschool teachers influences 
+  the effort they put into managing their emotions at work (emotional labor).
+  They found that how committed a teacher is to their career (career commitment)
+  plays a key role in linking well-being to emotional labor, and this connection 
+  gets stronger when they have more social support from colleagues or the community.\\
+
+  As part of this work, they aimed to replicate findings that the level of social support moderates the impact of 
+  preschool teachers' career commitment on emotional labor. Below, we will assess this piece to the puzzle.\\
+
+  Fit a regression model predicting \texttt{Emotional Labor} using 
+  \texttt{career commitment}, \texttt{social support}, and their interaction.
+  Also include Gender, Age, and teaching experience.
+  
+  \begin{enumerate}
+    \item Perform a residual analysis. Do you have any concerns about the model
+    fit?
+    \item Perform an analysis of leverage/influence. Do you have any concerns 
+    about the model fit?
+    \item Provide the results of the overall $F$ test. What does this tell you
+    about the model you fit?
+    \item Based on the model fit, does the amount of social support impact the 
+    effect of career commitment on emotional labor?
+  \end{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Question 3
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Continue with the regression from Question 2.
+  \begin{enumerate}
+    \item Use \texttt{emmeans()} from the \texttt{emmeans} package
+    for \texttt{R} \citep{emmeans} to compute the estimated marginal means of
+    \texttt{Emotional Labor} for low, average and high \texttt{career commitment}
+    and \texttt{social support}. Report the results in a table and a figure.
+    \item Use \texttt{emtrends()} from the \texttt{emmeans} package
+    for \texttt{R} \citep{emmeans} to compute the slope for \texttt{career commitment}
+    at low, average, and high \texttt{social support}. Report the results in a 
+    table and use \texttt{ggeffect()} from the \texttt{ggeffects} package for
+    \texttt{R} \citep{ggeffects} to create a plot. 
+    \item Use \texttt{pairs()} to compare the slopes for \texttt{career commitment}
+    at low, average, and high \texttt{social support}. What does this tell us?
+    \item Use \texttt{johnson\_neyman()} from the \texttt{interactions} package
+    for \texttt{R} \citep{interactions} to evaluate which values of 
+    \text{social suppport} yield slopes for  \texttt{career commitment} that
+    are statistically discernible from zero. What does this tell us?
+  \end{enumerate}
+\end{enumerate}
+\bibliography{bib}
+\end{document}
