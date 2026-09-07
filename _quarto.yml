@@ -2,6 +2,7 @@ project:
   type: website
 
 website:
+  site-url: "https://maxwarriner.github.io"
   title: "Max Warriner"
   sidebar:
     style: "docked"
