@@ -22,21 +22,21 @@ website:
         # Data Analysis I
           - section: "Data Analysis I"
             contents:
-              - href: Data Analysis I\overview.qmd
+              - href: Data Analysis I/overview.qmd
                 text: "Overview"
-              - href: Data Analysis I\HW1\HW1.qmd
+              - href: Data Analysis I/HW1/HW1.qmd
                 text: "Homework 1"
-              - href: Data Analysis I\HW2\HW2.qmd
+              - href: Data Analysis I/HW2/HW2.qmd
                 text: "Homework 2"
-              - href: Data Analysis I\HW3\HW3.qmd
+              - href: Data Analysis I/HW3/HW3.qmd
                 text: "Homework 3"
-              - href: Data Analysis I\HW4\HW4.qmd
+              - href: Data Analysis I/HW4/HW4.qmd
                 text: "Homework 4"
-              - href: Data Analysis I\HW5\HW5.qmd
+              - href: Data Analysis I/HW5/HW5.qmd
                 text: "Homework 5"
-              - href: Data Analysis I\HW6\HW6.qmd
+              - href: Data Analysis I/HW6/HW6.qmd
                 text: "Homework 6"
-              - href: Data Analysis I\HW7\HW7.qmd
+              - href: Data Analysis I/HW7/HW7.qmd
                 text: "Homework 7"
         # Data Analysis II
           - section: "Data Analysis II"
@@ -47,9 +47,9 @@ website:
         contents:
         - href: dog_research.qmd
           text: "Dog Mitochondria (Published)"
-        - href: Taye_Lab\quarto.qmd
+        - href: Taye_Lab/quarto.qmd
           text: "Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren"
-        - href: MATH481_Max_Alta\quarto.qmd
+        - href: MATH481_Max_Alta/quarto.qmd
           text: "Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren"
       # Internships
       - section: "Internships"
