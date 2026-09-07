@@ -1,0 +1,11 @@
+---
+title: "Data Analysis I: Overview"
+format: html
+---
+
+I took this class in the fall of 2025 with Dr. William Cipolli. 
+
+This is the description of the course from the Colgate catalog:
+
+"An applied course on linear models, an umbrella term that covers a wide range of statistical models widely used today across disciplines in academic research and industry. Building on simple linear regression, students explore multiple linear regression with both quantitative and qualitative explanatory variables. Students investigate model building, assessment of assumptions with model diagnostics and residual analyses, and the interpretation of results via statistical inference, untangling interaction terms, and post hoc analyses. This discussion is then extended to analysis of variance (ANOVA), generalized linear models, and mixed effects models. While applied, coursework aims to combine theory and application to emphasize the need for understanding each method’s theoretical foundation. Through iterative practice with scientific writing, students also learn to effectively communicate quantitative information. The statistical software R is used for all analyses."
+

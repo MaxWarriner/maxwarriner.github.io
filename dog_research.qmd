@@ -2,7 +2,9 @@
 title: "Journal Article on Dog Mitochondria"
 ---
 
-I contributed data analysis and writing review on this study by primary author Dr. Ana Jimenez. This study was accepted for publication on August 26th, 2026 in the journal: Biochimica et Biophysica Acta (BBA) - Bioenergetics. 
+I contributed data analysis and writing review on this study by primary author Dr. Ana Jimenez. I also was the primary author of the supplementary materials. This study was accepted for publication on August 26th, 2026 in the journal: Biochimica et Biophysica Acta (BBA) - Bioenergetics. 
+
+
 
 ```{=html}
 <iframe width="100%" height="500px" src="https://doi.org/10.1016/j.bbabio.2026.149605" title="Journal Article"></iframe>

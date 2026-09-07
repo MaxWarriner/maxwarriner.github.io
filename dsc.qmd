@@ -1,10 +1,18 @@
 ---
-title: "Journal Article on Dog Mitochondria"
+title: "Colgate Data Science Collaboratory"
+resources:
+  - documents\DSC_poster.pdf
 ---
 
-I contributed data analysis and writing review on this study by primary author Dr. Ana Jimenez. This study was accepted for publication on August 26th, 2026 in the journal: Biochimica et Biophysica Acta (BBA) - Bioenergetics. 
+I worked as a developer for the Colgate Data Science Collaboratory from the fall of 2024 to the summer of 2025 under Dr. William Cipolli. I developed statistical apps for the DSC website, particularly: Two-Way ANOVA, Resampling, and Mixed Effects Regression. 
 
 ```{=html}
-<iframe width="100%" height="500px" src="https://doi.org/10.1016/j.bbabio.2026.149605" title="Journal Article"></iframe>
+<iframe width="100%" height="500px" src="https://shiny.colgate.edu/index.html" title="Colgate Data Science Collaboratory Website"></iframe>
 ```
+
+This is the poster we (Danny and I) presented to showcase our development, as well as the research we worked on that summer [(further explained here)](dog_research.qmd): 
+
+{{< pdf documents\DSC_poster.pdf width=100% height=600 >}}
+
+
 

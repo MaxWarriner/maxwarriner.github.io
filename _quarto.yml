@@ -11,6 +11,10 @@ website:
       - href: about.qmd
         text: "About Me"
         icon: person
+      # Resume
+      - href: resume.qmd
+        text: "Resume"
+        icon: filetype-pdf
       # Coursework
       - section: "Coursework"
         icon: book
@@ -18,6 +22,8 @@ website:
         # Data Analysis I
           - section: "Data Analysis I"
             contents:
+              - href: Data Analysis I\overview.qmd
+                text: "Overview"
               - href: Data Analysis I\HW1\HW1.qmd
                 text: "Homework 1"
               - href: Data Analysis I\HW2\HW2.qmd
@@ -39,10 +45,22 @@ website:
       - section: "Research"
         icon: bar-chart
         contents:
-        - href: dog_research.qmd.qmd
-          text: "Study on Dog Mitochondria with Ana Jimenez (Published)"
+        - href: dog_research.qmd
+          text: "Dog Mitochondria (Published)"
         - href: Taye_Lab\quarto.qmd
-          text: "Bineyam Taye Epidemiology Lab"
+          text: "Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren"
+        - href: MATH481_Max_Alta\quarto.qmd
+          text: "Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren"
+      # Internships
+      - section: "Internships"
+        icon: briefcase
+        contents:
+        - href: ionia.qmd
+          text: "Public Health Report on Ionia County, MI"
+        - href: dsc.qmd
+          text: "Colgate Data Science Collaboratory"
+        - href: voting.qmd
+          text: "County Voting Data for Michigan"                    
       # AI Use
       - href: ai.qmd
         text: "Statement on AI Use"

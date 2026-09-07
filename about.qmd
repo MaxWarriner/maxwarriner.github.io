@@ -17,8 +17,21 @@ about:
       href: https://github.com/MaxWarriner
 ---
 
-I'm a student at Colgate University studying applied mathematics and biology. My anticipated graduation date is May 2027. 
+I'm a student at Colgate University studying applied mathematics and biology. My anticipated graduation date is May 2027. I plan on applying for PhD programs in biostatistics, statistics, and mathematics to hopefully begin in the fall of 2027. 
 
-## Resume
-{{< pdf documents/resume_quarto.pdf width=100% height=600 >}}
+![](images/colgate.JPEG)
+
+I grew up in St. Joseph, MI, a small beachy town just across the lake from Chicago. I always enjoyed math class in school, and after taking AP statistics, I was hooked. I graduated top 5% in my class and with the mathematics department award. 
+
+![](images/graduation.JPG)
+
+Outside of school I love to play volleyball, especially beach volleyball. I'm now a captain of the club volleyball team here on campus after playing since freshman year. I also played volleyball while studying abroad at UCC in Cork, Ireland (The real capital). 
+
+![](images/volleyball.jpg)
+![](images/ucc.jpg)
+
+I now live in Kalamazoo, MI, home of the broncos of WMU. This is my cat/roommate Jiji (She loves suitcases). 
+
+![](images/jiji.jpg)
+
 
