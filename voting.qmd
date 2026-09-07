@@ -1,8 +1,5 @@
 ---
 title: "County Voter Data Pipeline"
-format:
-  revealjs:
-    code-block-height: 200px
 ---
 
 This is an example of the pipeline I developed to compile largescale data from the Michigan Secretary of State voting database. This pipeline compiles the data and outputs a spreadsheet showing year to year trends in each county and divisions within each county. This was done for the Michigan State Representative Joey Andrews (District 38).

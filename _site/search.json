@@ -2,9 +2,12 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Coursework",
+    "title": "Max Warriner",
     "section": "",
-    "text": "Here you’ll find examples of my work from recent courses I’ve taken, such as Data Analysis II."
+    "text": "I’m a student at Colgate University studying applied mathematics and biology. My anticipated graduation date is May 2027. I plan on applying for PhD programs in biostatistics, statistics, and mathematics to hopefully begin in the fall of 2027.\n\nI grew up in St. Joseph, MI, a small beachy town just across the lake from Chicago. I always enjoyed math class in school, and after taking AP statistics, I was hooked. I graduated top 5% in my class and with the mathematics department award.\n\nOutside of school I love to play volleyball, especially beach volleyball. I’m now a captain of the club volleyball team here on campus after playing since freshman year. I also played volleyball while studying abroad at UCC in Cork, Ireland (The real capital).\n \nI now live in Kalamazoo, MI, home of the broncos of WMU. This is my cat/roommate Jiji (She loves suitcases).",
+    "crumbs": [
+      "About Me"
+    ]
   },
   {
     "objectID": "about.html",
@@ -136,7 +139,7 @@
     "text": "Download PDF file.\nThis research has since been updated and the goal is to publish in the next year.\nYou can find my GitHub repository for this project here.",
     "crumbs": [
       "Research",
-      "Bineyam Taye Epidemiology Lab"
+      "Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren"
     ]
   },
   {

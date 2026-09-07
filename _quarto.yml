@@ -3,13 +3,12 @@ project:
 
 website:
   title: "Max Warriner"
-  site-url: "https://maxwarriner.github.io"
   sidebar:
     style: "docked"
     collapse-level: 1
     search: false
     contents:
-      - href: about.qmd
+      - href: index.qmd
         text: "About Me"
         icon: person
       # Resume
