@@ -1,0 +1,344 @@
+---
+title: "Multivariate Data Analysis: Assignment 2"
+format: html
+resources:
+  - assignment.pdf
+  - final.pdf
+---
+
+This is an overview of my work for assignment 2/2 of my multivariate data analysis course. 
+
+Here's the initial assignment: 
+
+{{< pdf assignment.pdf width=100% height=600 >}}
+
+Here's my answers for the assignment: 
+
+{{< pdf final.pdf width=100% height=600 >}}
+
+Here's the code used for the assignment: 
+
+
+```{R}
+#| eval: false
+#| code-max-height: 50px
+#| code-fold: true
+
+#Assignment 2: Max Warriner
+
+library(tidyverse)
+library(ggplot2)
+
+
+# # Question 1 ------------------------------------------------------------
+
+
+setwd("C:/Users/12697/Documents/Multivariate Data Analysis/Assignment 2")
+file= 'Digits.Rdata'
+load(file)
+
+# Part a
+
+digits_mean_cov <- function(digits){
+  
+  p=28*28 ; X= array(0,c(1000, p, 10))
+  
+  for(k in 0:9){ 
+    for(i in 1:1000){
+      X[i, , k+1]=digits[, , i,k+1] 
+    } 
+  }
+  
+  mean <- array(0, dim = c(10, p))
+  
+  # Mean Digit
+  for(k in 1:10) { 
+    mean[k, ] = apply(X[, , k] , 2 , mean)
+  }
+  
+  # Pooled Within-group Covariance
+  cov = array(0,c(28*28, 28*28))
+  for(k in 0:9){ 
+    cov_k = cov(X[,, k+1]) ; cov = cov + cov_k /10
+  }
+  
+  return(list(mean, cov, X))
+  
+}
+
+res <- digits_mean_cov(digits)
+
+(cov <- res[[2]])
+
+X <- res[[3]]
+
+
+# Part b
+
+p=28*28
+
+o=eigen(cov) ; G=o$vectors; Lam=o$values
+# Reasonable way to fix signs of loading vector {signs are arbitrary}
+for(j in 1:p) { # j=2
+  G[,j]=sign(G[which.max(abs(G[,j])),j])* G[,j]}
+
+
+library(tidyverse)
+library(patchwork)
+
+gg_dat <- tibble(eigenv = 1:784, 
+                 variance_explained = Lam/sum(Lam), 
+                 cumulative_variance = cumsum(Lam/sum(Lam)))
+
+ind_plot <- ggplot(data = gg_dat, aes(x = eigenv)) + 
+  geom_line(aes(y = variance_explained)) +
+  geom_hline(yintercept = 0) + 
+  scale_x_log10() + 
+  theme_bw() + 
+  xlab('Eigenvector') + 
+  ylab('') + 
+  ggtitle('Variance Explained')
+
+cumul_plot <- ggplot(data = gg_dat, aes(x = eigenv, y = cumulative_variance)) + 
+  geom_line() + 
+  geom_hline(yintercept = 0) + 
+  scale_x_log10() + 
+  theme_bw() + 
+  xlab('Eigenvector') + 
+  ylab('') + 
+  ggtitle('Cumulative Variance Explained')
+
+(combined <- ind_plot / cumul_plot)
+
+# Number of PCs required to explain 90% of variance
+vexpl <- cumsum(Lam / sum(Lam))
+kk=ceiling(approx(vexpl,1:p,xout=.99)$y)
+print(round(c(kk)))
+
+
+# Part c
+
+digit_var_dat <- tibble(digit = 0:9)
+
+Z <- array(0, dim = c(kk, 1000, 10))
+
+  for (k in 1:10) {
+    Z <- X[, , k] %*% G[, 1:kk]
+    
+    digit_var_dat$var_explained[k] <- sum(apply(Z, 2, var)) / sum(apply(X[, , k], 2, var))
+  }
+
+(digit_var_explained <- ggplot(data = digit_var_dat, aes(x = digit, y = var_explained*100)) + 
+  geom_col() + 
+  geom_hline(yintercept = 99, linetype = "dashed", color = "red") +
+  annotate("text", x = 4.5, y = 99.05,             
+           label = "Whole Data Variance Cut-Off", 
+           hjust = 1, color = "red", size = 2.5) +
+  theme_bw() + 
+  xlab("Digit") + 
+  ylab("Variance Explained (%)") + 
+  scale_x_continuous(breaks = 0:9) + 
+  coord_cartesian(ylim = c(98, 100)))
+
+
+# Question 2 --------------------------------------------------------------
+
+setwd("C:/Users/12697/Documents/Multivariate Data Analysis/Assignment 2")
+file= 'Digits.Rdata'
+load(file)
+
+library(stats)
+
+# part a
+
+redigits <- array(0, dim = c(1000, 28*28, 10))
+for (i in 1:10){
+  redigits[, , i] <- c(digits[, , , i])
+}
+
+clusts <- list()
+
+for (i in 1:10){
+  clust_i <- hclust(dist(redigits[, , i]), method = 'ward.D')
+  clusts[[i]] <- cutree(clust_i, k = 15)
+}
+
+cluster_means <- array(0, dim = c(784, 15, 10))
+for (i in 1:10){
+  for (j in 1:15){
+    cluster_means[, j, i] <- apply(redigits[clusts[[i]] == j, , i], 2, mean)
+  }
+}
+
+cluster_means
+
+# part b
+
+rss <- array(0, dim = c(10000, 10))
+
+digits_stacked <- array(0, dim = c(10000, 28*28))
+for (i in 1:10){
+  digits_stacked[((i-1)*1000+1):(i*1000),] <- digits[, , , i]
+}
+
+for (i in 1:10000){
+  for (j in 1:10){
+    rss[i, j] <- sum((lm(digits_stacked[i,] ~ cluster_means[, , j])$residuals)^2)
+  }
+}
+
+#part b
+
+dev.off()
+par(mfrow = c(3, 4), mar = rep(2, 4))
+
+for(i in 1:10){
+  boxplot(rss[((i-1)*1000+1):(i*1000), ], 
+          xaxt = 'n')
+  title(i-1)
+  axis(1, 
+       at = 1:10, 
+       labels = 0:9)
+}
+
+#part c
+
+d_opt <- rep(NA, 10000)
+
+for (i in 1:10000){
+  image_rss <- rss[i,]
+  d_opt[i] = which.min(image_rss)-1
+}
+
+accuracy_test <- ifelse(d_opt == rep(0:9, each = 1000), 1, 0)
+accuracy_test_digit <- array(accuracy_test, dim = c(1000, 10))
+accuracy_test_digit <- apply(accuracy_test_digit, 2, mean)
+
+barplot((1-accuracy_test_digit)*100, names.arg = 0:9, main = "Misclassification Rate (%)")
+
+
+
+# # Question 3 ------------------------------------------------------------
+
+setwd("C:/Users/12697/Documents/Multivariate Data Analysis/Assignment 2")
+
+xx= read.table('table2.dat')
+
+X = xx[,3:24] ; p=ncol(X) ; n=nrow(X)
+
+# Part a
+
+# deviations of data from median
+
+meds = apply(X,2,median) ; mads=apply(X,2,mad)
+
+Xd = scale(X,center=meds,scale=mads)
+abdev = apply(abs(Xd),1,mean) ; summary(abdev)
+qcut=quantile(abdev,p=.99)
+# Trim outlying data
+Xdc = Xd[abdev<qcut,]
+table(xx$V25, abdev>qcut)
+
+
+# Part b-i
+
+y <- xx$V25[abdev<qcut]
+
+
+library(MASS)
+oo=lda(y~Xdc) ; V=oo$scaling
+
+dev.off()
+par(mfrow = c(4, 3),mar=rep(2,4))
+matplot(V[, 1:4], type = "l")
+title("Loadings")
+
+
+fstats <- rep(NA, 10)
+
+for (i in 1:10){
+  ld <- Xdc %*% V[, i]
+  fstats[i] <- summary(aov(ld ~ y))[[1]][1, 4]
+}
+
+plot(1:10, fstats, main = "F-Tests")
+
+for (i in 1:10){
+  
+  ld <- Xdc %*% V[, i]
+  boxplot(ld ~ y, outline = F)
+  title(i)
+  
+}
+
+
+
+# part b-ii
+
+dev.off()
+par(mfrow = c(3, 3),mar=rep(3,4))
+
+lds <- Xdc %*% V
+
+n = 5
+
+for (i in 1:(n-1)){
+  for (j in (i+1):n){
+    
+    if(i == j){
+      next
+    }
+    
+    if(i == 4 && j == 5){
+      break
+    }
+  
+  means <- tibble(group = unique(y), 
+                  x = rep(NA, 11), 
+                  y = rep(NA, 11))
+  
+  for (g in 1:11){
+    means$x[g] <- {
+      pts <- cbind(lds[y == unique(y)[g], i], lds[y == unique(y)[g], j])
+      cx <- mean(pts[,1]); cy <- mean(pts[,2])
+      dists <- sqrt((pts[,1]-cx)^2 + (pts[,2]-cy)^2)
+      keep <- dists <= sort(dists, decreasing=TRUE)[21]
+      mean(pts[keep, 1])
+    }
+    means$y[g] <- mean(pts[keep, 2])
+  }
+  
+  plot(lds[,i], lds[, j], main = paste0("Discriminant ", i, " vs. ", j), xlab = paste0(i), ylab = paste0(j))
+  text(means$x, means$y, labels = means$group, col = 1:11)
+  
+  }
+}
+
+
+
+# Part c
+library(MASS)
+
+cvl = lda(y~Xdc, CV = T) ; cv_ls = cvl$scaling
+cvq = qda(y~Xdc, CV = T) ; cv_qs = cvq$scaling
+
+library(caret)
+lda_conf <- confusionMatrix(factor(cvl$class), factor(y))
+qda_conf <- confusionMatrix(factor(cvq$class), factor(y))
+
+# Misclassification by Star Type
+round(1 - diag(lda_conf$table) / colSums(lda_conf$table), 3)*100 #LDA
+round(1 - diag(qda_conf$table) / colSums(qda_conf$table), 3)*100 #QDA
+
+#Overall Misclassification
+round(1 - sum(diag(lda_conf$table)) / sum(lda_conf$table), 3)*100 #LDA
+round(1 - sum(diag(qda_conf$table)) / sum(qda_conf$table), 3)*100 #QDA
+
+#Correlation between sample size and misclassification rate
+cor(1 - diag(lda_conf$table) / colSums(lda_conf$table), table(factor(y))) #LDA
+cor(1 - diag(qda_conf$table) / colSums(qda_conf$table), table(factor(y))) #QDA
+
+
+
+
+```

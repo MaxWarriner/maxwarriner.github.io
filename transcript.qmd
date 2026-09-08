@@ -1,0 +1,10 @@
+---
+title: "Transcript"
+resources:
+  - Transcript.pdf
+---
+
+This is the most up to date unofficial transcript I have from Colgate University. 
+
+{{< pdf Transcript.pdf width=100% height=600 >}}
+

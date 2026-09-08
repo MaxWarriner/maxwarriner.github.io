@@ -1,0 +1,11 @@
+---
+title: "Practical 4"
+format: html
+---
+
+These are the plots I made for practical 4:
+
+
+![Practical 4 Plot 1](Spectra_Plot.png)
+
+![Practical 4 Plot 2](Spectra_Plot_Fields.png)

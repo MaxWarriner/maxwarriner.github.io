@@ -1,0 +1,8 @@
+---
+title: "Practical 2"
+format: html
+---
+
+This is the map I created for Practical 2: 
+
+![Practical 2 Map](practical_2_layout.png)

@@ -1,0 +1,8 @@
+---
+title: "Practical 3"
+format: html
+---
+
+This is the plot I created for Practical 3: 
+
+![Practical 3 Plot](plot.png)

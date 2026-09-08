@@ -1,0 +1,13 @@
+---
+title: "Bioinformatics: Overview"
+format: html
+resources:
+  - syllabus.pdf
+---
+
+I took this class in the Spring of 2026 with Dr. Pavel Baranov at University College Cork in Ireland. 
+
+This is the description of the course from the UCC catalog:
+
+{{< pdf syllabus.pdf width=100% height=600 >}}
+

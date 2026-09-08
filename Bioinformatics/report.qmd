@@ -1,0 +1,10 @@
+---
+title: "Gene Locus Report"
+format: html
+resources:
+  - Report_MaxWarriner.pdf
+---
+
+This is the final project report I made on the Gene Locus METTL13 
+
+{{< pdf Report_MaxWarriner.pdf width=100% height=600 >}}

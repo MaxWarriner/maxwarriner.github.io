@@ -1,0 +1,44 @@
+ENVI
+description = {
+ Layer Stack Result}
+samples = 1244
+lines   = 960
+bands   = 10
+data type = 12
+interleave = bsq
+file type = ENVI Standard
+header offset = 0
+byte order = 0
+map info = {UTM, 1.000, 1.000, 515520.000, 5735940.000, 1.000000e+01, 1.000000e+01, 29, North, WGS-84, units=Meters}
+coordinate system string = {PROJCS["WGS_1984_UTM_Zone_29N",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",-9.0],PARAMETER["Scale_Factor",0.9996],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]}
+band names = {
+ blue, green, red, VRE1, VRE2, VRE3, NIR1, NIR2, SWIR1, SWIR2}
+wavelength = {
+  492.300000,  559.000000,  665.000000,  703.800000,  739.100000,  779.700000,
+  833.000000,  864.000000, 1610.400000, 2185.700000}
+fwhm = {
+  76.000000,  46.000000,  39.000000,  20.000000,  18.000000,  28.000000,
+ 133.000000,  32.000000, 141.000000, 238.000000}
+wavelength units = Nanometers
+data ignore value = 0
+data gain values = {
+ 1.00000000e+00, 1.00000000e+00, 1.00000000e+00, 1.00000000e+00,
+ 1.00000000e+00, 1.00000000e+00, 1.00000000e+00, 1.00000000e+00,
+ 1.00000000e+00, 1.00000000e+00}
+data offset values = {
+ 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+ 0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+ 0.00000000e+00, 0.00000000e+00}
+data reflectance gain values = {
+ 1.00000000e-04, 1.00000000e-04, 1.00000000e-04, 1.00000000e-04,
+ 1.00000000e-04, 1.00000000e-04, 1.00000000e-04, 1.00000000e-04,
+ 1.00000000e-04, 1.00000000e-04}
+data reflectance offset values = {
+ -1.00000000e-01, -1.00000000e-01, -1.00000000e-01, -1.00000000e-01,
+ -1.00000000e-01, -1.00000000e-01, -1.00000000e-01, -1.00000000e-01,
+ -1.00000000e-01, -1.00000000e-01}
+solar irradiance = {
+ 1.95975000e+03, 1.82493000e+03, 1.51279000e+03, 1.42578000e+03,
+ 1.29113000e+03, 1.17557000e+03, 1.04128000e+03, 9.53930000e+02,
+ 2.47080000e+02, 8.77500000e+01}
+acquisition time = 2024-06-01T11:53:59.024Z

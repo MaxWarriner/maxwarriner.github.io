@@ -19,6 +19,16 @@ website:
       - section: "Coursework"
         icon: book
         contents:
+        # Transcript
+          - href: transcript.qmd
+            text: "Transcript"       
+        # Biostatistics
+          - section: "Biostatistics"
+            contents:
+              - href: Biostatistics/overview.qmd
+                text: "Overview"
+              - href: Biostatistics/hypothesis_tests.qmd
+                text: "Hypothesis Tests"                                                                                                                          
         # Data Analysis I
           - section: "Data Analysis I"
             contents:
@@ -38,6 +48,35 @@ website:
                 text: "Homework 6"
               - href: Data Analysis I/HW7/HW7.qmd
                 text: "Homework 7"
+        # Geoinformatics
+          - section: "Geoinformatics"
+            contents:
+              - href: Geoinformatics/overview.qmd
+                text: "Overview"
+              - href: Geoinformatics/Practical 1/quarto.qmd
+                text: "Practical 1"   
+              - href: Geoinformatics/Practical 2/quarto.qmd
+                text: "Practical 2"
+              - href: Geoinformatics/Practical 3/quarto.qmd
+                text: "Practical 3"
+              - href: Geoinformatics/Practical 4/quarto.qmd
+                text: "Practical 4"   
+        # Bioinformatics
+          - section: "Bioinformatics"
+            contents:
+              - href: Bioinformatics/overview.qmd
+                text: "Overview"
+              - href: Bioinformatics/report.qmd
+                text: "Gene Locus Report"
+        # Multivariate Data Analysis
+          - section: "Multivariate Data Analysis"
+            contents:
+              - href: Multivariate Data Analysis/overview.qmd
+                text: "Overview"
+              - href: Multivariate Data Analysis/Assignment1/quarto.qmd
+                text: "Assignment 1"
+              - href: Multivariate Data Analysis/Assignment2/quarto.qmd
+                text: "Assignment 2"                                                                                                               
         # Data Analysis II
           - section: "Data Analysis II"
             contents:

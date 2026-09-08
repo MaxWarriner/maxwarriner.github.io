@@ -1,0 +1,50 @@
+﻿Band,Location,Value
+ultrablue,Cork Harbour,7461
+blue,Cork Harbour,7994
+green,Cork Harbour,8821
+red,Cork Harbour,7851
+NIR,Cork Harbour,7333
+SWIR,Cork Harbour,7445
+MIR,Cork Harbour,7465
+ultrablue,Mudflats,8833
+blue,Mudflats,9264
+green,Mudflats,10026
+red,Mudflats,10189
+NIR,Mudflats,11340
+SWIR,Mudflats,9261
+MIR,Mudflats,8443
+ultrablue,Runway,9226
+blue,Runway,9612
+green,Runway,10352
+red,Runway,10342
+NIR,Runway,13035
+SWIR,Runway,12703
+MIR,Runway,12043
+ultrablue,Terminal Building,13001
+blue,Terminal Building,14019
+green,Terminal Building,15958
+red,Terminal Building,17186
+NIR,Terminal Building,19955
+SWIR,Terminal Building,22764
+MIR,Terminal Building,23153
+ultrablue,Green Field 1,8536
+blue,Green Field 1,8547
+green,Green Field 1,9442
+red,Green Field 1,8438
+NIR,Green Field 1,25914
+SWIR,Green Field 1,13790
+MIR,Green Field 1,9977
+ultrablue,Green Field 2,8537
+blue,Green Field 2,8582
+green,Green Field 2,9603
+red,Green Field 2,8649
+NIR,Green Field 2,24352
+SWIR,Green Field 2,13969
+MIR,Green Field 2,10221
+ultrablue,Non-Green Field,10395
+blue,Non-Green Field,11023
+green,Non-Green Field,12625
+red,Non-Green Field,14406
+NIR,Non-Green Field,20573
+SWIR,Non-Green Field,20451
+MIR,Non-Green Field,15806
