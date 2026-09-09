@@ -1,0 +1,447 @@
+\documentclass{article}
+\usepackage[margin=1.0in]{geometry} % To set margins
+\usepackage{amsmath}  % This allows me to use the align functionality.
+% If you find yourself trying to replicate
+% something you found online, ensure you're
+% loading the necessary packages!
+\usepackage{amsfonts} % Math font
+\usepackage{fancyvrb}
+\usepackage{hyperref} % For including hyperlinks
+\usepackage[shortlabels]{enumitem}% For enumerated lists with labels specified
+\usepackage{float}    % For telling R where to put a table/figure
+\usepackage{natbib}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\begin{document}
+\noindent\textbf{Homework 1: Reaquainting Ourselves with R}\\
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\noindent\underline{Submission Notes:} Please write your answers to each question under that question (not altogether at the end). It will be easier for me to give full credit if your answer is commented well, including comments about where you are completing each sub-part of the question. For example:\\
+
+\noindent\textbf{Solution:} Below, I write a function to demonstrate an effectively communicated answer.
+<<warning=F, message=F, size="scriptsize">>=
+# A function that takes x, does 'nothing,' and returns x
+my.nothing.function <- function(x){
+  # Part a
+  out = x + 100
+  # Part b
+  out = out - 100
+  # Part c
+  return(out)
+}
+# my nothing function does nothing:
+my.nothing.function(13)
+@
+
+
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+Success in highly competitive cultures is often attributed to personal qualities like talent and hard work. However, \cite{Pluchino18} argue that luck plays a much larger and often underestimated role. Using simulation, the authors demonstrate that while some talent is necessary, the most successful individuals are rarely the most talented. Instead, they are often close to average people who benefited from luck. Their research suggests that policy strategies that only account for merit may not address all aspects of ``success."\\
+
+%One possible extension to their work is to consider how bias plays a role. For example, \cite{Eames24} showed that there was bias in the evaluation of applications based on whether applicants listed pronouns, and, if they did, what their pronouns were. \cite{Gaddis21} show that there continues to be racial and ethnic discrimination in hiring. And, interestingly, these racial biases can be exacerbated by withholding certain information \citep[e.g., ban the box initiatives; see][]{Agan18}.\\
+
+The basis for the simulation is that $N_p$ ``people" and $N_E$ lucky or unlucky events are placed in the unit square -- the square formed by the points (0,0), (1,0), (1,1), and (1,0). As time passes, the lucky and unlucky events move through the square, potentially interacting with different people.\\
+
+Complete the following tasks to recreate the simulation of \cite{Pluchino18}.
+
+\begin{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Create a \texttt{tibble} for keeping track of the simulated people. The \texttt{tibble} should have $N_p=1000$ rows and the following columns.
+\begin{enumerate}
+\item \texttt{Talent} which can be simulated from a truncated normal distribution with $\mu_T = 0.60$, $\sigma_T=0.10$ and truncation limits of 0 and 1. See \texttt{rtruncnorm} from the \texttt{truncnorm} package \citep{truncnorm}.
+\item \texttt{Capital} which is set to 10 for all people. This (unrealistically) indicates everyone starts with the same amount of ``success.''
+\item \texttt{x} which can be simulated from a uniform distribution with $a=0$ and $b=1$.
+\item \texttt{y} which can be simulated from a uniform distribution with $a=0$ and $b=1$.
+\item \texttt{Lucky} is set to 0 for all people, and will store the count of lucky events for each person.
+\item \texttt{Unlucky} is set to 0 for all people, and will store the count of unlucky events for each person.
+\end{enumerate}
+
+<<warning=F, message=F, size="scriptsize">>=
+library(tidyverse)
+library(truncnorm)
+library(stats)
+
+#a
+#create the tibble w/ Talent as the first column
+sim <- tibble(Talent = rtruncnorm(n = 1000, a = 0, b = 1, mean = 0.6, sd = 0.1))
+
+#b: capital
+sim$Capital = rep(10, 1000)
+
+#c: x
+sim$x = runif(n = 1000, min = 0, max = 1)
+
+#d: y 
+sim$y = runif(n = 1000, min = 0, max = 1)
+
+#e: Lucky
+sim$Lucky = rep(0, 1000)
+
+#f: Unlucky
+sim$Unlucky = rep(0, 1000)
+
+head(sim)
+
+@    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Create a \texttt{tibble} for keeping track of the simulated events. The \texttt{tibble} should have $N_E=500$ rows and the following columns.
+\begin{enumerate}
+\item \texttt{Type} which should randomly specify an event as ``Lucky" or ``Unlucky" with probability $p_L=0.50$
+\item \texttt{x} which can be simulated from a uniform distribution with $a=0$ and $b=1$.
+\item \texttt{y} which can be simulated from a uniform distribution with $a=0$ and $b=1$.
+\end{enumerate}
+
+
+<<warning=F, message=F, size="scriptsize">>=
+
+#a
+#create the tibble for events w/ Type as first column
+Events <- tibble(Type = rep(NA, 500))
+
+for (i in 1:500){
+  Events$Type[i] = ifelse(sample(c(0,1),1) == 1, "Lucky", "Unlucky")
+}
+
+#b
+Events$x = runif(n = 500, min = 0, max = 1)
+
+#c
+Events$y = runif(n = 500, min = 0, max = 1)
+
+head(Events)
+
+@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Create a plot with the following layers to get an idea about what's ``going on." 
+\begin{enumerate}
+\item Plot a point for each person.\\
+\textbf{Hint:} Depending on your operating system, you might be able to use hex code 1F6B6 for your point shape. 
+\item Plot a point for each event. Use two colors for specifying ``Lucky" and ``Unlucky."\\
+\textbf{Hint:} You may be inclined to use green (good) and red (bad), as in Figure 1 of \cite{Pluchino18}, but that is not colorblind friendly.
+\item Include the plot in your document, ensuring to use the appropriate figure LaTeX environment and scale it appropriately.\\
+\textbf{Hint:} Don't forget the cheatsheet on Moodle!
+\end{enumerate}
+
+
+\begin{figure}[H]
+\begin{center}
+
+<<warning=F, message=F, size="scriptsize", fig.dim=c(7,5)>>=
+library(ggplot2)
+
+#a
+
+ggplot() + 
+  geom_point(data = sim, aes(x = x, y = y, color = "Person"), shape = 8) + 
+  geom_point(data = Events, aes(x = x, y = y, color = Type)) + 
+  scale_color_manual(values = c("Unlucky" = "red", "Lucky" = "blue", "Person" = "black")) + 
+  geom_rect(data = tibble(x1 = 0, x2 = 1, y1 = 0, y2 = 1), aes(xmin = x1, xmax = x2, ymin = y1, ymax = y2), color = 'black', alpha = 0) + 
+  theme(legend.title = element_blank()) + 
+  theme_void()
+
+
+
+@
+
+\caption{The beginning map of simulated people and lucky/unlucky events}
+\label{plot1}
+\end{center}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Write a function called \texttt{move.event()} that takes the following arguments
+\begin{align*}
+\texttt{x} &= x~\textrm{coordinate}\\
+\texttt{y} &= y~\textrm{coordinate}\\
+\texttt{dist} &= \textrm{distance to move}
+\end{align*}
+and performs the following.
+\begin{enumerate}
+\item Pick a random angle $\theta$ between $0$ and $2\pi$ for the event to move.\\
+\textbf{Hint:} Use the \texttt{runif()} function in \texttt{R}.
+\item Compute the change in $x$ and $y$. Recall,
+\begin{align*}
+\Delta{x} = \texttt{dist} \times \cos(\theta)\\
+\Delta{y} = \texttt{dist} \times \sin(\theta)
+\end{align*}
+\item Update the values of \texttt{x} and \texttt{y} in temporary objects \texttt{x.new} and \texttt{y.new}.
+\item If the points have moved outside of the unit square, send them to the other side of the square. Note, you can update $x$ and $y$ as follows.
+\begin{align*}
+x = 
+\begin{cases}
+x   & x \in  [0, 1] \\
+-x   & x \in  [-1, 0)\\
+(2-x) & x \in  (1, 2] \\
+\end{cases}
+\end{align*}
+\item Return the new location of the event.
+\end{enumerate}
+
+<<warning=F, message=F, size="scriptsize">>=
+
+move.event <- function(x, y, dist){
+  
+  #a
+  theta = runif(n = 1, min = 0, max = 2*pi)
+  
+  #b
+  delta.x = dist * cos(theta)
+  delta.y = dist * sin(theta)
+  
+  #c
+  x.new = x + delta.x
+  y.new = y + delta.y
+  
+  #d
+  if(x.new < -1){
+    x.new = -1 * x.new
+  } else if (x.new > 1){
+    x.new = 2 - x.new
+  }
+  
+  if(y.new < -1){
+    y.new = -1 * y.new
+  } else if (y.new > 1){
+    y.new = 2 - y.new
+  }
+  
+  return(c(x.new, y.new))
+  
+}
+
+
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Conduct the simulation over 80 six-month periods by conducting the following steps in a loop for each six-month period.
+\begin{enumerate}
+\item Check to see whether each person is within 1/201 of an event. This is the quantity used by \cite{Pluchino18} to determine when an event and a person interact.\\
+\textbf{Hint:} This requires you to compute the distance from each person to each event. Recall, you can compute the distance between two points $(x_1, y_1)$ and $(x_2, y_2)$ as
+\[\textrm{Distance} = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}.\]
+\item When a person is within 1/201 of a ``Unlucky" event, halve their \texttt{Capital} regardless of their \texttt{Talent}.
+\item When a person is within 1/201 of a ``Lucky" event, and double their \texttt{Capital} if their \texttt{Talent} is greater than a randomly generated number between 0 and 1 using \texttt{runif()}. 
+\item Update the location of events using the \texttt{move.event()} function with \texttt{dist=1/201}. 
+\end{enumerate}
+\textbf{Hint:} While it is not the \emph{only} way to complete this task, I used nested \texttt{for()} loops -- six-month time frames, people, events.\\
+\textbf{Note:} Once you get it to work, set \texttt{eval=F} in your \texttt{R} chunk preamble. It takes a few minutes to complete and that will be annoying as you continue to compile your homework.\\
+
+
+<<warning=F, message=F, size="scriptsize", eval=T>>=
+
+# a
+
+distance <- rep(NA, 500)
+
+for(i in 1:80){
+  for (j in 1:1000){
+    for(k in 1:500){
+      
+      distance[k] = sqrt((sim$x[j] - Events$x[k])^2 + (sim$y[j] - Events$y[k])^2)
+      
+      #b
+      if(distance[k] <= 1/201){
+        
+        if(Events$Type[k] == "Unlucky"){
+          
+          sim$Capital[j] = sim$Capital[j] * 0.5
+          sim$Unlucky[j] = sim$Unlucky[j] + 1
+          
+        #c
+        }else{
+          
+          talent_check <- runif(n = 1, min = 0, max = 1)
+          
+          if(sim$Talent[j] > talent_check){
+            
+            sim$Capital[j] = sim$Capital[j] * 2
+            sim$Lucky[j] = sim$Lucky[j] + 1
+          }
+        }
+      }
+    }
+  }
+  
+  #d
+  for(e in 1:500){
+    
+    new_location <- move.event(Events$x[e], Events$y[e], 1/201)
+    
+    Events$x[e] <- new_location[1]
+    
+    Events$y[e] <- new_location[2]
+    
+  }
+  
+}
+
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Question 6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Does Talent matter? For the following, use the \texttt{simulation.csv} to evaluate the results. Note that these data come from 100 runs of the simulation, where we saved the top 1\% of people according to their accumulated capital/success. Is the mean talent of those in the top 1\% different from the generating $\mu_T=0.60$?
+\begin{enumerate}
+\item Load the data into \texttt{R}.
+<<warning=F, message=F, size="scriptsize">>=
+#a
+results <- read.csv('simulation.csv')
+@
+\item Compute a statistic or statistics and create a figure or figures that summarize the data and begin to answer the research question.
+
+
+<<size = "scriptsize">>=
+library(xtable)
+one_percent_sum <- t.test(results$Talent, mu = 0.6)$conf.int
+normal_sum <- t.test(sim$Talent, mu = 0.6)$conf.int
+
+tab.sum <- data.frame(Group = c("One Percent", "Normal Simulation"), 
+                      Mean_Talent = c(mean(results$Talent),mean(sim$Talent)), 
+                  Lower_CI = c(one_percent_sum[1], normal_sum[1]), 
+                  Upper_CI = c(one_percent_sum[2], normal_sum[2]))
+tab.sum <-xtable(tab.sum,label = "tab.sum", caption = "Mean Talent and Confidence Intervals of Both Groups")
+@
+
+<<size = "scriptsize", results='asis'>>=
+print(tab.sum,
+table.placement = "H", include.rownames=FALSE, size = "small")
+@
+
+
+\begin{figure}[H]
+\begin{center}
+
+<<warning=F, message=F, size="scriptsize", fig.dim=c(7,5)>>=
+
+
+ggplot(data = tab.sum, aes(x = Group, y = Mean_Talent)) + 
+  geom_col() + 
+  geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI), width = 0.25) + 
+  theme_bw() + 
+  geom_hline(yintercept = 0) + 
+  labs(x = "", 
+       y = "Mean Talent", 
+       title = "Comparing Talent: 1% vs. Normal Simulation") + 
+  ylim(0,1)
+
+@
+
+\caption{Comparison Barplots of Talent}
+\label{plot2}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+
+
+<<warning=F, message=F, size="scriptsize", fig.dim=c(7,5)>>=
+
+
+ggplot(data = sim, aes(x = Talent, y = log(Capital))) + 
+  geom_point() + 
+  geom_smooth(aes(color = "Best-Fit Model")) + 
+  theme_bw() + 
+  ggtitle('Talent vs. log(Capital)') + 
+  labs(subtitle = paste('r =', round(cor(sim$Talent, sim$Capital), 3))) + 
+  theme(legend.title = element_blank())
+
+@
+
+\caption{Scatter Plot of Talent against log(Capital)}
+\label{plot3}
+\end{center}
+\end{figure}
+
+\item Evaluate whether the conditions for using a $t$-based inference.
+<<warning=F, message=F, size="scriptsize">>=
+#c
+library(stats)
+shapiro.test(results$Talent)
+@
+\item Regardless of your answer in part (b), conduct a $t$-test.
+<<warning=F, message=F, size="scriptsize">>=
+#d
+t.test(results$Talent, mu = 0.6)
+@
+\item Regardless of your answer in part (b), compute a $t$-interval.
+<<warning=F, message=F, size="scriptsize">>=
+#e
+t.test(results$Talent, mu = 0.6)$conf.int
+
+@
+\item Write an interpretation of your work above and provide a preliminary answer to the research
+question.
+<<warning=F, message=F, size="scriptsize">>=
+
+library(effectsize)
+hedges_g(results$Talent, mu = 0.6)
+interpret_hedges_g(0.54)
+
+@
+
+
+\end{enumerate}
+\textbf{Note:} For this question, provide a solution under each part.
+
+After taking the top one percent of participants in capital after one hundred simulations, a precursory look at the mean talent of the one percent compared to a run of the normal simulation, we see a discernible but relatively smell visual difference. As shown in Figure:  \ref{plot2}, mean talent is plotted with error bars representing a 95 percent confidence interval, visually showing the data provided in Figure: \ref{tab.sum}. 
+
+The especially sensitive Shapiro-Wilkes test for normality gives us a test statistic W of 0.9908 and p = 0.9114, giving assurance that the talent measures from the top one percent are normally distributed for the t-test. 
+
+A t-test was conducted on the talent measures from the one-percent to see if the true mean of the talent measures was different than the overall average given of 0.6. The test statistic from our two sided test was t = 17.168 and p \textless 0.0001. A 95 percent confidence interval of the talent measures is given: [0.646, 0.658]. Because the p-value given is less than our given alpha of 0.05, we have strong evidence that the true value of talent of the top 1 percent of individuals regarding capital is not equal to 0.6. The effect size measure hedge's g gives an effect size of 0.54 with a 95 percent confidence interval of [0.48, 0.61], indicating a moderate deviation from the null. 
+
+Our hypothesis test would lead us to believe that those who gain the most capital are significantly more talented than the average person. However, as shown in Figure: \ref{plot2}, the difference between the average talent from the top one percent and the normal pool of individuals is only slightly higher on visual analysis, plus, as seen in Figure: \ref{plot3}, in a single run of the simulation, the correlation between talent and capital is essentially non-existent. This leads us to the conclusion that while talent is a factor in gaining capital after repeated testing and thousands of individuals, in a single simulation, the effect of talent on capital is much less convincing, suggesting that other factors are very, if not more, important. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Optional Practice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \textbf{(Optional)} Attempt to recreate some of the other plots from \cite{Pluchino18}. Based on the simulation, you can recreate Figures 2-6 using your simulation. You can recreate Figures 7-9 using the \texttt{simulation.csv} file.
+\item \textbf{(Optional)} I, personally, wonder whether the ``success'' or ending capital depended on how close individuals were to lucky events at the beginning of the simulation. That is, instead of considering ``luck" as whether a lucky event crossed an individual we considered starting luck. Compute a statistic and create a figure that helps answer this question.
+\item \textbf{(Optional)} You may or may not have been completely satisfied when you evaluated the conditions for using a $t$-test. Conduct a bootstrap test and/or a randomization test. Does the research answer change?
+\item \textbf{(Optional)} One possible extension to their work is to consider how bias plays a role. For example, \cite{Eames24} showed that there was bias in the evaluation of applications based on whether applicants listed pronouns, and, if they did, what their pronouns were. \cite{Gaddis21} show that there continues to be racial and ethnic discrimination in hiring. And, interestingly, these racial biases can be exacerbated by withholding certain information \citep[e.g., ban the box initiatives; see][]{Agan18}.\\
+
+To investigate this, we made the following adjustments to the simulation:
+\begin{itemize}
+\item Our \texttt{People tibble} contained 2000 individuals -- 1000 ``disadvantaged" and 1000 ``advantaged" individuals.
+\item We created a \texttt{talent.differential} object meant to describe how individuals were \emph{perceived} and we use perceived talent to determine whether we double a person's capital when a lucky event crosses their path. For this homework, consider the following setup,
+\begin{align*}
+\texttt{talent.differential} &= 0.30 \\
+\texttt{perceived.talent}   &= \texttt{Talent} \pm \texttt{talent.differential/2}
+\end{align*}
+where we add for the advantaged group and subtract for the disadvantaged group.
+\end{itemize}
+
+In the end, we can see whether the disparity in \emph{perceived} talent of this new simulation affects the results. Researchers believe that this situation may yield more mediocre advantaged people in the most successful group.\\
+
+For the following questions, use the \texttt{bias-simulation.csv} to evaluate the results. Note that these data come from 100 runs of the simulation, where we saved the top 1\% of people according to their accumulated capital/success. We want to directly compare the advantaged and disadvantaged groups.
+\begin{enumerate}
+\item Compute a statistic or statistics and create a figure or figures that summarize the data and begin to answer the research question.
+\item Use the documentation from calling \texttt{?t.test} to perform a two-sample test that directly compares the groups. Also compute the two-sample confidence interval.
+\item Write an interpretation of your work above and provide a preliminary answer to the research question. 
+\end{enumerate}
+\end{enumerate}
+\bibliography{bib}
+\end{document}

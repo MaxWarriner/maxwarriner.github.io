@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Max Warriner">
+
+<title>Lab9 – Max Warriner</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6622afbb6a93371a7f6aaa1c40799739.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Max Warriner
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Max Warriner</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-person" role="img">
+</i> 
+ <span class="menu-text">About Me</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../resume.html" class="sidebar-item-text sidebar-link"><i class="bi bi-filetype-pdf" role="img">
+</i> 
+ <span class="menu-text">Resume</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false"><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Coursework</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Biostatistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/BiostatisticsLab1-MaxWarriner.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/BiostatisticsLab2-MaxWarriner.Rmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/BiostatisticsLab3-MaxWarriner.Rmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/BiostatisticsLab4-MaxWarriner.Rmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/BiostatisticsLab5-MaxWarriner.Rmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/BiostatisticsLab6-MaxWarriner.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Biostatistics/BiostatisticsLab9-MaxWarriner.Rmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data Analysis I</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/HW1/HW1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/HW2/HW2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/HW3/HW3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/HW4/HW4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/HW5/HW5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/HW6/HW6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Data Analysis I/HW7/HW7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 7</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Data Analysis II</span></span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false"><i class="bi bi-bar-chart" role="img">
+</i> 
+ <span class="menu-text">Research</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dog_research.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dog Mitochondria (Published)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Taye_Lab/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../MATH481_Max_Alta/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false"><i class="bi bi-briefcase" role="img">
+</i> 
+ <span class="menu-text">Internships</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ionia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Public Health Report on Ionia County, MI</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../dsc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colgate Data Science Collaboratory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../voting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">County Voting Data for Michigan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ai.html" class="sidebar-item-text sidebar-link"><i class="bi bi-anthropic" role="img">
+</i> 
+ <span class="menu-text">Statement on AI Use</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lab9</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Max Warriner </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Q1.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4) <span class="co"># Load required libraries</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:car':
+
+    recode</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rcompanion)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FSA)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 methods overwritten by 'FSA':
+  method       from
+  confint.boot car 
+  hist.boot    car </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>## FSA v0.9.6. See citation('FSA') if used in publication.
+## Run fishR() for related website and fishR('IFAR') for related book.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'FSA'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:car':
+
+    bootCase</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'emmeans' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome to emmeans.
+Caution: You lose important information if you filter this package's results.
+See '? untidy'</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>strength <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">40</span>,<span class="dv">36</span>,<span class="dv">42</span>,<span class="dv">36</span>,<span class="dv">44</span>,<span class="dv">37</span>,<span class="dv">41</span>,<span class="dv">42</span>,<span class="dv">40</span>,<span class="dv">42</span>,<span class="dv">34</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">49</span>,<span class="dv">52</span>,<span class="dv">50</span>,<span class="dv">36</span>,<span class="dv">33</span>,<span class="dv">34</span>,<span class="dv">36</span>,<span class="dv">25</span>,<span class="dv">31</span>,<span class="dv">27</span>,<span class="dv">27</span>,<span class="dv">70</span>,<span class="dv">72</span>,<span class="dv">67</span>,<span class="dv">70</span>,<span class="dv">56</span>,<span class="dv">62</span>,<span class="dv">55</span>,<span class="dv">59</span>,<span class="dv">48</span>,<span class="dv">50</span>,<span class="dv">48</span>,<span class="dv">48</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>pgm <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"I"</span>,<span class="dv">12</span>),<span class="fu">rep</span>(<span class="st">"II"</span>,<span class="dv">12</span>),<span class="fu">rep</span>(<span class="st">"III"</span>,<span class="dv">12</span>))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>dose <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"High"</span>,<span class="dv">4</span>),<span class="fu">rep</span>(<span class="st">"Low"</span>,<span class="dv">4</span>),<span class="fu">rep</span>(<span class="st">"Placebo"</span>,<span class="dv">4</span>) ),<span class="dv">3</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>camels <span class="ot">=</span> <span class="fu">data.frame</span>(pgm,dose,strength)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>camels<span class="sc">$</span>pgm <span class="ot">=</span> <span class="fu">as.factor</span>(camels<span class="sc">$</span>pgm)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>camels<span class="sc">$</span>dose <span class="ot">=</span> <span class="fu">as.factor</span>(camels<span class="sc">$</span>dose)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol type="a">
+<li></li>
+</ol>
+<ol type="1">
+<li><p>Null: The training program of the camels does not affect their strength Alt: The training program of the camels does affect their strength</p></li>
+<li><p>Null: The Creatine dose of the camels does not affect their strength Alt: The creatine dose of the camels does affect their strength</p></li>
+<li><p>Null: The interaction between program and creatine does not affect their strength Alt: The interaction between program and creatine does affect their strength</p></li>
+</ol>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(strength <span class="sc">~</span> <span class="fu">interaction</span>(pgm, dose), <span class="at">data =</span> camels, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"Strength"</span>, <span class="at">xlab =</span> <span class="st">"program"</span>, <span class="at">cex.lab =</span> <span class="fl">1.2</span>, <span class="at">cex.axis =</span> <span class="fl">1.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Biostatistics-Lab9-MaxWarriner_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the 'rat' dataset to create groups based on 'sex' and 'fat'</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>G1 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"I"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"High"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>G2 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"II"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"High"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>G3 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"III"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"High"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>G4 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"I"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"Low"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>G5 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"II"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"Low"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>G6 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"III"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"Low"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>G7 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"I"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"Placebo"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>G8 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"II"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"Placebo"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>G9 <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(camels, pgm <span class="sc">==</span> <span class="st">"III"</span> <span class="sc">&amp;</span> dose <span class="sc">==</span> <span class="st">"Placebo"</span>)<span class="sc">$</span>strength</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>testresult<span class="ot">=</span><span class="fu">scheirerRayHare</span>(strength <span class="sc">~</span> pgm <span class="sc">*</span> dose, <span class="at">data =</span> camels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+DV:  strength 
+Observations:  36 
+D:  0.9962677 
+MS total:  111 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>testresult</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Df  Sum Sq       H  p.value
+pgm        2 2138.54 19.3383 0.000063
+dose       2  800.79  7.2414 0.026764
+pgm:dose   4  727.54  6.5790 0.159881
+Residuals 27  203.63                 </code></pre>
+</div>
+</div>
+<p>Interpretation:</p>
+<p>After performing the Scheier-Ray hare Test, we observed that the distributions are similar so we can compare medians of the groups. After performing the test, we obtained significant results for the effect of program and dose on median strength, with p-values of 0.000063 and 0.026764 respectively. There was no significant interaction between the two.</p>
+<ol start="3" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dunnTest</span>(camels<span class="sc">$</span>strength, camels<span class="sc">$</span>dose, <span class="at">method=</span><span class="st">"bh"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Dunn (1964) Kruskal-Wallis multiple comparison</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  p-values adjusted with the Benjamini-Hochberg method.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Comparison        Z     P.unadj     P.adj
+1     High - Low 1.446109 0.148146530 0.2222198
+2 High - Placebo 2.688405 0.007179434 0.0215383
+3  Low - Placebo 1.242295 0.214127632 0.2141276</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dunnTest</span>(camels<span class="sc">$</span>strength, camels<span class="sc">$</span>pgm, <span class="at">method=</span><span class="st">"bh"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Comparison          Z      P.unadj        P.adj
+1     I - II  0.4852716 6.274837e-01 0.6274836994
+2    I - III -3.5424827 3.963795e-04 0.0005945692
+3   II - III -4.0277543 5.631215e-05 0.0001689365</code></pre>
+</div>
+</div>
+<p>Interpretation:</p>
+<p>We performed a follow up Dunn test on the effects of program and dose. When comparing dose level, we obtained significant results in the High-Placebo comparison (p-value = 0.0215383). When comparing program, we obtained significant results in the comparison between Programs 1 &amp; 3 as well as 2 &amp; 3, with p-values of 0.0005945692 and 0.0001689365 respectively.</p>
+<ol start="4" type="a">
+<li>SUMMARY</li>
+</ol>
+<p>We conducted a Scheier-Ray Hare test to determine if the dose level of creatine and the strength training program of camels affected their strength. After observing a similarity in distributions across all the 9 groups, we performed the test on the medians of the groups. After performing the test, we obtained significant results for the effect of dose level(p-value = 0.027) and program(p-value &lt; 0.001) on the median of strength. The interaction was insignificant. A follow-up Dunn test was done and found a significant difference between the high and placebo doses for camels(p-value = 0.022) and between training programs 1&amp;3(p-value &lt; 0.001) and programs 2&amp;3(p-value &lt; 0.001).</p>
+<p>Q2.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Data preperation and creating a dataframe</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>cortex<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">745</span>,<span class="dv">738</span>,<span class="dv">745</span>,<span class="dv">738</span>,<span class="dv">760</span>,<span class="dv">707</span>,<span class="dv">724</span>,<span class="dv">707</span>,<span class="dv">703</span>,<span class="dv">706</span>,<span class="dv">695</span>,<span class="dv">767</span>,<span class="dv">660</span>,<span class="dv">758</span>,<span class="dv">717</span>,<span class="dv">707</span>,<span class="dv">732</span>,<span class="dv">724</span>,<span class="dv">709</span>,<span class="dv">707</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>food<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"Enriched"</span>,<span class="dv">7</span>),<span class="fu">rep</span>(<span class="st">"Commercial"</span>,<span class="dv">4</span>),<span class="fu">rep</span>(<span class="st">"Enriched"</span>,<span class="dv">3</span>),<span class="fu">rep</span>(<span class="st">"Commercial"</span>,<span class="dv">6</span>))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>environment<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"Stimulating"</span>,<span class="dv">11</span>),<span class="fu">rep</span>(<span class="st">"Control"</span>,<span class="dv">9</span>))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>rats<span class="ot">&lt;-</span><span class="fu">data.frame</span>(cortex, food, environment)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(rats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   20 obs. of  3 variables:
+ $ cortex     : num  745 738 745 738 760 707 724 707 703 706 ...
+ $ food       : chr  "Enriched" "Enriched" "Enriched" "Enriched" ...
+ $ environment: chr  "Stimulating" "Stimulating" "Stimulating" "Stimulating" ...</code></pre>
+</div>
+</div>
+<ol type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>my.anova1a <span class="ot">=</span> <span class="fu">lm</span>(cortex <span class="sc">~</span> food <span class="sc">*</span> environment, <span class="at">data =</span> rats)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>my.anova1b <span class="ot">=</span> <span class="fu">lm</span>(cortex <span class="sc">~</span> environment <span class="sc">*</span> food, <span class="at">data =</span> rats)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(my.anova1a) <span class="co"># PRINT ANOVA TABLE FOR THE FIRST MODEL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: cortex
+                 Df Sum Sq Mean Sq F value  Pr(&gt;F)  
+food              1 2761.2 2761.25  4.7036 0.04551 *
+environment       1   44.8   44.81  0.0763 0.78587  
+food:environment  1  524.0  524.05  0.8927 0.35880  
+Residuals        16 9392.8  587.05                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(my.anova1b) <span class="co"># PRINT ANOVA TABLE FOR THE SECOND MODEL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: cortex
+                 Df Sum Sq Mean Sq F value  Pr(&gt;F)  
+environment       1   89.5   89.52  0.1525 0.70132  
+food              1 2716.5 2716.54  4.6274 0.04709 *
+environment:food  1  524.0  524.05  0.8927 0.35880  
+Residuals        16 9392.8  587.05                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="at">unordered=</span><span class="st">"contr.sum"</span>, <span class="at">ordered=</span><span class="st">"contr.poly"</span>))</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>my.anova1a <span class="ot">=</span> <span class="fu">lm</span>(cortex <span class="sc">~</span> food <span class="sc">*</span> environment, <span class="at">data =</span> rats)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform Type III ANOVA and print the ANOVA table for the first model</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(my.anova1a, <span class="at">type =</span> <span class="dv">3</span>) <span class="co"># For Type II: Anova(my.anova1a, type = 2)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: cortex
+                  Sum Sq Df    F value Pr(&gt;F)    
+(Intercept)      9314243  1 15866.1076 &lt;2e-16 ***
+food                2401  1     4.0894 0.0602 .  
+environment           27  1     0.0452 0.8343    
+food:environment     524  1     0.8927 0.3588    
+Residuals           9393 16                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ol start="2" type="a">
+<li>Interpretation:</li>
+</ol>
+<p>In both orders of doing type I SS, the food factor is significant (p-value &lt; 0.05). However, when doing type III, no factor is significant. Because we have no specific reason for doing type I instead of type III, I would interpret this result as insignificant for all of the factors.</p>
+<p>Q3.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Data preparation</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>offspring <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">18</span>,<span class="dv">20</span>,<span class="dv">15</span>,<span class="dv">27</span>,<span class="dv">30</span>,<span class="dv">20</span>,<span class="dv">28</span>,<span class="dv">30</span>,<span class="dv">17</span>,<span class="dv">29</span>,<span class="dv">35</span>,<span class="dv">30</span>,<span class="dv">32</span>,<span class="dv">28</span>,<span class="dv">35</span>,<span class="dv">25</span>,<span class="dv">30</span>,<span class="dv">19</span>,<span class="dv">30</span>,<span class="dv">25</span>,<span class="dv">28</span>,<span class="dv">29</span>, <span class="dv">32</span>,<span class="dv">38</span>,<span class="dv">29</span>,<span class="dv">35</span>,<span class="dv">39</span>,<span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">38</span>,<span class="dv">28</span>,<span class="dv">36</span>,<span class="dv">29</span>,<span class="dv">30</span>,<span class="dv">37</span>,<span class="dv">33</span>,<span class="dv">39</span>,<span class="dv">42</span>,<span class="dv">47</span>,<span class="dv">38</span>,<span class="dv">51</span>,<span class="dv">42</span>,<span class="dv">48</span>,<span class="dv">39</span>,<span class="dv">55</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"70"</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"75"</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"80"</span>,<span class="dv">5</span>),<span class="fu">rep</span>(<span class="st">"70"</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"75"</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"80"</span>,<span class="dv">5</span>),</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rep</span>(<span class="st">"70"</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"75"</span>,<span class="dv">5</span>), <span class="fu">rep</span>(<span class="st">"80"</span>,<span class="dv">5</span>))</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>feeding <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"1 Feeding"</span>,<span class="dv">15</span>), <span class="fu">rep</span>(<span class="st">"2 Feedings"</span>, <span class="dv">15</span>), <span class="fu">rep</span>(<span class="st">"3 Feedings"</span>, <span class="dv">15</span>))</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Create the  dataframe and assign the factors.</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>guppy <span class="ot">=</span> <span class="fu">data.frame</span>(offspring, temp, feeding)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>guppy<span class="sc">$</span>temp <span class="ot">=</span> <span class="fu">as.factor</span>(guppy<span class="sc">$</span>temp)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>guppy<span class="sc">$</span>feeding <span class="ot">=</span> <span class="fu">as.factor</span>(guppy<span class="sc">$</span>feeding)</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(guppy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   45 obs. of  3 variables:
+ $ offspring: num  18 20 15 27 30 20 28 30 17 29 ...
+ $ temp     : Factor w/ 3 levels "70","75","80": 1 1 1 1 1 2 2 2 2 2 ...
+ $ feeding  : Factor w/ 3 levels "1 Feeding","2 Feedings",..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+<ol type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="at">unordered =</span> <span class="st">"contr.sum"</span>, <span class="at">ordered =</span> <span class="st">"contr.poly"</span>))</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>my.anova <span class="ot">=</span> <span class="fu">lmer</span>(offspring <span class="sc">~</span> (<span class="dv">1</span><span class="sc">|</span> temp) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> feeding) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> temp<span class="sc">:</span>feeding), <span class="at">data =</span> guppy) <span class="co"># Fit the model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>residuals <span class="ot">=</span> <span class="fu">residuals</span>(my.anova)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(residuals, <span class="at">freq=</span><span class="cn">FALSE</span>, <span class="at">xlab=</span><span class="st">"Residuals"</span>, <span class="at">main=</span><span class="st">"Residuals Histogram"</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dnorm</span>(x, <span class="fu">mean</span>(residuals), <span class="fu">sd</span>(residuals)), <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="st">'red'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Biostatistics-Lab9-MaxWarriner_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(residuals); <span class="fu">qqline</span>(residuals)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Biostatistics-Lab9-MaxWarriner_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(residuals)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  residuals
+W = 0.97845, p-value = 0.5584</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(offspring <span class="sc">~</span> <span class="fu">interaction</span>(feeding, temp), <span class="at">data =</span> guppy, </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"Offspring"</span>, <span class="at">xlab =</span> <span class="st">"Feeding &amp; Temp"</span>, <span class="at">cex.lab =</span> <span class="fl">1.2</span>, <span class="at">cex.axis =</span> <span class="fl">1.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Biostatistics-Lab9-MaxWarriner_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interpretation:</p>
+<p>Our analysis of the histrogram and qqplots show approximate normality. This is confirmed with a p-value of 0.5584 for the Shapiro normality test. When plotting the boxplots, we see an approximately similar distribution for each group, while we do have one outlier.</p>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>model_no_temp <span class="ot">=</span> <span class="fu">lmer</span>(offspring <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> feeding) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> feeding<span class="sc">:</span>temp), <span class="at">data =</span> guppy, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_no_temp, my.anova)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>refitting model(s) with ML (instead of REML)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data: guppy
+Models:
+model_no_temp: offspring ~ (1 | feeding) + (1 | feeding:temp)
+my.anova: offspring ~ (1 | temp) + (1 | feeding) + (1 | temp:feeding)
+              npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)   
+model_no_temp    4 301.12 308.35 -146.56   293.12                        
+my.anova         5 295.82 304.85 -142.91   285.82 7.3055  1   0.006874 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>model_no_feeding <span class="ot">=</span> <span class="fu">lmer</span>(offspring <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> temp) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> feeding<span class="sc">:</span>temp), <span class="at">data =</span> guppy, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_no_feeding, my.anova)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>refitting model(s) with ML (instead of REML)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data: guppy
+Models:
+model_no_feeding: offspring ~ (1 | temp) + (1 | feeding:temp)
+my.anova: offspring ~ (1 | temp) + (1 | feeding) + (1 | temp:feeding)
+                 npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)   
+model_no_feeding    4 301.82 309.05 -146.91   293.82                        
+my.anova            5 295.82 304.85 -142.91   285.82 8.0055  1   0.004664 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>model_no_interact <span class="ot">=</span> <span class="fu">lmer</span>(offspring <span class="sc">~</span> (<span class="dv">1</span> <span class="sc">|</span> feeding) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> temp), <span class="at">data =</span> guppy, <span class="at">REML =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_no_interact, my.anova)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>refitting model(s) with ML (instead of REML)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data: guppy
+Models:
+model_no_interact: offspring ~ (1 | feeding) + (1 | temp)
+my.anova: offspring ~ (1 | temp) + (1 | feeding) + (1 | temp:feeding)
+                  npar    AIC    BIC  logLik deviance Chisq Df Pr(&gt;Chisq)
+model_no_interact    4 293.82 301.05 -142.91   285.82                    
+my.anova             5 295.82 304.85 -142.91   285.82     0  1     0.9999</code></pre>
+</div>
+</div>
+<p>Interpretation: 1. Null: There is no significant variation in offspring due to water temperature in guppies Alternative: There is significant variation in offspring due to water temp.</p>
+<ol start="2" type="1">
+<li><p>Null: There is no significant variation in offspring due to feeding frequency. Alternative: There is significant variation in offspring due to feeding frequency.</p></li>
+<li><p>Null: There is no significant variation in offspring due to the interaction between water temperature and feeding frequency. Alternative: There is significant variation in offspring due to the interaction between water temperature and feeding frequency.</p></li>
+</ol>
+<p>After performing the ANOVA test on all of the random factors, we obtain significant results for the effect of temperature and feeding frequency on variation with p-values of 0.006874a and 0.004664 respectively. The interaction was not significant.</p>
+<ol start="3" type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>anova_results <span class="ot">=</span> <span class="fu">Anova</span>(my.anova, <span class="at">type =</span> <span class="st">"III"</span>) <span class="co"># Perform Type III ANOVA</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>variance_components <span class="ot">=</span> <span class="fu">VarCorr</span>(my.anova) <span class="co"># Extract variance components</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>residual_variance <span class="ot">=</span> <span class="fu">attr</span>(variance_components, <span class="st">"sc"</span>)<span class="sc">^</span><span class="dv">2</span> <span class="co"># Extract residual variance</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the variance for random effects</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>temp_variance <span class="ot">=</span> <span class="fu">attr</span>(variance_components<span class="sc">$</span>temp, <span class="st">"stddev"</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>feeding_variance <span class="ot">=</span> <span class="fu">attr</span>(variance_components<span class="sc">$</span>feeding, <span class="st">"stddev"</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>temp_feeding_variance <span class="ot">=</span> <span class="fu">attr</span>(variance_components<span class="sc">$</span><span class="st">`</span><span class="at">temp:feeding</span><span class="st">`</span>, <span class="st">"stddev"</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate total variance (random effects and residual variance)</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>total_variance <span class="ot">=</span> temp_variance <span class="sc">+</span> feeding_variance <span class="sc">+</span> temp_feeding_variance <span class="sc">+</span> residual_variance</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate percent variance contribution only if total variance is not zero</span></span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>percent_variance <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"temp (Random)"</span> <span class="ot">=</span> (temp_variance <span class="sc">/</span> total_variance) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"feeding (Random)"</span> <span class="ot">=</span> (feeding_variance <span class="sc">/</span> total_variance) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"temp:feeding (Random)"</span> <span class="ot">=</span> (temp_feeding_variance <span class="sc">/</span> total_variance) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Residuals"</span> <span class="ot">=</span> (residual_variance <span class="sc">/</span> total_variance) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>percent_variance</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        temp (Random).(Intercept)      feeding (Random).(Intercept) 
+                         33.29509                          43.35845 
+temp:feeding (Random).(Intercept)             Residuals.(Intercept) 
+                          0.00000                          23.34646 </code></pre>
+</div>
+</div>
+<p>Interpretation:</p>
+<p>After performing a follow up variance calculation, we found that 33% of the variation can be attributed to the water temperature, 43% of the variation can be due to the feeding frequency, and 0% of the variation is due to the interaction between the two factors.</p>
+<ol start="4" type="a">
+<li></li>
+</ol>
+<p>Interpretation:</p>
+<ol start="5" type="a">
+<li>SUMMARY</li>
+</ol>
+<p>We performed a model two, two-way ANOVA to test if the feeding frequency and the water temperature contributed significant variation in the offspring of guppies. The data passed the normality assumption by passing the shapiro test for normality. We had one outlier in the data but we continued on with the ANOVA test. After performing the test, we obtained significant effects on the variation due to water temperature and feeding frequency with p-values of 0.006874 and 0.004664 respectively. After performing a follow up test on the variation, we found that 33% of the variation is due to the water temperature and 43% of the variaion is due to the feeding frequency.</p>
+<p>Q4.</p>
+<ol type="a">
+<li></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pf</span>(<span class="fl">2.98</span>,<span class="dv">19</span>,<span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.09040712</code></pre>
+</div>
+</div>
+<p>Interpretation: The null hypothesis is that the elevation does not add significant variation to the biodiversity in soil invertebrates. They cannot reject the null hypothesis, because their p-value with a test statistic F(19&amp;6-df) is 0.09, greater than 0.05.</p>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<p>Interpretation:</p>
+<p>Extra Practice 1.</p>
+<ol type="a">
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ol>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Colgate University Student Portfolio</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/MaxWarriner">GitHub Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
