@@ -1,0 +1,421 @@
+---
+title: HW2           # Title of the document
+
+# Bibliography Details
+bibliography: HW2References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa                   # Bibliography style
+
+execute:
+  warning: false
+  message: false
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("HW2WriteUp.qmd")
+format:
+  html: 
+    number-sections: TRUE
+    code-fold: TRUE
+    code-line-numbers: TRUE
+    cap-location: top 
+  pdf:
+    documentclass: article
+    number-sections: TRUE
+    reference-section-title: "References" 
+    code-fold: TRUE
+    code-line-numbers: TRUE
+    cap-location: top 
+    include-in-header:
+      - text: |
+          \usepackage{amsmath}
+          \usepackage[dvipsnames]{xcolor}
+          \usepackage[shortlabels]{enumitem}
+          \usepackage{parskip}
+          \usepackage{hyperref}
+          \usepackage{geometry}
+          \usepackage{float}
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+format-links: [pdf]
+---
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+```
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+
+```
+
+# Question 1
+
+## Part a
+Load the `hw2data.csv` data and create a scatterplot of `x` and `y`.
+
+```{r}
+
+dat <- read_csv('hw2data.csv') |>
+  mutate(subject = as.character(subject))
+
+library(ggplot2)
+library(ggthemes)
+
+ggplot(data = dat, aes(x = x, y = y)) + 
+  geom_point() + 
+  theme_clean()
+
+```
+
+## Part b
+Fit an OLS linear regression model predicting `y` given `x`. Interpret the regression coefficient of $x$.
+
+```{r}
+
+ols_mod <- lm(y ~ x, data = dat)
+
+summary(ols_mod)
+
+```
+
+Based on the coefficient of the lm model, for every unit increase in $x$, we'd expect a 0.373 increase in $y$.
+
+## Part c
+Recreate a scatterplot of `x` and `y`, this time specify the color of the points using the `subject`.
+
+```{r}
+
+ggplot(data = dat, aes(x = x, y = y, color = subject)) + 
+  geom_point() + 
+  theme_clean()
+
+```
+
+## Part d
+Fit a random intercept model for `y` given `x`. Interpret the regression coefficient for the fixed effect of $x$.
+
+```{r}
+
+library(lmerTest)
+
+rand_int_mod <- lmer(y ~ x + (1|subject), data = dat)
+summary(rand_int_mod)
+
+```
+
+Based on the regression coefficient from our linear mixed effect model, for every unit increase in $x$, we'd expect a 0.249 *decrease* in $y$.
+
+## Part e
+Fit a mixed effects model for `y` given `x`, with a random intercept and a random slope. Interpret the regression coefficient for the fixed effect of $x$.
+
+```{r}
+
+rand_slope_int_mod <- lmer(y ~ x + (x|subject), data = dat)
+summary(rand_slope_int_mod)
+
+
+```
+
+Based on the mixed effects model with random slopes and intercepts, for every unit increase in $x$, we'd expect a 0.244 *decrease* in $y$. 
+
+# Question 2
+
+## Part a
+Assess whether the conditional residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).
+
+```{r}
+
+conditional.residuals <- resid(rand_slope_int_mod)
+
+p.hist <- ggplot(data=tibble(r=conditional.residuals))+
+  geom_histogram(aes(x=r, y=after_stat(density)),
+  color="lightgrey",
+  breaks=seq(-3, 3, length.out=10))+
+    geom_hline(yintercept=0)+
+    theme_bw() +
+    xlab("Conditional Residuals")+
+    ylab("Density")
+
+p.qq <- ggplot(data=tibble(r=conditional.residuals)) +
+stat_qq(aes(sample=r)) +
+stat_qq_line(aes(sample=r))+
+theme_bw() +
+coord_flip() +
+ylab("Conditional Residuals")+
+xlab("Theoretical Quantile")
+
+library(patchwork)
+
+p.hist + p.qq
+
+```
+
+Our conditional residuals appear roughly Gaussian distributed, with a histogram appearing normal and centered at 0, and residuals that fit well with a qq-plot. 
+
+## Part b
+Assess whether the marginal residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).
+
+```{r}
+
+dat <- dat |>
+  mutate(y.hat = model.matrix(rand_slope_int_mod) %*% fixef(rand_slope_int_mod)) |> mutate(r.marginal = y - y.hat)
+
+Sigma.gamma <- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance
+
+subjects <- unique(dat$subject)
+
+dat.mem <- tibble(subject = subjects,
+                         MD = NA)
+
+for(i in 1:length(subjects)){
+  # Subject to check
+  curr.subject <- subjects[i]
+  curr.dat <- dat %>% filter(subject == curr.subject)
+  curr.n <- nrow(curr.dat)
+  # Bulid Covariance Matrix
+  var.r <- sigma(rand_slope_int_mod)^2 # estimated conditional error variance
+  Zi <- cbind(1, curr.dat$x)
+  Sigma.epsilon.i <- Zi %*% Sigma.gamma %*% t(Zi) + diag(var.r, nrow(curr.dat))
+  # Compute Distance
+  dat.mem$MD[i] = t(curr.dat$r.marginal) %*% solve(Sigma.epsilon.i) %*% curr.dat$r.marginal
+}
+
+ggplot(data = dat.mem) + 
+  stat_qq(aes(sample=MD),
+  distribution = qchisq, dparams = (list(df=20))) +
+    stat_qq_line(aes(sample=MD),
+    distribution = qchisq, dparams = (list(df=20)))+
+      theme_bw() +
+      coord_flip() +
+      ylab("Mahalanobis Distance")+
+      xlab("Theoretical Quantile")
+
+
+```
+
+Based on a qq-plot, the Mahalanobis distances of the marginal residuals fit roughly with the \chi^2 (df = 20) distribution. 
+
+## Part c
+Assess whether the random effects are consistent with the conditions for use for the mixed effects model fit in Question 2(e).
+
+```{r}
+
+random.intercepts <- ranef(rand_slope_int_mod)$subject[[1]]
+
+p.hist <- ggplot(data=tibble(r=random.intercepts))+ 
+  geom_histogram(aes(x=r, y=after_stat(density)),
+  bins = 3,
+  color="lightgrey")+
+    geom_hline(yintercept=0)+
+    theme_bw() +
+    xlab("Random Intercepts")+
+    ylab("Density")
+
+p.qq <- ggplot(data=tibble(r=scale(random.intercepts))) + 
+  stat_qq(aes(sample=r)) +
+  stat_qq_line(aes(sample=r))+
+  theme_bw() +
+  coord_flip() +
+  ylab("Observed Quantiles")+
+  xlab("Theoretical Quantile")
+
+p.hist + p.qq
+
+
+```
+
+The random intercepts don't deviate from normality enough to warrant caution. The histogram is centered and peaked around 0. It's difficult to say with only 5 points but the middle 3 points fit well with the qq-plot though the endpoints not as well.
+
+```{r}
+
+random.slopes <- ranef(rand_slope_int_mod)$subject[[2]]
+
+p.hist <- ggplot(data=tibble(r=random.slopes))+ 
+  geom_histogram(aes(x=r, y=after_stat(density)),
+  color="lightgrey", 
+  bins = 3)+
+    geom_hline(yintercept=0)+
+    theme_bw() +
+    xlab("Random Slopes")+
+    ylab("Density")
+
+p.qq <- ggplot(data=tibble(r=scale(random.slopes))) + 
+  stat_qq(aes(sample=r)) +
+  stat_qq_line(aes(sample=r))+
+  theme_bw() +
+  coord_flip() +
+  ylab("Observed Quantiles")+
+  xlab("Theoretical Quantile")
+
+p.hist + p.qq
+
+```
+
+The random slopes exhbit similar characteristics to the random intercepts. For 5 data points there's room for enormous variability, therefore the histogram centered at 0 and the qq-plot with 3/5 well fitting data points should be sufficient in the case of this dataset. 
+
+```{r}
+#| eval: false
+
+Subjects <- unique(dat$subject)
+
+random.effects <- as.matrix(ranef(rand_slope_int_mod)$subject)
+
+Sigma.gamma <- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance
+
+mem.raneffs <- tibble(Subject = subjects,
+MD = NA)
+for(i in 1:length(Subjects)) {
+# Compute Distance
+curr.raneffs <- random.effects[i, ]
+mem.raneffs$MD[i] = t(curr.raneffs) %*% solve(Sigma.gamma) %*% curr.raneffs
+}
+
+
+```
+
+The random slopes and intercepts model is singular, so computations of the Mahalanobis distances are impossible for the random intercepts and slopes. 
+
+## Part d
+Compare the models fit in  for the mixed effects model fit in Question 2 (d) and Question 2 (e). Does adding the random slopes discernibly improve model fit?
+
+```{r}
+library(performance)
+
+# Random intercept model
+rand_int_mod <- lmer(y ~ x + (1|subject), data = dat, REML = F)
+# Random intercept + slopes model
+rand_slope_int_mod <- lmer(y ~ x + (x|subject), data = dat, REML = F)
+```
+
+
+```{r}
+#R2
+r2(rand_int_mod)
+r2(rand_slope_int_mod)
+
+```
+
+Both models are very similar in R^2. The model with only random intercepts has an ever so slightly higher marginal R^2. 
+
+```{r}
+
+#ANOVA
+anova(rand_int_mod, rand_slope_int_mod)
+
+```
+
+The model with only random intercepts has slightly better AIC and BIC than the model with both random intercepts and random slopes. In an ANOVA test of model fit, there is not evidence for a discernible difference in model performance between the two different models ($p=0.3652$). 
+
+# Question 3
+
+@Dicken25 investigate whether eating ultraprocessed foods affects weight loss even when you are following official healthy eating guidelines. The researchers assigned participants eight-week diets that are consistent with the National Health Service Eatwell Guide that outlines government policy about balanced diets for the United Kingdom:
+
+* Minimally Processed Foods: Fresh vegetables, grains, and unprocessed meats
+* Ultraprocessed Foods: Packaged snacks, cereals, and prepared meals
+
+The researchers assigned participants to one of two randomization arms:
+
+* **Randomization Arm 1**: 
+    * Week 1 - Week 2: Baseline Measurements
+    * Week 3 - Week 10: Ultraprocessed Foods Diet (provided all meals)
+    * Week 11 - Week 14: No Specified Diet
+    * Week 15 - Week 16: Baseline Measurements (provided all meals)
+    * Week 17 - Week 24: Minimally Processed Foods
+* **Randomization Arm 2**: 
+    * Week 1 - Week 2: Baseline Measurements
+    * Week 3 - Week 10: Minimally Processed Foods (provided all meals)
+    * Week 11 - Week 14: No Specified Diet
+    * Week 15 - Week 16: Baseline Measurements
+    * Week 17 - Week 24: Ultraprocessed Foods Diet (provided all meals)
+
+Their work aims to evaluate whether it is just about the nutrients -- what is in the food -- or if it is the nutrients *and* how they are prepared. Specifically, they aimed to model the percent change in weight based on the diet followed, the randomization arm, and whether the participants worked the night shift. The researchers note that a diet may be less effective if it is the second diet they are on, and they want to assess that in the model.
+
+## Part a
+Write out the observation-level regression model that the researchers should use using mathematical notation. Define variables you use in the equation in an itemized list under the regression equation.
+
+\begin{align*}
+   \Delta P_{ij} &= (\underbrace{\gamma_{0i}}_{\textrm{rand. int.}} +  \beta_0) + \beta_1 I(x_{1ij} = \text{"Ultraprocessed Foods"}) + \\ 
+   & \beta_2 I(x_{2ij} = \text{"Arm 2"}) + \beta_3 I(x_{3ij} = \text{"Night Shift"})  +  \\
+   & \beta_4 I(x_{1ij} = \text{"Ultraprocessed Foods"})(x_{2ij} = \text{"Arm 2"}) + \epsilon_{ij},
+\end{align*}
+where:
+
+- $\Delta P$ is the percent change in weight of the subjects
+- $i=1, 2, ..., n$ is the index for the subjects 
+- $j=1, 2, ..., n_i$ is the index for the observation on subject $i$. 
+- $\beta_0$ is the intercept associated with eating minimally processed foods, being in randomization arm 1, and not working the night shift
+- $\beta_1$ is the coefficient associated with eating the ultraprocessed foods diet
+- $\beta_2$ is the coefficient associated with being in randomization arm 2
+- $\beta_3$ is the coefficient associated with working the night shift
+- $\beta_4$ is the coefficient associated the interaction between being on the ultraprocessed foods diet and being in arm 2 of the experiment
+
+## Part b
+Write out the subject-level regression model that the researchers should use using mathematical notation. Define variables you use in the equation in an itemized list under the regression equation.
+
+\begin{align*}
+\mathbf{\Delta P}_i =& \mathbf{x}_i \boldsymbol{\beta} + 
+                \mathbf{z}_i \boldsymbol{\gamma}_i +
+                \boldsymbol{\epsilon}_i
+\end{align*}
+  
+* $\mathbf{\Delta P}_i$ is the response vector ($n_i \times 1$): The percent change in weight of the subjects. 
+* $\mathbf{x}_i$ is the fixed effects design matrix ($n_i \times 4$)
+* $\boldsymbol{\beta}$ is the vector ($4 \times 1$) of fixed-effects coefficients: Intercept ($\beta_0$), Diet Type ($\beta_1$), Randomization Arm ($\beta_2$), and Night Shift ($\beta_3$). 
+* $\mathbf{z}_i$ is the random effects design matrix ($n_i \times 1$) (just the intercept here)
+* $\boldsymbol{\gamma}$ is the vector ($1 \times 1$) of random-effects coefficients (just the random intercept here).
+* $\boldsymbol{\epsilon}_i$ is the vector ($n_i \times 1$) of conditional residuals for subject $i$
+
+## Part c
+How can the researchers assess whether either diet is discernibly better? Write out an analysis plan for what specifically you would do once the data are collected.
+
+Once the data are collected, I would define the mixed effects regression model as random intercept, where each subject has their own random intercept affecting their percent weight gain. I don't think a random slopes model would be necessary here and would add more complication to the optimization, risking singularity. I would define the equation as written in part b, including the interaction between diet type and randomization arm to see if the effect of the diet is different based on which randomization arm each subject was in. 
+
+I would first take a summarizing look at the data, probably by creating a plot showing side-by-side boxplots of percent weight gain by diet plan. 
+
+After checking the assumptions regarding normality of conditional residuals, multivariate normality of marginal residuals, and normality of random intercepts, I would analyze the coefficient estimate of our $\beta_1$ to see if it makes a statistically discernible difference in percent weight gain ($\Delta P$). This would be my recommended procedure to see if the diet alone makes a difference in percent weight gain. 
+
+## Part d
+How can the researchers assess whether a diet may be discernibly less effective if it is the second diet? Write out an analysis plan for what specifically you would do once the data are collected.
+
+I would follow the procedure layed out in part e, but I would now analyze the coefficient estimate for our interaction term: $\beta_4$. If that interaction term shows evidence of having a statistically discernible effect ($p<0.05$) on percent weight gain, then we can start trying to untangle the interaction. 
+
+If the interaction is worth untangling, I would first create a plot showing the confidence interval of the estimated marginal means of the percent weight gain grouped by diet plan and randomization arm. 
+
+I would then perform a contrast on the estimated marginal means of the diet plans, showing the difference in percent weight gain across diet plans, grouped by randomization arm, as such: 
+
+Randomization Arm 1:
+
+- Ultraprocessed Foods Diet - Minimally Processed Foods = ? ($p=$ ?)
+
+Randomization Arm 2:
+
+- Ultraprocessed Foods Diet - Minimally Processed Foods = ? ($p=$ ?)
+
+By testing if the effect of the diet plan changes by randomization arm, we account for that interaction between the two variables. 
+
+## Part e
+How can the researchers assess whether there was a discernible difference across randomization arms? Write out an analysis plan for what specifically you would do once the data are collected.
+
+I would follow a procedure similar to parts c \& d. This time, I would assess the $\beta_2$ coefficient estimate of our model for indication that the randomization arm has a statistically discernible effect ($p<0.05$) on the percent change in weight. )
+

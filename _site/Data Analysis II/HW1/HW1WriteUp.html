@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>HW1 – Max Warriner</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6622afbb6a93371a7f6aaa1c40799739.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../transcript.html">Coursework</a></li><li class="breadcrumb-item"><a href="../../Data Analysis I/overview.html">Data Analysis II</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/HW1/HW1WriteUp.html">Homework 1</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Max Warriner</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-person" role="img">
+</i> 
+ <span class="menu-text">About Me</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../resume.html" class="sidebar-item-text sidebar-link"><i class="bi bi-filetype-pdf" role="img">
+</i> 
+ <span class="menu-text">Resume</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Coursework</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transcript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Transcript</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Biostatistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/hypothesis_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hypothesis Tests</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data Analysis I</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW1/HW1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW2/HW2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW3/HW3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW4/HW4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW5/HW5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW6/HW6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW7/HW7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 7</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data Analysis II</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW1/HW1WriteUp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW2/HW2WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Geoinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 3/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 4/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 4</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Bioinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gene Locus Report</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">Multivariate Data Analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Data Analysis II</span></span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false"><i class="bi bi-bar-chart" role="img">
+</i> 
+ <span class="menu-text">Research</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dog_research.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dog Mitochondria (Published)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Taye_Lab/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../MATH481_Max_Alta/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false"><i class="bi bi-briefcase" role="img">
+</i> 
+ <span class="menu-text">Internships</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ionia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Public Health Report on Ionia County, MI</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dsc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colgate Data Science Collaboratory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../voting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">County Voting Data for Michigan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ai.html" class="sidebar-item-text sidebar-link"><i class="bi bi-anthropic" role="img">
+</i> 
+ <span class="menu-text">Statement on AI Use</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#question-1" id="toc-question-1" class="nav-link active" data-scroll-target="#question-1"><span class="header-section-number">1</span> Question 1</a>
+  <ul class="collapse">
+  <li><a href="#part-a" id="toc-part-a" class="nav-link" data-scroll-target="#part-a"><span class="header-section-number">1.1</span> Part a</a></li>
+  <li><a href="#part-b" id="toc-part-b" class="nav-link" data-scroll-target="#part-b"><span class="header-section-number">1.2</span> Part b</a></li>
+  </ul></li>
+  <li><a href="#question-2" id="toc-question-2" class="nav-link" data-scroll-target="#question-2"><span class="header-section-number">2</span> Question 2</a>
+  <ul class="collapse">
+  <li><a href="#part-a-1" id="toc-part-a-1" class="nav-link" data-scroll-target="#part-a-1"><span class="header-section-number">2.1</span> Part a</a></li>
+  <li><a href="#part-b-1" id="toc-part-b-1" class="nav-link" data-scroll-target="#part-b-1"><span class="header-section-number">2.2</span> Part b</a></li>
+  <li><a href="#part-c" id="toc-part-c" class="nav-link" data-scroll-target="#part-c"><span class="header-section-number">2.3</span> Part c</a></li>
+  <li><a href="#part-d" id="toc-part-d" class="nav-link" data-scroll-target="#part-d"><span class="header-section-number">2.4</span> Part d</a></li>
+  <li><a href="#part-e" id="toc-part-e" class="nav-link" data-scroll-target="#part-e"><span class="header-section-number">2.5</span> Part e</a></li>
+  <li><a href="#part-f" id="toc-part-f" class="nav-link" data-scroll-target="#part-f"><span class="header-section-number">2.6</span> Part f</a></li>
+  <li><a href="#part-g" id="toc-part-g" class="nav-link" data-scroll-target="#part-g"><span class="header-section-number">2.7</span> Part g</a></li>
+  </ul></li>
+  <li><a href="#question-3" id="toc-question-3" class="nav-link" data-scroll-target="#question-3"><span class="header-section-number">3</span> Question 3</a>
+  <ul class="collapse">
+  <li><a href="#part-a-2" id="toc-part-a-2" class="nav-link" data-scroll-target="#part-a-2"><span class="header-section-number">3.1</span> Part a</a></li>
+  <li><a href="#part-b-2" id="toc-part-b-2" class="nav-link" data-scroll-target="#part-b-2"><span class="header-section-number">3.2</span> Part b</a></li>
+  <li><a href="#part-c-1" id="toc-part-c-1" class="nav-link" data-scroll-target="#part-c-1"><span class="header-section-number">3.3</span> Part c</a></li>
+  <li><a href="#part-d-1" id="toc-part-d-1" class="nav-link" data-scroll-target="#part-d-1"><span class="header-section-number">3.4</span> Part d</a></li>
+  <li><a href="#part-e-1" id="toc-part-e-1" class="nav-link" data-scroll-target="#part-e-1"><span class="header-section-number">3.5</span> Part e</a></li>
+  </ul></li>
+  <li><a href="#ai-disclosure" id="toc-ai-disclosure" class="nav-link" data-scroll-target="#ai-disclosure"><span class="header-section-number">4</span> AI Disclosure</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW1WriteUp.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../transcript.html">Coursework</a></li><li class="breadcrumb-item"><a href="../../Data Analysis I/overview.html">Data Analysis II</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/HW1/HW1WriteUp.html">Homework 1</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">HW1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p></p>
+<p></p>
+<section id="question-1" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Question 1</h1>
+<p><span class="citation" data-cites="OSC15">Open Science Collaboration (<a href="#ref-OSC15" role="doc-biblioref">2015</a>)</span> attempted to replicate 100 psychology experiments from three journals:</p>
+<ul>
+<li>Journal of Personality and Social Psychology (JPSP)</li>
+<li>Journal of Experimental Psychology: Learning, Memory, and Cognition (JEP: LMC).</li>
+<li>Psychological Science (PSCI)</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Journal</th>
+<th style="text-align: center;">Replicated</th>
+<th style="text-align: center;">Not Replicated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">JPSP</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">JEP:LMC</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PSCI</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">24</td>
+</tr>
+</tbody>
+</table>
+<p>Their work astonishingly showed that, empirically, only just over half of their attempts were successful.</p>
+<section id="part-a" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="part-a"><span class="header-section-number">1.1</span> Part a</h2>
+<p>Overall, is there support for the claim that more than half of psychology research is able to be replicated?</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="fu">library</span>(stats)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="fu">library</span>(pwr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="fu">library</span>(binom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>replicated <span class="ot">=</span> <span class="dv">7</span> <span class="sc">+</span> <span class="dv">13</span> <span class="sc">+</span> <span class="dv">25</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>not_replicated <span class="ot">=</span> <span class="dv">24</span> <span class="sc">+</span> <span class="dv">14</span> <span class="sc">+</span> <span class="dv">24</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>total <span class="ot">=</span> replicated <span class="sc">+</span> not_replicated</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a><span class="fu">binom.test</span>(replicated, total, <span class="at">p =</span> <span class="fl">0.5</span>, <span class="at">alternative =</span> <span class="st">"greater"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Exact binomial test
+
+data:  replicated and total
+number of successes = 45, number of trials = 107, p-value = 0.9593
+alternative hypothesis: true probability of success is greater than 0.5
+95 percent confidence interval:
+ 0.339836 1.000000
+sample estimates:
+probability of success 
+             0.4205607 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="fu">ES.h</span>(<span class="fl">0.5</span>, replicated<span class="sc">/</span>total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1595546</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="fu">binom.exact</span>(replicated, total)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  method  x   n      mean    lower     upper
+1  exact 45 107 0.4205607 0.325769 0.5198639</code></pre>
+</div>
+</div>
+<p></p>
+<p>Based on an exact binomial test, there is not support for the claim that over half of psychology research is able to be replicated. We fail to reject our null hypothesis that <span class="math inline">\(p = 0.5\)</span> (<span class="math inline">\(p\)</span>-value = 0.9593). A 95% confidence interval for our proportion is [0.33, 0.52]. Our effect size, cohen’s h, is 0.160, indicating a small difference between our empirical proportion of 0.421 and our null proportion of 0.5.</p>
+</section>
+<section id="part-b" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="part-b"><span class="header-section-number">1.2</span> Part b</h2>
+<p>Assess whether the replication success rate varies across journals.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a>replication_dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Replicated =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">13</span>, <span class="dv">15</span>), </span>
+<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a>                          <span class="at">Not_Replicated =</span> <span class="fu">c</span>(<span class="dv">24</span>, <span class="dv">14</span>, <span class="dv">24</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a><span class="fu">rownames</span>(replication_dat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"JPSP"</span>, <span class="st">"JEP:LMC"</span>, <span class="st">"PSCI"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-label="7"></a><span class="fu">chisq.test</span>(replication_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  replication_dat
+X-squared = 4.2504, df = 2, p-value = 0.1194</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="fu">cramers_v</span>(replication_dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cramer's V (adj.) |       95% CI
+--------------------------------
+0.15              | [0.00, 1.00]
+
+- One-sided CIs: upper bound fixed at [1.00].</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="fu">interpret_cramers_v</span>(<span class="fl">0.15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "small"
+(Rules: funder2019)</code></pre>
+</div>
+</div>
+<p></p>
+<p>Based on the results from a Chi-Squared test of independence, there is no evidence for a statistically discernible difference in replication rates by journal (<span class="math inline">\(\chi^2 = 4.250\)</span>, <span class="math inline">\(p = 0.119\)</span>). The effect size is small (Cramer’s <span class="math inline">\(v = 0.15\)</span>).</p>
+</section>
+</section>
+<section id="question-2" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Question 2</h1>
+<p>Below, I simulate a rather quite annoying set of regression data.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">0510</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a>n <span class="ot">&lt;-</span> <span class="dv">250</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-label="3"></a>dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x1 =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">50</span>, <span class="at">sd =</span> <span class="dv">10</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-label="4"></a>              <span class="at">x2 =</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a>              <span class="at">x3 =</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Treat"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-label="6"></a>              <span class="at">x4 =</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Low"</span>, <span class="st">"High"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-label="7"></a>              <span class="at">x5 =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-label="8"></a>              <span class="at">x6 =</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Group1"</span>, <span class="st">"Group2"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-label="9"></a>              <span class="at">x7 =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-label="10"></a>              <span class="at">x8 =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-label="11"></a>        <span class="fu">mutate</span>(<span class="at">y =</span> <span class="dv">5</span> <span class="sc">+</span>                          <span class="co"># Intercept</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-label="12"></a>                   <span class="co"># Quantitative x1</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-label="13"></a>                   <span class="dv">2</span> <span class="sc">*</span> x1 <span class="sc">+</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-label="14"></a>                   <span class="co"># Categorical x2</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-label="15"></a>                   (x2 <span class="sc">==</span> <span class="st">"B"</span>) <span class="sc">*</span> <span class="dv">10</span> <span class="sc">+</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-label="16"></a>                   <span class="co"># Categorical x Categorical (x3*x4)</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-label="17"></a>                   (x3 <span class="sc">==</span> <span class="st">"Treat"</span>) <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> (x4 <span class="sc">==</span> <span class="st">"High"</span>) <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb13-18"><a href="#cb13-18" aria-label="18"></a>                   (x3 <span class="sc">==</span> <span class="st">"Treat"</span> <span class="sc">&amp;</span> x4 <span class="sc">==</span> <span class="st">"High"</span>) <span class="sc">*</span> <span class="dv">15</span> <span class="sc">+</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-label="19"></a>                   <span class="co"># Quantitative x Categorical  (x5*x6)</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-label="20"></a>                   <span class="dv">3</span> <span class="sc">*</span> x5 <span class="sc">+</span> (x6 <span class="sc">==</span> <span class="st">"Group2"</span>) <span class="sc">*</span> <span class="dv">4</span> <span class="sc">+</span> </span>
+<span id="cb13-21"><a href="#cb13-21" aria-label="21"></a>                   (x5 <span class="sc">*</span> (x6 <span class="sc">==</span> <span class="st">"Group2"</span>)) <span class="sc">*</span> <span class="dv">8</span> <span class="sc">+</span> </span>
+<span id="cb13-22"><a href="#cb13-22" aria-label="22"></a>                   <span class="co"># Quantitative x Quantitative (x7*x8)</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-label="23"></a>                   <span class="fl">1.5</span> <span class="sc">*</span> x7 <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> x8 <span class="sc">+</span> </span>
+<span id="cb13-24"><a href="#cb13-24" aria-label="24"></a>                   <span class="fl">0.8</span> <span class="sc">*</span> (x7 <span class="sc">*</span> x8) <span class="sc">+</span> </span>
+<span id="cb13-25"><a href="#cb13-25" aria-label="25"></a>                   <span class="co"># Error</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-label="26"></a>                   <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<section id="part-a-1" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="part-a-1"><span class="header-section-number">2.1</span> Part a</h2>
+<p>Fit the regression model.</p>
+<p><span class="math display">\[\begin{align*}
+  Y_i =&amp; \beta_0  +
+       \beta_1 x_{1i} + \beta_2 I(x_{2i}=\text{B})+ \beta_3 I(x_{3i}=\text{Treat}) + \beta_4 (x_{4i}=\text{High}) +\\
+       &amp; \beta_5 x_{5i} + \beta_6 I(x_{6i}=\text{Group 2}) + \beta_7 x_{7i} + \beta_8 x_{8i}+\\
+       &amp; \beta_9 (I(x_{3i}=\text{Treat}) ~\times~ I(x_{4i}=\text{High})) + \tag{Categorical $\times$ Categorical}\\
+        &amp; \beta_{10} (x_{5i} ~\times~ I(x_{6i}=\text{Group 2})) +\tag{Continuous $\times$ Categorical}\\
+        &amp; \beta_{11} (x_{7i} ~\times~ x_{8i}) +
+         \epsilon_i \tag{Continuous $\times$ Continuous}
+\end{align*}\]</span></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a>formula <span class="ot">=</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">*</span> x4 <span class="sc">+</span> x5 <span class="sc">*</span> x6 <span class="sc">+</span> x7 <span class="sc">*</span> x8</span>
+<span id="cb14-2"><a href="#cb14-2" aria-label="2"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-label="3"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+</section>
+<section id="part-b-1" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="part-b-1"><span class="header-section-number">2.2</span> Part b</h2>
+<p>Conduct a residual and outlier analysis.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-label="2"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-label="3"></a><span class="fu">source</span>(<span class="at">file =</span> <span class="st">"plotResiduals.R"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-label="4"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-label="5"></a><span class="fu">plotResiduals</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>A histogram of our linear model residuals shows that the residuals appear very normal and are centered around 0. The qq-plot of the residuals shows a very close fit between the Gaussian quantiles and sample quantiles. There are two residuals that are on the border of reasonability but that alone shouldn’t be much concern.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="fu">source</span>(<span class="at">file =</span> <span class="st">"plotInfluence.R"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-label="2"></a><span class="fu">plotInfluence</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>There is one observation with a high leverage, one point with a large negative DFFITs, and two observations with large positive or negative studentized residuals. Given that none of the observations have high Cook’s D values, only one observation is flagged in two metrics, and the total sample size is large, these metrics on the influence of outliers appear fairly standard to a true linear model.</p>
+</section>
+<section id="part-c" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="part-c"><span class="header-section-number">2.3</span> Part c</h2>
+<p>Interpret the intercept, the coefficients on <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = formula, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-42.979  -9.395  -1.054  10.150  42.305 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    12.41835   26.71681   0.465 0.642489    
+x1              2.13546    0.08944  23.876  &lt; 2e-16 ***
+x2B            10.02851    1.79959   5.573 6.77e-08 ***
+x3Treat        21.70357    2.54065   8.543 1.59e-15 ***
+x4Low          -3.52182    2.53119  -1.391 0.165413    
+x5              2.48350    1.29418   1.919 0.056183 .  
+x6Group2        4.98495    1.80989   2.754 0.006336 ** 
+x7              0.37174    2.61136   0.142 0.886920    
+x8             -0.92790    2.60484  -0.356 0.721990    
+x3Treat:x4Low -15.19194    3.66722  -4.143 4.77e-05 ***
+x5:x6Group2     6.94743    1.85460   3.746 0.000225 ***
+x7:x8           0.92871    0.25937   3.581 0.000415 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 14.03 on 238 degrees of freedom
+Multiple R-squared:  0.8562,    Adjusted R-squared:  0.8495 
+F-statistic: 128.8 on 11 and 238 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p></p>
+<p>The intercept tells us that for a point with all numeric variables (<span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_5\)</span>, <span class="math inline">\(x_7\)</span>, <span class="math inline">\(x_8\)</span>) equalling 0, <span class="math inline">\(x_2 =\)</span> “A”, <span class="math inline">\(x_3=\)</span> “Control”, <span class="math inline">\(x_4 =\)</span> “High”, and <span class="math inline">\(x_6 =\)</span> “Group 1”, the model would predict a <span class="math inline">\(y\)</span> value of 12.418.</p>
+<p>The <span class="math inline">\(x_1\)</span> coefficient tells us that for every unit increase in <span class="math inline">\(x_1\)</span>, we’d expect a <span class="math inline">\(y\)</span> value increase of 2.135.</p>
+<p>The <span class="math inline">\(x_2\)</span> coefficient tells us that being in the “B” group is associated with a 10.029 increase in <span class="math inline">\(y\)</span> compared to the “A” group.</p>
+</section>
+<section id="part-d" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="part-d"><span class="header-section-number">2.4</span> Part d</h2>
+<p>Untangle and interpret the <span class="math inline">\(x_3*x_4\)</span> interaction.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-label="2"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-label="3"></a>mod.emm <span class="ot">&lt;-</span> <span class="fu">summary</span>(<span class="fu">emmeans</span>(mod, <span class="sc">~</span> x4 <span class="sc">|</span> x3))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-label="4"></a>mod.emm<span class="sc">$</span>x4 <span class="ot">=</span> <span class="fu">factor</span>(mod.emm<span class="sc">$</span>x4, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Low"</span>, <span class="st">"High"</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-label="5"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-label="6"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mod.emm, <span class="fu">aes</span>(<span class="at">x =</span> x3, <span class="at">y =</span> emmean, <span class="at">color =</span> x4)) <span class="sc">+</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-label="7"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>))<span class="sc">+</span> </span>
+<span id="cb19-8"><a href="#cb19-8" aria-label="8"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower.CL, <span class="at">ymax =</span> upper.CL), <span class="at">width =</span> <span class="fl">0.15</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb19-9"><a href="#cb19-9" aria-label="9"></a>  <span class="fu">xlab</span>(<span class="fu">bquote</span>(x[<span class="dv">3</span>])) <span class="sc">+</span> </span>
+<span id="cb19-10"><a href="#cb19-10" aria-label="10"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="fu">bquote</span>(x[<span class="dv">4</span>])) <span class="sc">+</span> </span>
+<span id="cb19-11"><a href="#cb19-11" aria-label="11"></a>  <span class="fu">ylab</span>(<span class="st">"Estimated Marginal Mean"</span>) <span class="sc">+</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-label="12"></a>  <span class="fu">theme_clean</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-label="1"></a>mod.pairs <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod, <span class="sc">~</span> x4 <span class="sc">|</span> x3)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-label="2"></a><span class="fu">pairs</span>(mod.pairs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>x3 = Control:
+ contrast   estimate   SE  df t.ratio p.value
+ High - Low     3.52 2.53 238   1.391  0.1654
+
+x3 = Treat:
+ contrast   estimate   SE  df t.ratio p.value
+ High - Low    18.71 2.60 238   7.195  &lt;.0001
+
+Results are averaged over the levels of: x2, x6 </code></pre>
+</div>
+</div>
+<p></p>
+<p>If we view the effect of <span class="math inline">\(x_4\)</span> across the levels of <span class="math inline">\(x_3\)</span>, we see that in the control group, having <span class="math inline">\(x_4=\)</span> “High” was associated with a 3.52 greater value in <span class="math inline">\(y\)</span> as compared to <span class="math inline">\(x_4\)</span> “Low”, a difference not statistically discernible (<span class="math inline">\(p = 0.165\)</span>). In the treat group, having <span class="math inline">\(x_4\)</span> = “High” was associated with 18.71 greater value in <span class="math inline">\(y\)</span> as compared to <span class="math inline">\(x_4=\)</span> “Low”, a statistically discernible difference (<span class="math inline">\(p &lt; 0.0001\)</span>).</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-label="1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mod.emm, <span class="fu">aes</span>(<span class="at">x =</span> x4, <span class="at">y =</span> emmean, <span class="at">color =</span> x3)) <span class="sc">+</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-label="2"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>))<span class="sc">+</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-label="3"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower.CL, <span class="at">ymax =</span> upper.CL), <span class="at">width =</span> <span class="fl">0.15</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.5</span>)) <span class="sc">+</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-label="4"></a>  <span class="fu">xlab</span>(<span class="fu">bquote</span>(x[<span class="dv">4</span>])) <span class="sc">+</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="fu">bquote</span>(x[<span class="dv">3</span>])) <span class="sc">+</span> </span>
+<span id="cb22-6"><a href="#cb22-6" aria-label="6"></a>  <span class="fu">ylab</span>(<span class="st">"Estimated Marginal Mean"</span>) <span class="sc">+</span> </span>
+<span id="cb22-7"><a href="#cb22-7" aria-label="7"></a>  <span class="fu">theme_clean</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-label="1"></a>mod.pairs <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod, <span class="sc">~</span> x3 <span class="sc">|</span> x4)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-label="2"></a><span class="fu">pairs</span>(mod.pairs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>x4 = High:
+ contrast        estimate   SE  df t.ratio p.value
+ Control - Treat   -21.70 2.54 238  -8.543  &lt;.0001
+
+x4 = Low:
+ contrast        estimate   SE  df t.ratio p.value
+ Control - Treat    -6.51 2.66 238  -2.445  0.0152
+
+Results are averaged over the levels of: x2, x6 </code></pre>
+</div>
+</div>
+<p></p>
+<p>If we view the effect of <span class="math inline">\(x_3\)</span> across the levels of <span class="math inline">\(x_4\)</span>, we see that in the low group, having <span class="math inline">\(x_3\)</span> = “Treat” was associated with 6.51 greater value in <span class="math inline">\(y\)</span> as compared to <span class="math inline">\(x_3=\)</span> “Control”, a statistically discernible difference (<span class="math inline">\(p = 0.015\)</span>). In the high group, having <span class="math inline">\(x_3\)</span>= “Treat” was associated with a 21.70 greater value in <span class="math inline">\(y\)</span> as compared to <span class="math inline">\(x_3=\)</span> “Control”, a statistically discernible difference (<span class="math inline">\(p &lt;0.0001\)</span>).</p>
+</section>
+<section id="part-e" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="part-e"><span class="header-section-number">2.5</span> Part e</h2>
+<p>Untangle and interpret the <span class="math inline">\(x_5*x_6\)</span> interaction.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-label="1"></a><span class="fu">emmip</span>(mod, x6 <span class="sc">~</span> x5, </span>
+<span id="cb25-2"><a href="#cb25-2" aria-label="2"></a>      <span class="at">at =</span> <span class="fu">list</span>(<span class="at">x5 =</span> <span class="fu">seq</span>(<span class="fu">min</span>(dat<span class="sc">$</span>x5), <span class="fu">max</span>(dat<span class="sc">$</span>x5), <span class="at">length.out =</span> <span class="dv">100</span>)), </span>
+<span id="cb25-3"><a href="#cb25-3" aria-label="3"></a>      <span class="at">CIs =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-label="4"></a>  <span class="fu">ylab</span>(<span class="st">"Estimated Marginal Mean"</span>) <span class="sc">+</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-label="5"></a>  <span class="fu">xlab</span>(<span class="fu">bquote</span>(x[<span class="dv">5</span>])) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="fu">bquote</span>(x[<span class="dv">6</span>])) <span class="sc">+</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-label="7"></a>  <span class="fu">theme_clean</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>From the interaction plot we see that the slope of <span class="math inline">\(x_5\)</span> appears to be greater for the Group 2 in <span class="math inline">\(x_6\)</span> than Group 1.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-label="1"></a><span class="fu">emtrends</span>(mod, <span class="st">"x6"</span>, <span class="at">var =</span> <span class="st">"x5"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> x6     x5.trend   SE  df lower.CL upper.CL
+ Group1     2.48 1.29 238   -0.066     5.03
+ Group2     9.43 1.34 238    6.798    12.06
+
+Results are averaged over the levels of: x2, x3, x4 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p></p>
+<p>The trend of <span class="math inline">\(x_5\)</span> in Group 1 is 2.48 (95% CI: [-0.066, 5.03]), while the trend of <span class="math inline">\(x_5\)</span> in Group 2 is 9.43 (95% CI: [6.798, 12.06]).</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-label="1"></a><span class="fu">pairs</span>(<span class="fu">emtrends</span>(mod, <span class="st">"x6"</span>, <span class="at">var =</span> <span class="st">"x5"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast        estimate   SE  df t.ratio p.value
+ Group1 - Group2    -6.95 1.85 238  -3.746  0.0002
+
+Results are averaged over the levels of: x2, x3, x4 </code></pre>
+</div>
+</div>
+<p></p>
+<p>The trend of <span class="math inline">\(x_5\)</span> for Group 2 is 6.95 greater than the trend for Group 1, a difference that is statistically discernible (<span class="math inline">\(p=0.0002\)</span>).</p>
+</section>
+<section id="part-f" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="part-f"><span class="header-section-number">2.6</span> Part f</h2>
+<p>Untangle and interpret the <span class="math inline">\(x_7*x_8\)</span> interaction.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-label="1"></a>x7.vals <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-label="2"></a>  <span class="at">low  =</span> <span class="fu">mean</span>(dat<span class="sc">$</span>x7) <span class="sc">-</span> <span class="fu">sd</span>(dat<span class="sc">$</span>x7),</span>
+<span id="cb30-3"><a href="#cb30-3" aria-label="3"></a>  <span class="at">mean =</span> <span class="fu">mean</span>(dat<span class="sc">$</span>x7),</span>
+<span id="cb30-4"><a href="#cb30-4" aria-label="4"></a>  <span class="at">high =</span> <span class="fu">mean</span>(dat<span class="sc">$</span>x7) <span class="sc">+</span> <span class="fu">sd</span>(dat<span class="sc">$</span>x7)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-label="5"></a>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-label="6"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-label="7"></a><span class="fu">emmip</span>(mod, x7 <span class="sc">~</span> x8, </span>
+<span id="cb30-8"><a href="#cb30-8" aria-label="8"></a>      <span class="at">at =</span> <span class="fu">list</span>(</span>
+<span id="cb30-9"><a href="#cb30-9" aria-label="9"></a>        <span class="at">x8 =</span> <span class="fu">seq</span>(<span class="fu">min</span>(dat<span class="sc">$</span>x8), <span class="fu">max</span>(dat<span class="sc">$</span>x8), <span class="at">length.out =</span> <span class="dv">100</span>),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-label="10"></a>        <span class="at">x7 =</span> <span class="fu">round</span>(x7.vals, <span class="dv">2</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-label="11"></a>      ),</span>
+<span id="cb30-12"><a href="#cb30-12" aria-label="12"></a>      <span class="at">CIs =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-label="13"></a>  <span class="fu">xlab</span>(<span class="fu">bquote</span>(x[<span class="dv">8</span>])) <span class="sc">+</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-label="14"></a>  <span class="fu">ylab</span>(<span class="st">"Estimated Marginal Mean"</span>) <span class="sc">+</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-label="15"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="fu">bquote</span>(x[<span class="dv">7</span>]), <span class="at">fill =</span> <span class="fu">bquote</span>(x[<span class="dv">7</span>])) <span class="sc">+</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-label="16"></a>  <span class="fu">theme_clean</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-label="1"></a>mod.emt <span class="ot">&lt;-</span> <span class="fu">emtrends</span>(mod, <span class="sc">~</span> x7, <span class="at">var =</span> <span class="st">"x8"</span>, <span class="at">at =</span> <span class="fu">list</span>(<span class="at">x7 =</span> <span class="fu">round</span>(x7.vals,<span class="dv">2</span>)))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-label="2"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-label="3"></a><span class="fu">pairs</span>(mod.emt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast          estimate    SE  df t.ratio p.value
+ x78.38 - x710.22     -1.71 0.477 238  -3.581  0.0012
+ x78.38 - x712.06     -3.42 0.954 238  -3.581  0.0012
+ x710.22 - x712.06    -1.71 0.477 238  -3.581  0.0012
+
+Results are averaged over the levels of: x2, x3, x4, x6 
+P value adjustment: tukey method for comparing a family of 3 estimates </code></pre>
+</div>
+</div>
+<p></p>
+<p>Trends for <span class="math inline">\(x_8\)</span> are discernibly different at low, average, and high (+/-1 SD) levels of <span class="math inline">\(x_7\)</span>, increasing by 1.71 at each level (all <span class="math inline">\(p\)</span>-values = 0.0012).</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-label="1"></a><span class="fu">library</span>(interactions)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-label="2"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-label="3"></a><span class="fu">johnson_neyman</span>(mod, <span class="at">pred =</span> x8, <span class="at">modx =</span> x7)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>JOHNSON-NEYMAN INTERVAL
+
+When x7 is OUTSIDE the interval [-9.96, 4.25], the slope of x8 is p &lt; .05.
+
+Note: The range of observed values of x7 is [4.89, 14.60]</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>A Johnson-Neyman plot shows us that the slope of <span class="math inline">\(x_8\)</span> increases as <span class="math inline">\(x_7\)</span> increases and is statistically discernible (<span class="math inline">\(p&lt;0.05\)</span>) for the range of observed data. For theoretical lower levels of <span class="math inline">\(x_7\)</span> (&lt;4.25), the slope of <span class="math inline">\(x_8\)</span> would not be statistically discernible (<span class="math inline">\(p\geq 0.05\)</span>).</p>
+</section>
+<section id="part-g" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="part-g"><span class="header-section-number">2.7</span> Part g</h2>
+<p>Standardize the continuous data and refit the regression model. What do you notice about the coefficient estimates in relation to your answers to parts d-f?</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-label="1"></a>dat_scaled <span class="ot">&lt;-</span> dat <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">x1 =</span> <span class="fu">scale</span>(x1), </span>
+<span id="cb35-3"><a href="#cb35-3" aria-label="3"></a>         <span class="at">x5 =</span> <span class="fu">scale</span>(x5), </span>
+<span id="cb35-4"><a href="#cb35-4" aria-label="4"></a>         <span class="at">x7 =</span> <span class="fu">scale</span>(x7), </span>
+<span id="cb35-5"><a href="#cb35-5" aria-label="5"></a>         <span class="at">x8 =</span> <span class="fu">scale</span>(x8), </span>
+<span id="cb35-6"><a href="#cb35-6" aria-label="6"></a>         <span class="at">y =</span> <span class="fu">scale</span>(y))</span>
+<span id="cb35-7"><a href="#cb35-7" aria-label="7"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-label="8"></a>mod_scaled <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, dat_scaled)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-label="9"></a><span class="fu">summary</span>(mod_scaled)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = formula, data = dat_scaled)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.18783 -0.25965 -0.02912  0.28052  1.16921 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -0.35574    0.06272  -5.672 4.08e-08 ***
+x1             0.60221    0.02522  23.876  &lt; 2e-16 ***
+x2B            0.27716    0.04974   5.573 6.77e-08 ***
+x3Treat        0.59983    0.07022   8.543 1.59e-15 ***
+x4Low         -0.09733    0.06996  -1.391 0.165413    
+x5             0.06803    0.03545   1.919 0.056183 .  
+x6Group2       0.12472    0.04985   2.502 0.013019 *  
+x7             0.49350    0.02548  19.369  &lt; 2e-16 ***
+x8             0.45617    0.02527  18.052  &lt; 2e-16 ***
+x3Treat:x4Low -0.41987    0.10135  -4.143 4.77e-05 ***
+x5:x6Group2    0.19030    0.05080   3.746 0.000225 ***
+x7:x8          0.09094    0.02540   3.581 0.000415 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.3879 on 238 degrees of freedom
+Multiple R-squared:  0.8562,    Adjusted R-squared:  0.8495 
+F-statistic: 128.8 on 11 and 238 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p></p>
+<p>Most of the <span class="math inline">\(p\)</span>-values for the coefficients have stayed the same, but some, such as <span class="math inline">\(x_6\)</span>, <span class="math inline">\(x_7\)</span>, and <span class="math inline">\(x_8\)</span>, have changed. I’m not entirely sure why this.</p>
+</section>
+</section>
+<section id="question-3" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Question 3</h1>
+<p>Below, I simulated data that have a non-linear relationship.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">7272</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-label="2"></a>n <span class="ot">&lt;-</span> <span class="dv">250</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-label="3"></a>dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">0.2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-label="4"></a>  <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">exp</span>(<span class="fl">2.9</span> <span class="sc">+</span> <span class="fl">1.8</span><span class="sc">*</span>x <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<section id="part-a-2" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="part-a-2"><span class="header-section-number">3.1</span> Part a</h2>
+<p>Fit the model <span class="math inline">\(y_i = \beta_0 + \beta_1 x_{1i} + \epsilon_i\)</span> and interpret the coefficient on <span class="math inline">\(x\)</span>.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-label="1"></a>exp_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> dat)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-label="2"></a><span class="fu">summary</span>(exp_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x, data = dat)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-209.57 -109.57  -46.30   39.57 1750.50 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)   -26.45      66.85  -0.396  0.69269   
+x             190.28      65.99   2.883  0.00428 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 209.6 on 248 degrees of freedom
+Multiple R-squared:  0.03243,   Adjusted R-squared:  0.02853 
+F-statistic: 8.313 on 1 and 248 DF,  p-value: 0.004281</code></pre>
+</div>
+</div>
+<p></p>
+<p>From an OLS model, we expect that for every unit increase in <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span> would increase by 190.28.</p>
+</section>
+<section id="part-b-2" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="part-b-2"><span class="header-section-number">3.2</span> Part b</h2>
+<p>Conduct a residual analysis on the model in part a to demonstrate how to identify when you need a log transformation.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-label="1"></a><span class="fu">plotResiduals</span>(exp_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The residual analysis gives us several clues as to why a log transform would be helpful in this situation: mainly, the residuals are heavily right skewed with a huge tail, and all of the large residuals are positive. Also, the qq-plot shows a predictable deviance from the standard gaussian quantiles at high sample quantiles.</p>
+</section>
+<section id="part-c-1" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="part-c-1"><span class="header-section-number">3.3</span> Part c</h2>
+<p>Fit the model <span class="math inline">\(\log(y_i) = \beta_0 + \beta_1 x_{1i} + \epsilon_i\)</span> and interpret the coefficient on <span class="math inline">\(x\)</span>.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-label="1"></a>log_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(y) <span class="sc">~</span> x, <span class="at">data =</span> dat)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-label="2"></a><span class="fu">summary</span>(log_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(y) ~ x, data = dat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.35217 -0.61174  0.05022  0.67488  2.94090 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   3.5528     0.3046  11.664  &lt; 2e-16 ***
+x             1.0654     0.3007   3.543 0.000472 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9552 on 248 degrees of freedom
+Multiple R-squared:  0.04818,   Adjusted R-squared:  0.04434 
+F-statistic: 12.55 on 1 and 248 DF,  p-value: 0.0004723</code></pre>
+</div>
+</div>
+<p></p>
+<p>Based on this log transformed model, for every unit increase in <span class="math inline">\(x\)</span>, we’d expect a 1.0654 increase in log(<span class="math inline">\(y\)</span>).</p>
+</section>
+<section id="part-d-1" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="part-d-1"><span class="header-section-number">3.4</span> Part d</h2>
+<p>Conduct a residual analysis on the model in part c to demonstrate that the conditions for using regression are met.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-label="1"></a><span class="fu">plotResiduals</span>(log_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW1WriteUp_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The log transformed model fits the Gaussian distribution much better now,the histogram is centered around 0, and it fits the qqplot almost perfectly. There’s only residual that’s slightly large enough to be noticeable among the rest of the residuals, but that’s likely to happen with a sample size of 250.</p>
+</section>
+<section id="part-e-1" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="part-e-1"><span class="header-section-number">3.5</span> Part e</h2>
+<p>Standardize <span class="math inline">\(x\)</span> and fit the model <span class="math inline">\(\log(y_i) = \beta_0 + \beta_1 z_{1i} + \epsilon_i\)</span> and interpret the coefficient on <span class="math inline">\(z\)</span>.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-label="1"></a>scaled_dat <span class="ot">&lt;-</span> dat <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> <span class="fu">scale</span>(x))</span>
+<span id="cb44-3"><a href="#cb44-3" aria-label="3"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-label="4"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">log</span>(y) <span class="sc">~</span> x, <span class="at">data =</span> dat))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(y) ~ x, data = dat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.35217 -0.61174  0.05022  0.67488  2.94090 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   3.5528     0.3046  11.664  &lt; 2e-16 ***
+x             1.0654     0.3007   3.543 0.000472 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9552 on 248 degrees of freedom
+Multiple R-squared:  0.04818,   Adjusted R-squared:  0.04434 
+F-statistic: 12.55 on 1 and 248 DF,  p-value: 0.0004723</code></pre>
+</div>
+</div>
+<p></p>
+<p>The standardized and log transformed model shows us that for a standard deviation increase in <span class="math inline">\(x\)</span>, we’d expect a 1.0654 increase in log(<span class="math inline">\(y\)</span>).</p>
+</section>
+</section>
+<section id="ai-disclosure" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> AI Disclosure</h1>
+<p>I used Claude AI throughout to help write code and generally to remember how to use EMM packages and functions. The conversation of everything used can be found <a href="https://claude.ai/share/e890f8b7-0bd0-4d90-8498-1f0ec5ab5bf5">here</a>.</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-OSC15" class="csl-entry" role="listitem">
+Open Science Collaboration. 2015. <span>“Estimating the Reproducibility of Psychological Science.”</span> <em>Science</em> 349 (6251): aac4716.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Colgate University Student Portfolio</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/MaxWarriner">GitHub Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

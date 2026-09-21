@@ -1,0 +1,447 @@
+---
+title: HW1           # Title of the document
+
+# Bibliography Details
+bibliography: HW1References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa                   # Bibliography style
+
+execute:
+  warning: false
+  message: false
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("HW1WriteUp.qmd")
+format:
+  html: 
+    number-sections: TRUE
+    code-fold: TRUE
+    code-line-numbers: TRUE
+    cap-location: top 
+  pdf:
+    documentclass: article
+    number-sections: TRUE
+    reference-section-title: "References" 
+    code-fold: TRUE
+    code-line-numbers: TRUE
+    cap-location: top 
+    include-in-header:
+      - text: |
+          \usepackage{amsmath}
+          \usepackage[dvipsnames]{xcolor}
+          \usepackage[shortlabels]{enumitem}
+          \usepackage{parskip}
+          \usepackage{hyperref}
+          \usepackage{geometry}
+          \usepackage{float}
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+format-links: [pdf]
+---
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+```
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+
+```
+
+# Question 1
+@OSC15 attempted to replicate 100 psychology experiments from three journals:
+
+* Journal of Personality and Social Psychology (JPSP)
+* Journal of Experimental Psychology: Learning, Memory, and Cognition (JEP:
+LMC). 
+* Psychological Science (PSCI)
+
+|Journal | Replicated | Not Replicated|
+|:--     |:--:         |:--:|  
+|JPSP    | 7          | 24|
+|JEP:LMC | 13         | 14|
+|PSCI    | 15         | 24|
+
+Their work astonishingly showed that, empirically, only just over half of their attempts were successful. 
+
+## Part a
+Overall, is there support for the claim that more than half of psychology research is able to be replicated?
+
+```{r}
+library(stats)
+library(pwr)
+library(binom)
+
+replicated = 7 + 13 + 25
+not_replicated = 24 + 14 + 24
+total = replicated + not_replicated
+
+binom.test(replicated, total, p = 0.5, alternative = "greater")
+
+ES.h(0.5, replicated/total)
+
+binom.exact(replicated, total)
+
+```
+
+Based on an exact binomial test, there is not support for the claim that over half of psychology research is able to be replicated. We fail to reject our null hypothesis that $p = 0.5$ ($p$-value = 0.9593). A 95\% confidence interval for our proportion is [0.33, 0.52]. Our effect size, cohen's h, is 0.160, indicating a small difference between our empirical proportion of 0.421 and our null proportion of 0.5. 
+
+## Part b
+Assess whether the replication success rate varies across journals. 
+
+```{r}
+library(effectsize)
+
+replication_dat <- tibble(Replicated = c(7, 13, 15), 
+                          Not_Replicated = c(24, 14, 24))
+rownames(replication_dat) <- c("JPSP", "JEP:LMC", "PSCI")
+
+chisq.test(replication_dat)
+
+cramers_v(replication_dat)
+
+interpret_cramers_v(0.15)
+
+```
+
+Based on the results from a Chi-Squared test of independence, there is no evidence for a statistically discernible difference in replication rates by journal ($\chi^2 = 4.250$, $p = 0.119$). The effect size is small (Cramer's $v = 0.15$). 
+
+# Question 2
+Below, I simulate a rather quite annoying set of regression data.
+```{r}
+#| size: "scriptsize"
+set.seed(0510)
+n <- 250
+dat <- tibble(x1 = rnorm(n, mean = 50, sd = 10),
+              x2 = factor(sample(c("A", "B"), n, replace = TRUE)),
+              x3 = factor(sample(c("Control", "Treat"), n, replace = TRUE)),
+              x4 = factor(sample(c("Low", "High"), n, replace = TRUE)),
+              x5 = rnorm(n, mean = 0, sd = 1),
+              x6 = factor(sample(c("Group1", "Group2"), n, replace = TRUE)),
+              x7 = rnorm(n, mean = 10, sd = 2),
+              x8 = rnorm(n, mean = 10, sd = 2)) |>
+        mutate(y = 5 +                          # Intercept
+                   # Quantitative x1
+                   2 * x1 +
+                   # Categorical x2
+                   (x2 == "B") * 10 +
+                   # Categorical x Categorical (x3*x4)
+                   (x3 == "Treat") * 5 + (x4 == "High") * 2 + 
+                   (x3 == "Treat" & x4 == "High") * 15 +
+                   # Quantitative x Categorical  (x5*x6)
+                   3 * x5 + (x6 == "Group2") * 4 + 
+                   (x5 * (x6 == "Group2")) * 8 + 
+                   # Quantitative x Quantitative (x7*x8)
+                   1.5 * x7 + 0.5 * x8 + 
+                   0.8 * (x7 * x8) + 
+                   # Error
+                   rnorm(n, mean = 0, sd = 15))
+```
+
+## Part a
+
+Fit the regression model.
+
+\begin{align*}
+  Y_i =& \beta_0  +
+       \beta_1 x_{1i} + \beta_2 I(x_{2i}=\text{B})+ \beta_3 I(x_{3i}=\text{Treat}) + \beta_4 (x_{4i}=\text{High}) +\\
+       & \beta_5 x_{5i} + \beta_6 I(x_{6i}=\text{Group 2}) + \beta_7 x_{7i} + \beta_8 x_{8i}+\\
+       & \beta_9 (I(x_{3i}=\text{Treat}) ~\times~ I(x_{4i}=\text{High})) + \tag{Categorical $\times$ Categorical}\\
+        & \beta_{10} (x_{5i} ~\times~ I(x_{6i}=\text{Group 2})) +\tag{Continuous $\times$ Categorical}\\
+        & \beta_{11} (x_{7i} ~\times~ x_{8i}) +
+         \epsilon_i \tag{Continuous $\times$ Continuous}
+\end{align*}
+
+```{r}
+
+formula = y ~ x1 + x2 + x3 * x4 + x5 * x6 + x7 * x8
+
+mod <- lm(formula, dat)
+
+```
+
+## Part b
+Conduct a residual and outlier analysis.
+
+```{r}
+library(ggplot2)
+library(patchwork)
+source(file = "plotResiduals.R")
+
+plotResiduals(mod)
+
+```
+
+A histogram of our linear model residuals shows that the residuals appear very normal and are centered around 0. The qq-plot of the residuals shows a very close fit between the Gaussian quantiles and sample quantiles. There are two residuals that are on the border of reasonability but that alone shouldn't be much concern. 
+
+```{r}
+source(file = "plotInfluence.R")
+plotInfluence(mod)
+
+```
+
+There is one observation with a high leverage, one point with a large negative DFFITs, and two observations with large positive or negative studentized residuals. Given that none of the observations have high Cook's D values, only one observation is flagged in two metrics, and the total sample size is large, these metrics on the influence of outliers appear fairly standard to a true linear model.
+
+## Part c
+Interpret the intercept, the coefficients on $x_1$ and $x_2$.
+
+```{r}
+
+summary(mod)
+
+```
+
+The intercept tells us that for a point with all numeric variables ($x_1$, $x_5$, $x_7$, $x_8$) equalling 0, $x_2 =$ "A", $x_3=$ "Control", $x_4 =$ "High", and $x_6 =$ "Group 1", the model would predict a $y$ value of 12.418. 
+
+The $x_1$ coefficient tells us that for every unit increase in $x_1$, we'd expect a $y$ value increase of 2.135. 
+
+The $x_2$ coefficient tells us that being in the "B" group is associated with a 10.029 increase in $y$ compared to the "A" group. 
+
+## Part d
+Untangle and interpret the $x_3*x_4$ interaction.
+
+```{r}
+library(ggthemes)
+library(emmeans)
+mod.emm <- summary(emmeans(mod, ~ x4 | x3))
+mod.emm$x4 = factor(mod.emm$x4, levels = c("Low", "High"))
+
+ggplot(data = mod.emm, aes(x = x3, y = emmean, color = x4)) + 
+  geom_point(position = position_dodge(width = 0.5))+ 
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.15, position = position_dodge(width = 0.5)) + 
+  xlab(bquote(x[3])) + 
+  labs(color = bquote(x[4])) + 
+  ylab("Estimated Marginal Mean") + 
+  theme_clean()
+
+```
+
+
+```{r}
+
+mod.pairs <- emmeans(mod, ~ x4 | x3)
+pairs(mod.pairs)
+
+```
+
+If we view the effect of $x_4$ across the levels of $x_3$, we see that in the control group, having $x_4=$ "High" was associated with a 3.52 greater value in $y$ as compared to $x_4$ "Low", a difference not statistically discernible ($p = 0.165$). In the treat group, having $x_4$ = "High" was associated with 18.71 greater value in  $y$ as compared to $x_4=$ "Low", a statistically discernible difference ($p < 0.0001$). 
+
+
+```{r}
+
+ggplot(data = mod.emm, aes(x = x4, y = emmean, color = x3)) + 
+  geom_point(position = position_dodge(width = 0.5))+ 
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.15, position = position_dodge(width = 0.5)) + 
+  xlab(bquote(x[4])) + 
+  labs(color = bquote(x[3])) + 
+  ylab("Estimated Marginal Mean") + 
+  theme_clean()
+
+
+```
+
+```{r}
+
+
+mod.pairs <- emmeans(mod, ~ x3 | x4)
+pairs(mod.pairs)
+
+```
+
+If we view the effect of $x_3$ across the levels of $x_4$, we see that in the low group, having $x_3$ = "Treat" was associated with 6.51 greater value in  $y$ as compared to $x_3=$ "Control", a statistically discernible difference ($p = 0.015$). In the high group, having $x_3$= "Treat" was associated with a 21.70 greater value in $y$ as compared to $x_3=$ "Control", a statistically discernible difference ($p <0.0001$).
+
+
+
+## Part e
+Untangle and interpret the $x_5*x_6$ interaction.
+
+```{r}
+
+
+emmip(mod, x6 ~ x5, 
+      at = list(x5 = seq(min(dat$x5), max(dat$x5), length.out = 100)), 
+      CIs = TRUE) +
+  ylab("Estimated Marginal Mean") +
+  xlab(bquote(x[5])) +
+  labs(color = bquote(x[6])) + 
+  theme_clean()
+
+```
+
+From the interaction plot we see that the slope of $x_5$ appears to be greater for the Group 2 in $x_6$ than Group 1. 
+
+```{r}
+
+emtrends(mod, "x6", var = "x5")
+
+```
+
+The trend of $x_5$ in Group 1 is 2.48 (95\% CI: [-0.066, 5.03]), while the trend of $x_5$ in Group 2 is 9.43 (95\% CI: [6.798, 12.06]). 
+
+```{r}
+
+pairs(emtrends(mod, "x6", var = "x5"))
+
+```
+
+
+The trend of $x_5$ for Group 2 is 6.95 greater than the trend for Group 1, a difference that is statistically discernible ($p=0.0002$). 
+
+
+
+## Part f
+Untangle and interpret the $x_7*x_8$ interaction.
+
+```{r}
+
+x7.vals <- c(
+  low  = mean(dat$x7) - sd(dat$x7),
+  mean = mean(dat$x7),
+  high = mean(dat$x7) + sd(dat$x7)
+)
+
+emmip(mod, x7 ~ x8, 
+      at = list(
+        x8 = seq(min(dat$x8), max(dat$x8), length.out = 100),
+        x7 = round(x7.vals, 2)
+      ),
+      CIs = TRUE) +
+  xlab(bquote(x[8])) +
+  ylab("Estimated Marginal Mean") +
+  labs(color = bquote(x[7]), fill = bquote(x[7])) +
+  theme_clean()
+
+
+
+mod.emt <- emtrends(mod, ~ x7, var = "x8", at = list(x7 = round(x7.vals,2)))
+
+pairs(mod.emt)
+
+
+```
+
+Trends for $x_8$ are discernibly different at low, average, and high (+/-1 SD) levels of $x_7$, increasing by 1.71 at each level (all $p$-values = 0.0012). 
+
+
+```{r}
+
+library(interactions)
+
+johnson_neyman(mod, pred = x8, modx = x7)
+
+```
+
+A Johnson-Neyman plot shows us that the slope of $x_8$ increases as $x_7$ increases and is statistically discernible ($p<0.05$) for the range of observed data. For theoretical lower levels of $x_7$ (<4.25), the slope of $x_8$ would not be statistically discernible ($p\geq 0.05$).
+
+## Part g
+Standardize the continuous data and refit the regression model. What do you notice about the coefficient estimates in relation to your answers to parts d-f?
+
+```{r}
+
+dat_scaled <- dat |>
+  mutate(x1 = scale(x1), 
+         x5 = scale(x5), 
+         x7 = scale(x7), 
+         x8 = scale(x8), 
+         y = scale(y))
+
+mod_scaled <- lm(formula, dat_scaled)
+summary(mod_scaled)
+
+```
+
+Most of the $p$-values for the coefficients have stayed the same, but some, such as $x_6$, $x_7$, and $x_8$, have changed. I'm not entirely sure why this. 
+
+# Question 3
+Below, I simulated data that have a non-linear relationship.
+```{r}
+#| size: "scriptsize"
+set.seed(7272)
+n <- 250
+dat <- tibble(x = rnorm(n, mean = 1, sd = 0.2)) |>
+  mutate(y = exp(2.9 + 1.8*x + rnorm(n, mean = 0, sd = 1)))
+```
+
+## Part a
+Fit the model $y_i = \beta_0 + \beta_1 x_{1i} + \epsilon_i$ and interpret the coefficient on $x$.
+
+```{r}
+
+exp_mod <- lm(y ~ x, data = dat)
+summary(exp_mod)
+
+```
+
+From an OLS model, we expect that for every unit increase in $x$, $y$ would increase by 190.28. 
+
+## Part b
+Conduct a residual analysis on the model in part a to demonstrate how to identify when you need a log transformation.
+
+```{r}
+
+plotResiduals(exp_mod)
+
+```
+
+The residual analysis gives us several clues as to why a log transform would be helpful in this situation: mainly, the residuals are heavily right skewed with a huge tail, and all of the large residuals are positive. Also, the qq-plot shows a predictable deviance from the standard gaussian quantiles at high sample quantiles. 
+
+## Part c
+Fit the model $\log(y_i) = \beta_0 + \beta_1 x_{1i} + \epsilon_i$ and interpret the coefficient on $x$.
+
+```{r}
+
+log_mod <- lm(log(y) ~ x, data = dat)
+summary(log_mod)
+```
+
+Based on this log transformed model, for every unit increase in $x$, we'd expect a 1.0654 increase in log($y$).
+
+## Part d
+Conduct a residual analysis on the model in part c to demonstrate that the conditions for using regression are met.
+
+```{r}
+
+plotResiduals(log_mod)
+
+```
+
+The log transformed model fits the Gaussian distribution much better now,the histogram is centered around 0, and it fits the qqplot almost perfectly. There's only residual that's slightly large enough to be noticeable among the rest of the residuals, but that's likely to happen with a sample size of 250.
+
+## Part e
+Standardize $x$ and fit the model $\log(y_i) = \beta_0 + \beta_1 z_{1i} + \epsilon_i$ and interpret the coefficient on $z$.
+
+```{r}
+
+scaled_dat <- dat |>
+  mutate(x = scale(x))
+
+summary(lm(log(y) ~ x, data = dat))
+
+```
+
+The standardized and log transformed model shows us that for a standard deviation increase in $x$, we'd expect a 1.0654 increase in log($y$).
+
+# AI Disclosure
+
+I used Claude AI throughout to help write code and generally to remember how to use EMM packages and functions. The conversation of everything used can be found [here](https://claude.ai/share/e890f8b7-0bd0-4d90-8498-1f0ec5ab5bf5). 

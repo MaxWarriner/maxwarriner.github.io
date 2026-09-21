@@ -48,6 +48,15 @@ website:
                 text: "Homework 6"
               - href: Data Analysis I/HW7/HW7.qmd
                 text: "Homework 7"
+        # Data Analysis II
+          - section: "Data Analysis II"
+            contents:
+              - href: Data Analysis I/overview.qmd
+                text: "Overview"
+              - href: Data Analysis II\HW1\HW1WriteUp.qmd
+                text: "Homework 1"
+              - href: Data Analysis II\HW2\HW2WriteUp.qmd
+                text: "Homework 2"       
         # Geoinformatics
           - section: "Geoinformatics"
             contents:
