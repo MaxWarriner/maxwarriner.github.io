@@ -933,16 +933,10 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <span id="cb14-3"><a href="#cb14-3" aria-label="3"></a><span class="co"># Random intercept model</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-label="4"></a>rand_int_mod <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>subject), <span class="at">data =</span> dat)</span>
 <span id="cb14-5"><a href="#cb14-5" aria-label="5"></a><span class="co"># Random intercept + slopes model</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-label="6"></a>rand_slope_int_mod <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (x<span class="sc">|</span>subject), <span class="at">data =</span> dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p></p>
-<p></p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="co">#ANOVA</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-label="2"></a><span class="fu">anova</span>(rand_int_mod, rand_slope_int_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-6"><a href="#cb14-6" aria-label="6"></a>rand_slope_int_mod <span class="ot">&lt;-</span> <span class="fu">lmer</span>(y <span class="sc">~</span> x <span class="sc">+</span> (x<span class="sc">|</span>subject), <span class="at">data =</span> dat)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-label="7"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-label="8"></a><span class="co">#ANOVA</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-label="9"></a><span class="fu">anova</span>(rand_int_mod, rand_slope_int_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data: dat
@@ -1052,7 +1046,7 @@ rand_slope_int_mod    6 307.71 323.34 -147.86    295.71 2.0145  2     0.3652</co
 </section>
 <section id="ai-disclosure" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> AI Disclosure</h1>
-<p><a href="Here">https://claude.ai/share/0d2c97de-9713-4f78-8d93-98bd333e73be</a> is the conversastion with Claude that shows all of the AI assistance used during the completion of this homework.</p>
+<p><a href="https://claude.ai/share/0d2c97de-9713-4f78-8d93-98bd333e73be">Here</a> is the conversastion with Claude that shows all of the AI assistance used during the completion of this homework.</p>
 
 
 
