@@ -421,98 +421,168 @@
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-a",
     "title": "HW2",
     "section": "1.1 Part a",
-    "text": "1.1 Part a\nLoad the hw2data.csv data and create a scatterplot of x and y.\n\n\n\nCode\ndat &lt;- read_csv('hw2data.csv') |&gt;\n  mutate(subject = as.character(subject))\n\nlibrary(ggplot2)\nlibrary(ggthemes)\n\nggplot(data = dat, aes(x = x, y = y)) + \n  geom_point() + \n  theme_clean()"
+    "text": "1.1 Part a\nLoad the hw2data.csv data and create a scatterplot of x and y.\n\n\n\nCode\ndat &lt;- read_csv('hw2data.csv') |&gt;\n  mutate(subject = as.character(subject))\n\nlibrary(ggplot2)\nlibrary(ggthemes)\n\nggplot(data = dat, aes(x = x, y = y)) + \n  geom_point() + \n  theme_clean()",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-b",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-b",
     "title": "HW2",
     "section": "1.2 Part b",
-    "text": "1.2 Part b\nFit an OLS linear regression model predicting y given x. Interpret the regression coefficient of \\(x\\).\n\n\n\nCode\nols_mod &lt;- lm(y ~ x, data = dat)\n\nsummary(ols_mod)\n\n\n\nCall:\nlm(formula = y ~ x, data = dat)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.5877 -0.8371 -0.0055  0.7648  3.3250 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  0.27511    0.14498   1.898   0.0607 .  \nx            0.37339    0.04514   8.272 6.66e-13 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 1.195 on 98 degrees of freedom\nMultiple R-squared:  0.4111,    Adjusted R-squared:  0.4051 \nF-statistic: 68.42 on 1 and 98 DF,  p-value: 6.659e-13\n\n\n\nBased on the coefficient of the lm model, for every unit increase in \\(x\\), we’d expect a 0.373 increase in \\(y\\)."
+    "text": "1.2 Part b\nFit an OLS linear regression model predicting y given x. Interpret the regression coefficient of \\(x\\).\n\n\n\nCode\nols_mod &lt;- lm(y ~ x, data = dat)\n\nsummary(ols_mod)\n\n\n\nCall:\nlm(formula = y ~ x, data = dat)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.5877 -0.8371 -0.0055  0.7648  3.3250 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  0.27511    0.14498   1.898   0.0607 .  \nx            0.37339    0.04514   8.272 6.66e-13 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 1.195 on 98 degrees of freedom\nMultiple R-squared:  0.4111,    Adjusted R-squared:  0.4051 \nF-statistic: 68.42 on 1 and 98 DF,  p-value: 6.659e-13\n\n\n\nBased on the coefficient of the lm model, for every unit increase in \\(x\\), we’d expect a 0.373 increase in \\(y\\).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-c",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-c",
     "title": "HW2",
     "section": "1.3 Part c",
-    "text": "1.3 Part c\nRecreate a scatterplot of x and y, this time specify the color of the points using the subject.\n\n\n\nCode\nggplot(data = dat, aes(x = x, y = y, color = subject)) + \n  geom_point() + \n  theme_clean()"
+    "text": "1.3 Part c\nRecreate a scatterplot of x and y, this time specify the color of the points using the subject.\n\n\n\nCode\nggplot(data = dat, aes(x = x, y = y, color = subject)) + \n  geom_point() + \n  theme_clean()",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-d",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-d",
     "title": "HW2",
     "section": "1.4 Part d",
-    "text": "1.4 Part d\nFit a random intercept model for y given x. Interpret the regression coefficient for the fixed effect of \\(x\\).\n\n\n\nCode\nlibrary(lmerTest)\n\nrand_int_mod &lt;- lmer(y ~ x + (1|subject), data = dat)\nsummary(rand_int_mod)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: y ~ x + (1 | subject)\n   Data: dat\n\nREML criterion at convergence: 299.1\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-2.1108 -0.6933 -0.1682  0.7182  2.6146 \n\nRandom effects:\n Groups   Name        Variance Std.Dev.\n subject  (Intercept) 4.0580   2.0145  \n Residual             0.9394   0.9692  \nNumber of obs: 100, groups:  subject, 5\n\nFixed effects:\n            Estimate Std. Error       df t value Pr(&gt;|t|)  \n(Intercept)  1.40570    0.92288  3.70218   1.523   0.2080  \nx           -0.24850    0.09639 95.68149  -2.578   0.0115 *\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n  (Intr)\nx -0.190\n\n\n\nBased on the regression coefficient from our linear mixed effect model, for every unit increase in \\(x\\), we’d expect a 0.249 decrease in \\(y\\)."
+    "text": "1.4 Part d\nFit a random intercept model for y given x. Interpret the regression coefficient for the fixed effect of \\(x\\).\n\n\n\nCode\nlibrary(lmerTest)\n\nrand_int_mod &lt;- lmer(y ~ x + (1|subject), data = dat)\nsummary(rand_int_mod)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: y ~ x + (1 | subject)\n   Data: dat\n\nREML criterion at convergence: 299.1\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-2.1108 -0.6933 -0.1682  0.7182  2.6146 \n\nRandom effects:\n Groups   Name        Variance Std.Dev.\n subject  (Intercept) 4.0580   2.0145  \n Residual             0.9394   0.9692  \nNumber of obs: 100, groups:  subject, 5\n\nFixed effects:\n            Estimate Std. Error       df t value Pr(&gt;|t|)  \n(Intercept)  1.40570    0.92288  3.70218   1.523   0.2080  \nx           -0.24850    0.09639 95.68149  -2.578   0.0115 *\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n  (Intr)\nx -0.190\n\n\n\nBased on the regression coefficient from our linear mixed effect model, for every unit increase in \\(x\\), we’d expect a 0.249 decrease in \\(y\\).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-e",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-e",
     "title": "HW2",
     "section": "1.5 Part e",
-    "text": "1.5 Part e\nFit a mixed effects model for y given x, with a random intercept and a random slope. Interpret the regression coefficient for the fixed effect of \\(x\\).\n\n\n\nCode\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat)\nsummary(rand_slope_int_mod)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: y ~ x + (x | subject)\n   Data: dat\n\nREML criterion at convergence: 297.2\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-2.1644 -0.6832 -0.1482  0.7590  2.6439 \n\nRandom effects:\n Groups   Name        Variance Std.Dev. Corr \n subject  (Intercept) 3.03807  1.7430        \n          x           0.01518  0.1232   1.00 \n Residual             0.92290  0.9607        \nNumber of obs: 100, groups:  subject, 5\n\nFixed effects:\n            Estimate Std. Error      df t value Pr(&gt;|t|)  \n(Intercept)   1.1335     0.7972  3.4122   1.422    0.240  \nx            -0.2439     0.1087 11.6713  -2.244    0.045 *\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n  (Intr)\nx 0.349 \noptimizer (nloptwrap) convergence code: 0 (OK)\nboundary (singular) fit: see help('isSingular')\n\n\n\nBased on the mixed effects model with random slopes and intercepts, for every unit increase in \\(x\\), we’d expect a 0.244 decrease in \\(y\\)."
+    "text": "1.5 Part e\nFit a mixed effects model for y given x, with a random intercept and a random slope. Interpret the regression coefficient for the fixed effect of \\(x\\).\n\n\n\nCode\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat)\nsummary(rand_slope_int_mod)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: y ~ x + (x | subject)\n   Data: dat\n\nREML criterion at convergence: 297.2\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-2.1644 -0.6832 -0.1482  0.7590  2.6439 \n\nRandom effects:\n Groups   Name        Variance Std.Dev. Corr \n subject  (Intercept) 3.03807  1.7430        \n          x           0.01518  0.1232   1.00 \n Residual             0.92290  0.9607        \nNumber of obs: 100, groups:  subject, 5\n\nFixed effects:\n            Estimate Std. Error      df t value Pr(&gt;|t|)  \n(Intercept)   1.1335     0.7972  3.4122   1.422    0.240  \nx            -0.2439     0.1087 11.6713  -2.244    0.045 *\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n  (Intr)\nx 0.349 \noptimizer (nloptwrap) convergence code: 0 (OK)\nboundary (singular) fit: see help('isSingular')\n\n\n\nBased on the mixed effects model with random slopes and intercepts, for every unit increase in \\(x\\), we’d expect a 0.244 decrease in \\(y\\).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-a-1",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-a-1",
     "title": "HW2",
     "section": "2.1 Part a",
-    "text": "2.1 Part a\nAssess whether the conditional residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\nconditional.residuals &lt;- resid(rand_slope_int_mod)\n\np.hist &lt;- ggplot(data=tibble(r=conditional.residuals))+\n  geom_histogram(aes(x=r, y=after_stat(density)),\n  color=\"lightgrey\",\n  breaks=seq(-3, 3, length.out=10))+\n    geom_hline(yintercept=0)+\n    theme_bw() +\n    xlab(\"Conditional Residuals\")+\n    ylab(\"Density\")\n\np.qq &lt;- ggplot(data=tibble(r=conditional.residuals)) +\nstat_qq(aes(sample=r)) +\nstat_qq_line(aes(sample=r))+\ntheme_bw() +\ncoord_flip() +\nylab(\"Conditional Residuals\")+\nxlab(\"Theoretical Quantile\")\n\nlibrary(patchwork)\n\np.hist + p.qq\n\n\n\n\n\n\n\n\n\n\nOur conditional residuals appear roughly Gaussian distributed, with a histogram appearing normal and centered at 0, and residuals that fit well with a qq-plot."
+    "text": "2.1 Part a\nAssess whether the conditional residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\nconditional.residuals &lt;- resid(rand_slope_int_mod)\n\np.hist &lt;- ggplot(data=tibble(r=conditional.residuals))+\n  geom_histogram(aes(x=r, y=after_stat(density)),\n  color=\"lightgrey\",\n  breaks=seq(-3, 3, length.out=10))+\n    geom_hline(yintercept=0)+\n    theme_bw() +\n    xlab(\"Conditional Residuals\")+\n    ylab(\"Density\")\n\np.qq &lt;- ggplot(data=tibble(r=conditional.residuals)) +\nstat_qq(aes(sample=r)) +\nstat_qq_line(aes(sample=r))+\ntheme_bw() +\ncoord_flip() +\nylab(\"Conditional Residuals\")+\nxlab(\"Theoretical Quantile\")\n\nlibrary(patchwork)\n\np.hist + p.qq\n\n\n\n\n\n\n\n\n\n\nOur conditional residuals appear roughly Gaussian distributed, with a histogram appearing normal and centered at 0, and residuals that fit well with a qq-plot.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-b-1",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-b-1",
     "title": "HW2",
     "section": "2.2 Part b",
-    "text": "2.2 Part b\nAssess whether the marginal residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\ndat &lt;- dat |&gt;\n  mutate(y.hat = model.matrix(rand_slope_int_mod) %*% fixef(rand_slope_int_mod)) |&gt; mutate(r.marginal = y - y.hat)\n\nSigma.gamma &lt;- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance\n\nsubjects &lt;- unique(dat$subject)\n\ndat.mem &lt;- tibble(subject = subjects,\n                         MD = NA)\n\nfor(i in 1:length(subjects)){\n  # Subject to check\n  curr.subject &lt;- subjects[i]\n  curr.dat &lt;- dat %&gt;% filter(subject == curr.subject)\n  curr.n &lt;- nrow(curr.dat)\n  # Bulid Covariance Matrix\n  var.r &lt;- sigma(rand_slope_int_mod)^2 # estimated conditional error variance\n  Zi &lt;- cbind(1, curr.dat$x)\n  Sigma.epsilon.i &lt;- Zi %*% Sigma.gamma %*% t(Zi) + diag(var.r, nrow(curr.dat))\n  # Compute Distance\n  dat.mem$MD[i] = t(curr.dat$r.marginal) %*% solve(Sigma.epsilon.i) %*% curr.dat$r.marginal\n}\n\nggplot(data = dat.mem) + \n  stat_qq(aes(sample=MD),\n  distribution = qchisq, dparams = (list(df=20))) +\n    stat_qq_line(aes(sample=MD),\n    distribution = qchisq, dparams = (list(df=20)))+\n      theme_bw() +\n      coord_flip() +\n      ylab(\"Mahalanobis Distance\")+\n      xlab(\"Theoretical Quantile\")\n\n\n\n\n\n\n\n\n\n\nBased on a qq-plot, the Mahalanobis distances of the marginal residuals fit roughly with the ^2 (df = 20) distribution."
+    "text": "2.2 Part b\nAssess whether the marginal residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\ndat &lt;- dat |&gt;\n  mutate(y.hat = model.matrix(rand_slope_int_mod) %*% fixef(rand_slope_int_mod)) |&gt; mutate(r.marginal = y - y.hat)\n\nSigma.gamma &lt;- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance\n\nsubjects &lt;- unique(dat$subject)\n\ndat.mem &lt;- tibble(subject = subjects,\n                         MD = NA)\n\nfor(i in 1:length(subjects)){\n  # Subject to check\n  curr.subject &lt;- subjects[i]\n  curr.dat &lt;- dat %&gt;% filter(subject == curr.subject)\n  curr.n &lt;- nrow(curr.dat)\n  # Bulid Covariance Matrix\n  var.r &lt;- sigma(rand_slope_int_mod)^2 # estimated conditional error variance\n  Zi &lt;- cbind(1, curr.dat$x)\n  Sigma.epsilon.i &lt;- Zi %*% Sigma.gamma %*% t(Zi) + diag(var.r, nrow(curr.dat))\n  # Compute Distance\n  dat.mem$MD[i] = t(curr.dat$r.marginal) %*% solve(Sigma.epsilon.i) %*% curr.dat$r.marginal\n}\n\nggplot(data = dat.mem) + \n  stat_qq(aes(sample=MD),\n  distribution = qchisq, dparams = (list(df=20))) +\n    stat_qq_line(aes(sample=MD),\n    distribution = qchisq, dparams = (list(df=20)))+\n      theme_bw() +\n      coord_flip() +\n      ylab(\"Mahalanobis Distance\")+\n      xlab(\"Theoretical Quantile\")\n\n\n\n\n\n\n\n\n\n\nBased on a qq-plot, the Mahalanobis distances of the marginal residuals fit roughly with the ^2 (df = 20) distribution.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-c-1",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-c-1",
     "title": "HW2",
     "section": "2.3 Part c",
-    "text": "2.3 Part c\nAssess whether the random effects are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\nrandom.intercepts &lt;- ranef(rand_slope_int_mod)$subject[[1]]\n\np.hist &lt;- ggplot(data=tibble(r=random.intercepts))+ \n  geom_histogram(aes(x=r, y=after_stat(density)),\n  bins = 3,\n  color=\"lightgrey\")+\n    geom_hline(yintercept=0)+\n    theme_bw() +\n    xlab(\"Random Intercepts\")+\n    ylab(\"Density\")\n\np.qq &lt;- ggplot(data=tibble(r=scale(random.intercepts))) + \n  stat_qq(aes(sample=r)) +\n  stat_qq_line(aes(sample=r))+\n  theme_bw() +\n  coord_flip() +\n  ylab(\"Observed Quantiles\")+\n  xlab(\"Theoretical Quantile\")\n\np.hist + p.qq\n\n\n\n\n\n\n\n\n\n\nThe random intercepts don’t deviate from normality enough to warrant caution. The histogram is centered and peaked around 0. It’s difficult to say with only 5 points but the middle 3 points fit well with the qq-plot though the endpoints not as well.\n\n\n\nCode\nrandom.slopes &lt;- ranef(rand_slope_int_mod)$subject[[2]]\n\np.hist &lt;- ggplot(data=tibble(r=random.slopes))+ \n  geom_histogram(aes(x=r, y=after_stat(density)),\n  color=\"lightgrey\", \n  bins = 3)+\n    geom_hline(yintercept=0)+\n    theme_bw() +\n    xlab(\"Random Slopes\")+\n    ylab(\"Density\")\n\np.qq &lt;- ggplot(data=tibble(r=scale(random.slopes))) + \n  stat_qq(aes(sample=r)) +\n  stat_qq_line(aes(sample=r))+\n  theme_bw() +\n  coord_flip() +\n  ylab(\"Observed Quantiles\")+\n  xlab(\"Theoretical Quantile\")\n\np.hist + p.qq\n\n\n\n\n\n\n\n\n\n\nThe random slopes exhbit similar characteristics to the random intercepts. For 5 data points there’s room for enormous variability, therefore the histogram centered at 0 and the qq-plot with 3/5 well fitting data points should be sufficient in the case of this dataset.\n\n\n\nCode\nSubjects &lt;- unique(dat$subject)\n\nrandom.effects &lt;- as.matrix(ranef(rand_slope_int_mod)$subject)\n\nSigma.gamma &lt;- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance\n\nmem.raneffs &lt;- tibble(Subject = subjects,\nMD = NA)\nfor(i in 1:length(Subjects)) {\n# Compute Distance\ncurr.raneffs &lt;- random.effects[i, ]\nmem.raneffs$MD[i] = t(curr.raneffs) %*% solve(Sigma.gamma) %*% curr.raneffs\n}\n\n\n\nThe random slopes and intercepts model is singular, so computations of the Mahalanobis distances are impossible for the random intercepts and slopes."
+    "text": "2.3 Part c\nAssess whether the random effects are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\nrandom.intercepts &lt;- ranef(rand_slope_int_mod)$subject[[1]]\n\np.hist &lt;- ggplot(data=tibble(r=random.intercepts))+ \n  geom_histogram(aes(x=r, y=after_stat(density)),\n  bins = 3,\n  color=\"lightgrey\")+\n    geom_hline(yintercept=0)+\n    theme_bw() +\n    xlab(\"Random Intercepts\")+\n    ylab(\"Density\")\n\np.qq &lt;- ggplot(data=tibble(r=scale(random.intercepts))) + \n  stat_qq(aes(sample=r)) +\n  stat_qq_line(aes(sample=r))+\n  theme_bw() +\n  coord_flip() +\n  ylab(\"Observed Quantiles\")+\n  xlab(\"Theoretical Quantile\")\n\np.hist + p.qq\n\n\n\n\n\n\n\n\n\n\nThe random intercepts don’t deviate from normality enough to warrant caution. The histogram is centered and peaked around 0. It’s difficult to say with only 5 points but the middle 3 points fit well with the qq-plot though the endpoints not as well.\n\n\n\nCode\nrandom.slopes &lt;- ranef(rand_slope_int_mod)$subject[[2]]\n\np.hist &lt;- ggplot(data=tibble(r=random.slopes))+ \n  geom_histogram(aes(x=r, y=after_stat(density)),\n  color=\"lightgrey\", \n  bins = 3)+\n    geom_hline(yintercept=0)+\n    theme_bw() +\n    xlab(\"Random Slopes\")+\n    ylab(\"Density\")\n\np.qq &lt;- ggplot(data=tibble(r=scale(random.slopes))) + \n  stat_qq(aes(sample=r)) +\n  stat_qq_line(aes(sample=r))+\n  theme_bw() +\n  coord_flip() +\n  ylab(\"Observed Quantiles\")+\n  xlab(\"Theoretical Quantile\")\n\np.hist + p.qq\n\n\n\n\n\n\n\n\n\n\nThe random slopes exhbit similar characteristics to the random intercepts. For 5 data points there’s room for enormous variability, therefore the histogram centered at 0 and the qq-plot with 3/5 well fitting data points should be sufficient in the case of this dataset.\n\n\n\nCode\nSubjects &lt;- unique(dat$subject)\n\nrandom.effects &lt;- as.matrix(ranef(rand_slope_int_mod)$subject)\n\nSigma.gamma &lt;- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance\n\nmem.raneffs &lt;- tibble(Subject = subjects,\nMD = NA)\nfor(i in 1:length(Subjects)) {\n# Compute Distance\ncurr.raneffs &lt;- random.effects[i, ]\nmem.raneffs$MD[i] = t(curr.raneffs) %*% solve(Sigma.gamma) %*% curr.raneffs\n}\n\n\n\nThe random slopes and intercepts model is singular, so computations of the Mahalanobis distances are impossible for the random intercepts and slopes.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-d-1",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-d-1",
     "title": "HW2",
     "section": "2.4 Part d",
-    "text": "2.4 Part d\nCompare the models fit in for the mixed effects model fit in Question 2 (d) and Question 2 (e). Does adding the random slopes discernibly improve model fit?\n\n\n\nCode\nlibrary(performance)\n\n# Random intercept model\nrand_int_mod &lt;- lmer(y ~ x + (1|subject), data = dat, REML = F)\n# Random intercept + slopes model\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat, REML = F)\n\n\n\n\n\n\nCode\n#R2\nr2(rand_int_mod)\n\n\n# R2 for Mixed Models\n\n  Conditional R2: 0.786\n     Marginal R2: 0.088\n\n\nCode\nr2(rand_slope_int_mod)\n\n\nRandom effect variances not available. Returned R2 does not account for random effects.\n\n\n# R2 for Mixed Models\n\n  Conditional R2: NA\n     Marginal R2: 0.286\n\n\n\nBoth models are very similar in R^2. The model with only random intercepts has an ever so slightly higher marginal R^2.\n\n\n\nCode\n#ANOVA\nanova(rand_int_mod, rand_slope_int_mod)\n\n\nData: dat\nModels:\nrand_int_mod: y ~ x + (1 | subject)\nrand_slope_int_mod: y ~ x + (x | subject)\n                   npar    AIC    BIC  logLik -2*log(L)  Chisq Df Pr(&gt;Chisq)\nrand_int_mod          4 305.73 316.15 -148.86    297.73                     \nrand_slope_int_mod    6 307.71 323.34 -147.86    295.71 2.0145  2     0.3652\n\n\n\nThe model with only random intercepts has slightly better AIC and BIC than the model with both random intercepts and random slopes. In an ANOVA test of model fit, there is not evidence for a discernible difference in model performance between the two different models (\\(p=0.3652\\))."
+    "text": "2.4 Part d\nCompare the models fit in for the mixed effects model fit in Question 2 (d) and Question 2 (e). Does adding the random slopes discernibly improve model fit?\n\n\n\nCode\nlibrary(performance)\n\n# Random intercept model\nrand_int_mod &lt;- lmer(y ~ x + (1|subject), data = dat)\n# Random intercept + slopes model\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat)\n\n\n\n\n\n\nCode\n#ANOVA\nanova(rand_int_mod, rand_slope_int_mod)\n\n\nData: dat\nModels:\nrand_int_mod: y ~ x + (1 | subject)\nrand_slope_int_mod: y ~ x + (x | subject)\n                   npar    AIC    BIC  logLik -2*log(L)  Chisq Df Pr(&gt;Chisq)\nrand_int_mod          4 305.73 316.15 -148.86    297.73                     \nrand_slope_int_mod    6 307.71 323.34 -147.86    295.71 2.0145  2     0.3652\n\n\n\nThe model with only random intercepts has slightly better AIC and BIC than the model with both random intercepts and random slopes. In an ANOVA test of model fit, there is not evidence for a discernible difference in model performance between the two different models (\\(p=0.3652\\)).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-a-2",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-a-2",
     "title": "HW2",
     "section": "3.1 Part a",
-    "text": "3.1 Part a\nWrite out the observation-level regression model that the researchers should use using mathematical notation. Define variables you use in the equation in an itemized list under the regression equation.\n\\[\\begin{align*}\n   \\Delta P_{ij} &= (\\underbrace{\\gamma_{0i}}_{\\textrm{rand. int.}} +  \\beta_0) + \\beta_1 I(x_{1ij} = \\text{\"Ultraprocessed Foods\"}) + \\\\\n   & \\beta_2 I(x_{2ij} = \\text{\"Arm 2\"}) + \\beta_3 I(x_{3ij} = \\text{\"Night Shift\"})  +  \\\\\n   & \\beta_4 I(x_{1ij} = \\text{\"Ultraprocessed Foods\"})(x_{2ij} = \\text{\"Arm 2\"}) + \\epsilon_{ij},\n\\end{align*}\\] where:\n\n\\(\\Delta P\\) is the percent change in weight of the subjects\n\\(i=1, 2, ..., n\\) is the index for the subjects\n\\(j=1, 2, ..., n_i\\) is the index for the observation on subject \\(i\\).\n\\(\\beta_0\\) is the intercept associated with eating minimally processed foods, being in randomization arm 1, and not working the night shift\n\\(\\beta_1\\) is the coefficient associated with eating the ultraprocessed foods diet\n\\(\\beta_2\\) is the coefficient associated with being in randomization arm 2\n\\(\\beta_3\\) is the coefficient associated with working the night shift\n\\(\\beta_4\\) is the coefficient associated the interaction between being on the ultraprocessed foods diet and being in arm 2 of the experiment"
+    "text": "3.1 Part a\nWrite out the observation-level regression model that the researchers should use using mathematical notation. Define variables you use in the equation in an itemized list under the regression equation.\n\\[\\begin{align*}\n   \\Delta P_{ij} &= (\\underbrace{\\gamma_{0i}}_{\\textrm{rand. int.}} +  \\beta_0) + \\beta_1 I(x_{1ij} = \\text{\"Ultraprocessed Foods\"}) + \\\\\n   & \\beta_2 I(x_{2ij} = \\text{\"Arm 2\"}) + \\beta_3 I(x_{3ij} = \\text{\"Night Shift\"})  +  \\\\\n   & \\beta_4 I(x_{1ij} = \\text{\"Ultraprocessed Foods\"})(x_{2ij} = \\text{\"Arm 2\"}) + \\epsilon_{ij},\n\\end{align*}\\] where:\n\n\\(\\Delta P\\) is the percent change in weight of the subjects\n\\(i=1, 2, ..., n\\) is the index for the subjects\n\\(j=1, 2, ..., n_i\\) is the index for the observation on subject \\(i\\).\n\\(\\beta_0\\) is the intercept associated with eating minimally processed foods, being in randomization arm 1, and not working the night shift\n\\(\\beta_1\\) is the coefficient associated with eating the ultraprocessed foods diet\n\\(\\beta_2\\) is the coefficient associated with being in randomization arm 2\n\\(\\beta_3\\) is the coefficient associated with working the night shift\n\\(\\beta_4\\) is the coefficient associated the interaction between being on the ultraprocessed foods diet and being in arm 2 of the experiment",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-b-2",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-b-2",
     "title": "HW2",
     "section": "3.2 Part b",
-    "text": "3.2 Part b\nWrite out the subject-level regression model that the researchers should use using mathematical notation. Define variables you use in the equation in an itemized list under the regression equation.\n\\[\\begin{align*}\n\\mathbf{\\Delta P}_i =& \\mathbf{x}_i \\boldsymbol{\\beta} +\n                \\mathbf{z}_i \\boldsymbol{\\gamma}_i +\n                \\boldsymbol{\\epsilon}_i\n\\end{align*}\\]\n\n\\(\\mathbf{\\Delta P}_i\\) is the response vector (\\(n_i \\times 1\\)): The percent change in weight of the subjects.\n\\(\\mathbf{x}_i\\) is the fixed effects design matrix (\\(n_i \\times 4\\))\n\\(\\boldsymbol{\\beta}\\) is the vector (\\(4 \\times 1\\)) of fixed-effects coefficients: Intercept (\\(\\beta_0\\)), Diet Type (\\(\\beta_1\\)), Randomization Arm (\\(\\beta_2\\)), and Night Shift (\\(\\beta_3\\)).\n\\(\\mathbf{z}_i\\) is the random effects design matrix (\\(n_i \\times 1\\)) (just the intercept here)\n\\(\\boldsymbol{\\gamma}\\) is the vector (\\(1 \\times 1\\)) of random-effects coefficients (just the random intercept here).\n\\(\\boldsymbol{\\epsilon}_i\\) is the vector (\\(n_i \\times 1\\)) of conditional residuals for subject \\(i\\)"
+    "text": "3.2 Part b\nWrite out the subject-level regression model that the researchers should use using mathematical notation. Define variables you use in the equation in an itemized list under the regression equation.\n\\[\\begin{align*}\n\\mathbf{\\Delta P}_i =& \\mathbf{x}_i \\boldsymbol{\\beta} +\n                \\mathbf{z}_i \\boldsymbol{\\gamma}_i +\n                \\boldsymbol{\\epsilon}_i\n\\end{align*}\\]\n\n\\(\\mathbf{\\Delta P}_i\\) is the response vector (\\(n_i \\times 1\\)): The percent change in weight of the subjects.\n\\(\\mathbf{x}_i\\) is the fixed effects design matrix (\\(n_i \\times 4\\))\n\\(\\boldsymbol{\\beta}\\) is the vector (\\(4 \\times 1\\)) of fixed-effects coefficients: Intercept (\\(\\beta_0\\)), Diet Type (\\(\\beta_1\\)), Randomization Arm (\\(\\beta_2\\)), and Night Shift (\\(\\beta_3\\)).\n\\(\\mathbf{z}_i\\) is the random effects design matrix (\\(n_i \\times 1\\)) (just the intercept here)\n\\(\\boldsymbol{\\gamma}\\) is the vector (\\(1 \\times 1\\)) of random-effects coefficients (just the random intercept here).\n\\(\\boldsymbol{\\epsilon}_i\\) is the vector (\\(n_i \\times 1\\)) of conditional residuals for subject \\(i\\)",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-c-2",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-c-2",
     "title": "HW2",
     "section": "3.3 Part c",
-    "text": "3.3 Part c\nHow can the researchers assess whether either diet is discernibly better? Write out an analysis plan for what specifically you would do once the data are collected.\nOnce the data are collected, I would define the mixed effects regression model as random intercept, where each subject has their own random intercept affecting their percent weight gain. I don’t think a random slopes model would be necessary here and would add more complication to the optimization, risking singularity. I would define the equation as written in part b, including the interaction between diet type and randomization arm to see if the effect of the diet is different based on which randomization arm each subject was in.\nI would first take a summarizing look at the data, probably by creating a plot showing side-by-side boxplots of percent weight gain by diet plan.\nAfter checking the assumptions regarding normality of conditional residuals, multivariate normality of marginal residuals, and normality of random intercepts, I would analyze the coefficient estimate of our \\(\\beta_1\\) to see if it makes a statistically discernible difference in percent weight gain (\\(\\Delta P\\)). This would be my recommended procedure to see if the diet alone makes a difference in percent weight gain."
+    "text": "3.3 Part c\nHow can the researchers assess whether either diet is discernibly better? Write out an analysis plan for what specifically you would do once the data are collected.\nOnce the data are collected, I would define the mixed effects regression model as random intercept, where each subject has their own random intercept affecting their percent weight gain. I don’t think a random slopes model would be necessary here and would add more complication to the optimization, risking singularity. I would define the equation as written in part b, including the interaction between diet type and randomization arm to see if the effect of the diet is different based on which randomization arm each subject was in.\nI would first take a summarizing look at the data, probably by creating a plot showing side-by-side boxplots of percent weight gain by diet plan.\nAfter checking the assumptions regarding normality of conditional residuals, multivariate normality of marginal residuals, and normality of random intercepts, I would analyze the coefficient estimate of our \\(\\beta_1\\) to see if it makes a statistically discernible difference in percent weight gain (\\(\\Delta P\\)). This would be my recommended procedure to see if the diet alone makes a difference in percent weight gain.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-d-2",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-d-2",
     "title": "HW2",
     "section": "3.4 Part d",
-    "text": "3.4 Part d\nHow can the researchers assess whether a diet may be discernibly less effective if it is the second diet? Write out an analysis plan for what specifically you would do once the data are collected.\nI would follow the procedure layed out in part e, but I would now analyze the coefficient estimate for our interaction term: \\(\\beta_4\\). If that interaction term shows evidence of having a statistically discernible effect (\\(p&lt;0.05\\)) on percent weight gain, then we can start trying to untangle the interaction.\nIf the interaction is worth untangling, I would first create a plot showing the confidence interval of the estimated marginal means of the percent weight gain grouped by diet plan and randomization arm.\nI would then perform a contrast on the estimated marginal means of the diet plans, showing the difference in percent weight gain across diet plans, grouped by randomization arm, as such:\nRandomization Arm 1:\n\nUltraprocessed Foods Diet - Minimally Processed Foods = ? (\\(p=\\) ?)\n\nRandomization Arm 2:\n\nUltraprocessed Foods Diet - Minimally Processed Foods = ? (\\(p=\\) ?)\n\nBy testing if the effect of the diet plan changes by randomization arm, we account for that interaction between the two variables."
+    "text": "3.4 Part d\nHow can the researchers assess whether a diet may be discernibly less effective if it is the second diet? Write out an analysis plan for what specifically you would do once the data are collected.\nI would follow the procedure layed out in part e, but I would now analyze the coefficient estimate for our interaction term: \\(\\beta_4\\). If that interaction term shows evidence of having a statistically discernible effect (\\(p&lt;0.05\\)) on percent weight gain, then we can start trying to untangle the interaction.\nIf the interaction is worth untangling, I would first create a plot showing the confidence interval of the estimated marginal means of the percent weight gain grouped by diet plan and randomization arm.\nI would then perform a contrast on the estimated marginal means of the diet plans, showing the difference in percent weight gain across diet plans, grouped by randomization arm, as such:\nRandomization Arm 1:\n\nUltraprocessed Foods Diet - Minimally Processed Foods = ? (\\(p=\\) ?)\n\nRandomization Arm 2:\n\nUltraprocessed Foods Diet - Minimally Processed Foods = ? (\\(p=\\) ?)\n\nBy testing if the effect of the diet plan changes by randomization arm, we account for that interaction between the two variables.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW2/HW2WriteUp.html#part-e-1",
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-e-1",
     "title": "HW2",
     "section": "3.5 Part e",
-    "text": "3.5 Part e\nHow can the researchers assess whether there was a discernible difference across randomization arms? Write out an analysis plan for what specifically you would do once the data are collected.\nI would follow a procedure similar to parts c & d. This time, I would assess the \\(\\beta_2\\) coefficient estimate of our model for indication that the randomization arm has a statistically discernible effect (\\(p&lt;0.05\\)) on the percent change in weight. )"
+    "text": "3.5 Part e\nHow can the researchers assess whether there was a discernible difference across randomization arms? Write out an analysis plan for what specifically you would do once the data are collected.\nI would follow a procedure similar to parts c & d. This time, I would assess the \\(\\beta_2\\) coefficient estimate of our model for indication that the randomization arm has a statistically discernible effect (\\(p&lt;0.05\\)) on the percent change in weight. )",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Homework 2"
+    ]
   },
   {
     "objectID": "Data Analysis II/HW1/HW1WriteUp.html#part-a",

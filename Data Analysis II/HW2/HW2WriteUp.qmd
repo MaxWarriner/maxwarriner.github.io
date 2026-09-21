@@ -303,20 +303,10 @@ Compare the models fit in  for the mixed effects model fit in Question 2 (d) and
 library(performance)
 
 # Random intercept model
-rand_int_mod <- lmer(y ~ x + (1|subject), data = dat, REML = F)
+rand_int_mod <- lmer(y ~ x + (1|subject), data = dat)
 # Random intercept + slopes model
-rand_slope_int_mod <- lmer(y ~ x + (x|subject), data = dat, REML = F)
+rand_slope_int_mod <- lmer(y ~ x + (x|subject), data = dat)
 ```
-
-
-```{r}
-#R2
-r2(rand_int_mod)
-r2(rand_slope_int_mod)
-
-```
-
-Both models are very similar in R^2. The model with only random intercepts has an ever so slightly higher marginal R^2. 
 
 ```{r}
 
@@ -419,3 +409,6 @@ How can the researchers assess whether there was a discernible difference across
 
 I would follow a procedure similar to parts c \& d. This time, I would assess the $\beta_2$ coefficient estimate of our model for indication that the randomization arm has a statistically discernible effect ($p<0.05$) on the percent change in weight. )
 
+# AI Disclosure
+
+[https://claude.ai/share/0d2c97de-9713-4f78-8d93-98bd333e73be](Here) is the conversastion with Claude that shows all of the AI assistance used during the completion of this homework. 
