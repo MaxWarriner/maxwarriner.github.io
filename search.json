@@ -177,7 +177,7 @@
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-e",
     "title": "HW2",
     "section": "1.5 Part e",
-    "text": "1.5 Part e\nFit a mixed effects model for y given x, with a random intercept and a random slope. Interpret the regression coefficient for the fixed effect of \\(x\\).\n\n\n\nCode\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat)\nsummary(rand_slope_int_mod)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: y ~ x + (x | subject)\n   Data: dat\n\nREML criterion at convergence: 297.2\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-2.1644 -0.6832 -0.1482  0.7590  2.6439 \n\nRandom effects:\n Groups   Name        Variance Std.Dev. Corr \n subject  (Intercept) 3.03807  1.7430        \n          x           0.01518  0.1232   1.00 \n Residual             0.92290  0.9607        \nNumber of obs: 100, groups:  subject, 5\n\nFixed effects:\n            Estimate Std. Error      df t value Pr(&gt;|t|)  \n(Intercept)   1.1335     0.7972  3.4122   1.422    0.240  \nx            -0.2439     0.1087 11.6713  -2.244    0.045 *\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n  (Intr)\nx 0.349 \noptimizer (nloptwrap) convergence code: 0 (OK)\nboundary (singular) fit: see help('isSingular')\n\n\n\nBased on the mixed effects model with random slopes and intercepts, for every unit increase in \\(x\\), we’d expect a 0.244 decrease in \\(y\\).",
+    "text": "1.5 Part e\nFit a mixed effects model for y given x, with a random intercept and a random slope. Interpret the regression coefficient for the fixed effect of \\(x\\).\n\n\n\nCode\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat)\nsummary(rand_slope_int_mod)\n\n\nLinear mixed model fit by REML. t-tests use Satterthwaite's method [\nlmerModLmerTest]\nFormula: y ~ x + (x | subject)\n   Data: dat\n\nREML criterion at convergence: 297.2\n\nScaled residuals: \n    Min      1Q  Median      3Q     Max \n-2.1644 -0.6832 -0.1482  0.7590  2.6439 \n\nRandom effects:\n Groups   Name        Variance Std.Dev. Corr\n subject  (Intercept) 3.03807  1.7430       \n          x           0.01518  0.1232   1.00\n Residual             0.92290  0.9607       \nNumber of obs: 100, groups:  subject, 5\n\nFixed effects:\n            Estimate Std. Error      df t value Pr(&gt;|t|)  \n(Intercept)   1.1335     0.7972  3.4122   1.422    0.240  \nx            -0.2439     0.1087 11.6713  -2.244    0.045 *\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nCorrelation of Fixed Effects:\n  (Intr)\nx 0.349 \noptimizer (nloptwrap) convergence code: 0 (OK)\nboundary (singular) fit: see help('isSingular')\n\n\n\nBased on the mixed effects model with random slopes and intercepts, for every unit increase in \\(x\\), we’d expect a 0.244 decrease in \\(y\\).",
     "crumbs": [
       "Coursework",
       "Data Analysis II",
@@ -201,7 +201,7 @@
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-b-1",
     "title": "HW2",
     "section": "2.2 Part b",
-    "text": "2.2 Part b\nAssess whether the marginal residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\ndat &lt;- dat |&gt;\n  mutate(y.hat = model.matrix(rand_slope_int_mod) %*% fixef(rand_slope_int_mod)) |&gt; mutate(r.marginal = y - y.hat)\n\nSigma.gamma &lt;- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance\n\nsubjects &lt;- unique(dat$subject)\n\ndat.mem &lt;- tibble(subject = subjects,\n                         MD = NA)\n\nfor(i in 1:length(subjects)){\n  # Subject to check\n  curr.subject &lt;- subjects[i]\n  curr.dat &lt;- dat %&gt;% filter(subject == curr.subject)\n  curr.n &lt;- nrow(curr.dat)\n  # Bulid Covariance Matrix\n  var.r &lt;- sigma(rand_slope_int_mod)^2 # estimated conditional error variance\n  Zi &lt;- cbind(1, curr.dat$x)\n  Sigma.epsilon.i &lt;- Zi %*% Sigma.gamma %*% t(Zi) + diag(var.r, nrow(curr.dat))\n  # Compute Distance\n  dat.mem$MD[i] = t(curr.dat$r.marginal) %*% solve(Sigma.epsilon.i) %*% curr.dat$r.marginal\n}\n\nggplot(data = dat.mem) + \n  stat_qq(aes(sample=MD),\n  distribution = qchisq, dparams = (list(df=20))) +\n    stat_qq_line(aes(sample=MD),\n    distribution = qchisq, dparams = (list(df=20)))+\n      theme_bw() +\n      coord_flip() +\n      ylab(\"Mahalanobis Distance\")+\n      xlab(\"Theoretical Quantile\")\n\n\n\n\n\n\n\n\n\n\nBased on a qq-plot, the Mahalanobis distances of the marginal residuals fit roughly with the ^2 (df = 20) distribution.",
+    "text": "2.2 Part b\nAssess whether the marginal residuals are consistent with the conditions for use for the mixed effects model fit in Question 2(e).\n\n\n\nCode\ndat &lt;- dat |&gt;\n  mutate(y.hat = model.matrix(rand_slope_int_mod) %*% fixef(rand_slope_int_mod)) |&gt; mutate(r.marginal = y - y.hat)\n\nSigma.gamma &lt;- as.matrix(VarCorr(rand_slope_int_mod)$subject) # estimated covariance\n\nsubjects &lt;- unique(dat$subject)\n\ndat.mem &lt;- tibble(subject = subjects,\n                         MD = NA)\n\nfor(i in 1:length(subjects)){\n# Subject to check\ncurr.subject &lt;- subjects[i]\ncurr.dat &lt;- dat %&gt;% filter(subject == curr.subject)\ncurr.n &lt;- nrow(curr.dat)\n# Bulid Covariance Matrix\nvar.r &lt;- sigma(rand_slope_int_mod)^2 # estimated conditional error variance\nZi &lt;- cbind(1, curr.dat$x)\nSigma.epsilon.i &lt;- Zi %*% Sigma.gamma %*% t(Zi) + diag(var.r, nrow(curr.dat))\n# Compute Distance\ndat.mem$MD[i] = t(curr.dat$r.marginal) %*% solve(Sigma.epsilon.i) %*% curr.dat$r.marginal\n}\n\n\nggplot(data = dat.mem) + \n  stat_qq(aes(sample=MD),\n  distribution = qchisq, dparams = (list(df=20))) +\n    stat_qq_line(aes(sample=MD),\n    distribution = qchisq, dparams = (list(df=20)))+\n      theme_bw() +\n      coord_flip() +\n      ylab(\"Mahalanobis Distance\")+\n      xlab(\"Theoretical Quantile\")\n\n\n\n\n\n\n\n\n\n\nBased on a qq-plot, the Mahalanobis distances of the marginal residuals fit roughly with the ^2 (df = 20) distribution.",
     "crumbs": [
       "Coursework",
       "Data Analysis II",
@@ -225,7 +225,7 @@
     "href": "Data Analysis II/HW2/HW2WriteUp.html#part-d-1",
     "title": "HW2",
     "section": "2.4 Part d",
-    "text": "2.4 Part d\nCompare the models fit in for the mixed effects model fit in Question 2 (d) and Question 2 (e). Does adding the random slopes discernibly improve model fit?\n\n\n\nCode\nlibrary(performance)\n\n# Random intercept model\nrand_int_mod &lt;- lmer(y ~ x + (1|subject), data = dat)\n# Random intercept + slopes model\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat)\n\n#ANOVA\nanova(rand_int_mod, rand_slope_int_mod)\n\n\nData: dat\nModels:\nrand_int_mod: y ~ x + (1 | subject)\nrand_slope_int_mod: y ~ x + (x | subject)\n                   npar    AIC    BIC  logLik -2*log(L)  Chisq Df Pr(&gt;Chisq)\nrand_int_mod          4 305.73 316.15 -148.86    297.73                     \nrand_slope_int_mod    6 307.71 323.34 -147.86    295.71 2.0145  2     0.3652\n\n\n\nThe model with only random intercepts has slightly better AIC and BIC than the model with both random intercepts and random slopes. In an ANOVA test of model fit, there is not evidence for a discernible difference in model performance between the two different models (\\(p=0.3652\\)).",
+    "text": "2.4 Part d\nCompare the models fit in for the mixed effects model fit in Question 2 (d) and Question 2 (e). Does adding the random slopes discernibly improve model fit?\n\n\n\nCode\nlibrary(performance)\n\n# Random intercept model\nrand_int_mod &lt;- lmer(y ~ x + (1|subject), data = dat)\n# Random intercept + slopes model\nrand_slope_int_mod &lt;- lmer(y ~ x + (x|subject), data = dat)\n\n#ANOVA\nanova(rand_int_mod, rand_slope_int_mod)\n\n\nData: dat\nModels:\nrand_int_mod: y ~ x + (1 | subject)\nrand_slope_int_mod: y ~ x + (x | subject)\n                   npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)\nrand_int_mod          4 305.73 316.15 -148.86   297.73                     \nrand_slope_int_mod    6 307.71 323.34 -147.86   295.71 2.0145  2     0.3652\n\n\n\nThe model with only random intercepts has slightly better AIC and BIC than the model with both random intercepts and random slopes. In an ANOVA test of model fit, there is not evidence for a discernible difference in model performance between the two different models (\\(p=0.3652\\)).",
     "crumbs": [
       "Coursework",
       "Data Analysis II",
@@ -616,11 +616,155 @@
     ]
   },
   {
-    "objectID": "Data Analysis II/mixed_effects/WriteUp.html",
-    "href": "Data Analysis II/mixed_effects/WriteUp.html",
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#understanding-the-technique",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#understanding-the-technique",
     "title": "Mixed Effects Regression Article",
-    "section": "",
-    "text": "1 Finding a Study\n\n\n2 Data Cleaning\nHere’s the cleaning I did to the original data file available for download in the paper:\n#| eval: false\ndat &lt;- read_csv(‘mice.csv’)\nweight &lt;- dat[1:3,] fat &lt;- dat[7:9,] lean &lt;- dat[13:15,]\nweight &lt;- data.frame(t(weight)) colnames(weight) &lt;- weight[1,] weight &lt;- weight[-1,] weight\\(subject &lt;- 1:30\nweight\\)diet &lt;- rep(c(“Control”, “Sema”, “CR”), each = 10) rownames(weight) &lt;- NULL weight &lt;- weight |&gt; pivot_longer(cols = c(“0 month”, “2 month”, “4 month”), names_to = “months”, values_to = “weight”) weight$months &lt;- rep(c(0,2,4), 30)",
+    "section": "1.1 Understanding the Technique",
+    "text": "1.1 Understanding the Technique\nLinear mixed effects regression builds upon standard linear regression that assumes each observation/data point is independent. When we measure the same subject under different conditions, obviously those measurements are not independent. However, this can be addressed with a few changes. Instead of ignoring that we’ve repeated measurements on the same subject, they are built into the model. If we simply treated subject as a fixed effect, when the levels of the fixed effect are expanded into binary coefficients (subject = 1, subject = 2, …), that would add \\(n-1\\) new variables, rapidly inflating dimensionality. To prevent that, each subject is given its own regression model with a unique intercept:\n\\[\\begin{align*}\n   Y_{ij} &= (\\underbrace{\\gamma_{0i}}_{\\textrm{rand. int.}} +  \\beta_0) + \\beta_1 x_{1ij} + \\beta_2 x_{2ij} + \\cdots + \\beta_{p-1} x_{(p-1)ij} + \\epsilon_{ij},\n\\end{align*}\\] where:\n\n\\(i=1, 2, ..., n\\) is the index for the subjects\n\\(j=1, 2, ..., n_i\\) is the index for the observation on subject \\(i\\).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#finding-a-study",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#finding-a-study",
+    "title": "Mixed Effects Regression Article",
+    "section": "1.2 Finding a Study",
+    "text": "1.2 Finding a Study\nBecause the journal Nature requires data availability in recently published papers, that allows for a large variety in available data sets for use in this portfolio. Especially appreciated is authors who provide their data directly instead of requiring the corresponding author to reply to an email… but anyways.\nSearching through recently published articles with search terms like, “mixed effects”, “repeated measures”, “regression”, etc., I found a recently published article titled “Late-life semaglutide treatment slows ageing and extends lifespan in female mice.” After looking through the methods and seeing multiple mentions of the use of linear mixed-effects models, I felt this paper would work for an attempt at reproduction (Feng et al. 2026).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#goal-of-the-study",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#goal-of-the-study",
+    "title": "Mixed Effects Regression Article",
+    "section": "1.3 Goal of the Study",
+    "text": "1.3 Goal of the Study\nIncreasing amounts of research has been published on medications known as ‘GLP-1’ drugs, which stands for ‘glucagon-like-peptide-1.’\n\n\n\n\n\n\nFigure 1: Trend of Published Research on ‘GLP-1’\n\n\n\n\n\n\n\n\n\nPut simply, these drugs mimic the afforementioned GLP-1 hormone produced in the human body that serves to regulate appetite and lower the risk of over-eating. Initially created as a drug for those with Type II diabetes, the broader effects on reducing obesity have made them one of the most important drugs developed in decades. The most well known of these drugs is known commercially as ‘Ozempic’ and scientifically as semaglutide (Williams 2026).\n\n\nSource - Ozempic.com\n\n\n\nThe journal article by Feng et al. looks to investigate potential benefits of semaglutide beyond obesity, such as alleviating the effects of aging. It’s been shown that a reduction in excess calories extends lifespan in humans and other animals. Do GLP-1 drugs help with aging in the same way as a diet with restricted calories, or do they work in different ways? This article looks at measures of aging among mice in three groups:\n\n\n\nControl\nCalorie Restricted Diet\nSemaglutide Treatment\n\n\n\n\nn = 10\nn = 10\nn = 10\n\n\n\nCalorie Restricted mice were given controlled portions of food, while the control and semaglutide mice had unlimited food.\n\n\nSource: Charles River\n\n\n\nWhile the study uses several different measures of aging, I’m going to focus on the performance of the mice in the Barnes Maze. The Barnes Maze is a test used on mice and rats that tests their ability to recognize previous visual cues (Carol Barnes 1979). When tested, they see how long the mouse stays in the quadrant it’s been conditioned to remember as the exit (the longer time the better the memory). As the measure used is time (continuous), there should be no problems modelling it with a linear mixed-effects model.\n\n\nSource: ScienceDirect",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#goal-of-statistical-analysis",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#goal-of-statistical-analysis",
+    "title": "Mixed Effects Regression Article",
+    "section": "1.4 Goal of Statistical Analysis",
+    "text": "1.4 Goal of Statistical Analysis\nThe goal of their analysis with the Barnes Maze test is to see if the slopes of the treatments are different with respect to time.\nThe basic model of their regression is as follows:\n\\[\\begin{align*}\n   t_{ij} &= (\\underbrace{\\gamma_{0i}}_{\\textrm{random intercept}} + \\beta_0) + \\beta_1(x_{1ij})I(x_{2ij} = \\text{\"Calorie Restricted Diet\"}) + \\\\\n   & \\beta_2(x_{1ij})I(x_{3ij} = \\text{\"Semaglutide\"}) + \\epsilon_{ij}\n\\end{align*}\\] where:\n\n\\(t\\) is the time each mouse spends in the correct quadrant\n\\(i=1, 2, ..., n\\) is the index for each mouse\n\\(j=1, 2, ..., n_i\\) is the index for the observation on mouse \\(i\\).\n\\(\\gamma\\) is the random intercept for the time each mouse takes to complete the maze\n\\(\\beta_0\\) is the intercept which includes the slope of time for mice in the “Control” treatment\n\\(\\beta_1\\) is the slope of time for mice in the “Calorie Restricted” treatment\n\\(\\beta_2\\) is the slope of time for mice in the “Semaglutide” treatment\n\\(\\epsilon\\) is the conditional residual",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#data-cleaning",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#data-cleaning",
+    "title": "Mixed Effects Regression Article",
+    "section": "2.1 Data Cleaning",
+    "text": "2.1 Data Cleaning\nHere’s the cleaning I did to the original data file available for download in the paper (Wickham et al. 2019):\n\n\n\nCode\ndat &lt;- read_csv('mice.csv')\ndat &lt;- dat[1:3,]\n\ndat &lt;- data.frame(t(dat))\ncolnames(dat) &lt;- dat[1,]\ndat &lt;- dat[-1,]\ndat$subject &lt;- 1:30\ndat$treatment &lt;- rep(c(\"Control\", \"Sema\", \"CR\"), each = 10)\nrownames(dat) &lt;- NULL\ndat &lt;- dat |&gt;\n  pivot_longer(cols = c(\"0 month\", \"2 month\", \"4 month\"), \n               names_to = \"months\", \n               values_to = \"time\")\ndat$months &lt;- rep(c(0,2,4), 30)\n\nwrite_csv(dat, 'mice.csv')",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#data-summary",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#data-summary",
+    "title": "Mixed Effects Regression Article",
+    "section": "2.2 Data Summary",
+    "text": "2.2 Data Summary\nFirst, let’s look at the raw data (Wickham 2016), (Ammar 2019), (Arnold 2024):\n\n\n\n\n\n\nFigure 2: Maze Time Across Treatments and Mouse\n\n\n\n\n\n\n\n\n\nA little messy, but there’s a clear decline in time in the control group that’s not as present in the calorie restricted or semaglutide groups.\nWhat if we summarize this and take the individual out of it?\n\n\n\n\n\n\nFigure 3: Maze Time Across Treatments\n\n\n\n\n\n\n\n\n\nIn this view, the differences in time across diet appear to widen as time goes on.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#model-assumptions",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#model-assumptions",
+    "title": "Mixed Effects Regression Article",
+    "section": "2.3 Model Assumptions",
+    "text": "2.3 Model Assumptions\nLet’s check if our model fits the assumptions of linear mixed-effects regression (Kuznetsova et al. 2017), (Pedersen 2025).\n\n2.3.1 Normality of Conditional Residuals\n\n\n\n\n\n\nFigure 4: Model Conditional Residuals\n\n\n\n\n\n\n\n\n\nWhen looking for normality, we check that a histogram is centered around 0 and appears roughly gaussian shaped, and that our points fit relatively closely to a qqplot of the normal distribution. In the case of our model, our conditional residuals are centered around 0 and do appear to be roughly gaussian shaped, with the distribution weighted slightly towards negative residuals. The qq-plot shows a close fit to a theoretical distribution. And while not necessarily the best test of approximate normality, a Shapiro-Wilk test for normality shows no statistically discernible deviation from normality (\\(p = 0.41\\))\n\n\n2.3.2 Multivariate Normality of Marginal Residuals\n\n\n\n\n\n\nFigure 5: Model Marginal Residuals\n\n\n\n\n\n\n\n\n\nA qq-plot of our Mahalanobis distances show that the marginal residuals fit well with a multivariate normal distribution.\n\n\n2.3.3 Normality of Random Intercepts\nLikely due to small sample size (3 observations per mouse), the linear mixed model is singular, meaning that it’s not able to detect variance due to random intercepts:\n\\[\\begin{align}\n\\gamma_i = 0 \\, \\forall \\, i \\in \\{1, 2, ...\\, , n = 30\\}\n\\end{align}\\]",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#model-fit",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#model-fit",
+    "title": "Mixed Effects Regression Article",
+    "section": "2.4 Model Fit",
+    "text": "2.4 Model Fit\n\n\nTesting the \\(R^2\\) for the model:\n\nConditional \\(R^2 =\\) NA\nMarginal \\(R^2 = 0.379\\)\n\nBecause our model was singular and wasn’t able to detect any random effects of the individual subjects, our conditional \\(R^2\\) was not able to be calculated. This means there is also no intraclass correlation coefficient.\nTesting the model performance (Lüdecke et al. 2021):\n\n\n\n\nTable 1: Model Performance Metrics",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#model-inference",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#model-inference",
+    "title": "Mixed Effects Regression Article",
+    "section": "2.5 Model Inference",
+    "text": "2.5 Model Inference\nWhile the data does violate the assumptions of a linear mixed-effect model because of the singularity and inability to detect variance in the random effects, we’ll continue with the analysis as attempted in the article.\nA simple summary of our model gives us:\n\n\n\n\n\nTable 2: Model Summary\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEstimate\nSE\ndf\nt\np\n\n\n\n\nIntercept\n36.394\n3.659\n84\n9.947\n&lt;0.001\n\n\nMonths\n-3.198\n1.417\n84\n-2.257\n0.027\n\n\nTreatment = Calorie Restricted\n-1.991\n5.175\n84\n-0.385\n0.701\n\n\nTreatment = Semaglutide\n0.423\n5.175\n84\n0.082\n0.935\n\n\nMonths : Treatment = Calorie Restricted\n3.650\n2.004\n84\n1.821\n0.072\n\n\nMonths : Treatment = Semaglutide\n8.902\n2.004\n84\n4.442\n&lt;0.001\n\n\n\n\n\n\n\n\n\nOur model summary shows us that there’s evidence for a statistically discernable effect of months on time spent in the correct quadrant for mice (\\(t(84) = 9.947\\), \\(p = 0.027\\)). Our model predicts that for every treatment, for every additional month, a mouse spends 3.2 fewer seconds in the correct quadrant.\nAdditionally, the interaction between months and the calorie restricted treatment shows a marginal effect of months on time spent in the correct quadrant for mice (\\(t(84) = 1.821, p = 0.072\\)). Our model predicts that for the calorie restricted group, for each additional month, a mouse spends 3.650 more seconds in the correct quadrant.\nLastly, the interaction between months and the semaglutide treatment shows a statistically discernible effect of months on time spent in the correct quadrant for mice (\\(t(84) = 4.442, p &lt; 0.001\\)). Our model predicts that for the semaglutide group, for each additional month, a mouse spends 8.902 more seconds in the correct quadrant.\nTesting the effect sizes of our fixed effects (Jaeger 2025):\n\n\n\n\n\nTable 3: Model Effect Sizes\n\n\n\n\n\n\nEffect\nR-Squared\nUpper CI\nLower CI\n\n\n\n\nModel\n0.379\n0.258\n0.533\n\n\nMonths : Treatment\n0.183\n0.072\n0.340\n\n\nMonths\n0.054\n0.002\n0.174\n\n\nTreatment\n0.003\n0.001\n0.088\n\n\n\n\n\n\n\n\n\nOur model explains 37.9% of the variation in time spent in the correct quadrant by mice (95% CI: [0.258, 0.533]). By effect:\n\nThe interaction between months and treatment type explains 18.3% of the variation in time spent in the correct quadrant by mice (95% CI: [0.072, 0.340]).\nThe effect of months explains 5.4% of the variation in time spent in the correct quadrant by mice (95% CI: [0.002, 0.174]).\nThe effect of treatment type explains 0.3% of the variation in time spent in the correct quadrant by mice (95% CI: [0.001, 0.088]).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#model-interactions",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#model-interactions",
+    "title": "Mixed Effects Regression Article",
+    "section": "2.6 Model Interactions",
+    "text": "2.6 Model Interactions\nNow we attempt to untangle the interaction that is at the heart of this study: the effect of months across different treatment groups.\nTo model the slope of months across different treatment groups, we use Estimated Marginal Trends (Lenth 2025):\n\n\n\n\n\nTable 4: Model Estimated Marginal Trends\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTreatment\nMonths Trend\nSE\ndf\nt\np\nadjusted-p\nLower CI\nUpper CI\n\n\n\n\nControl\n-3.198\n1.417\n57\n-2.257\n0.028\n0.042\n-6.036\n-0.361\n\n\nCalorie Restricted\n0.452\n1.417\n57\n0.319\n0.751\n0.751\n-2.386\n3.289\n\n\nSemaglutide\n5.703\n1.417\n57\n4.025\n&lt;0.001\n0.001\n2.866\n8.541\n\n\n\n\n\n\n\n\n\nUsing the estimated marginal trends, our model predicts:\n\nFor the control group, each additional month decreases the amount of time the mouse spends in the correct quadrant by 3.198 seconds (95% CI: [-6.036, -0.361]). This trend is statistically discernible (\\(t(57) = -2.257, p = 0.028\\), adjusted-\\(p = 0.042\\)).\nFor the calorie restricted group, each additional month increases the amount of time the mouse spends in the correct quadrant by 0.452 seconds (95% CI: [-2.386, 3.298]). This trend did not reach traditional levels of statistical significance.\nFor the semaglutide treatment group, each additional month increases the amount of time the mouse spends in the correct quadrant by 5.703 seconds (95% CI: [2.866, 8.541]). This trend is statistically discernible (\\(t(57) = 4.025, p&lt; 0.001\\), adjusted-\\(p = 0.001\\)).\n\nVisualizing those trends:\n\n\n\n\n\n\nFigure 6: Model Estimated Marginal Trends\n\n\n\n\n\n\n\n\n\nTesting the differences in those trends:\n\n\n\n\n\nTable 5: Model Estimated Marginal Trends Contrasts\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nContrast\nEstimate\nSE\ndf\nt\np\nadjusted-p\nLower CI\nHigher CI\n\n\n\n\nControl - Calorie Restricted\n-3.650\n2.004\n57\n-1.821\n0.172\n0.172\n-8.473\n1.173\n\n\nControl - Semaglutide\n-8.902\n2.004\n57\n-4.442\n&lt;0.001\n&lt;0.001\n-13.724\n-4.079\n\n\nCalorie Restricted - Semaglutide\n-5.252\n2.004\n57\n-2.620\n0.03\n0.045\n-10.074\n-0.429\n\n\n\n\n\n\n\n\n\nA pairwise comparison shows us that there is statistically significant evidence that the slope of month for the semaglutide treatment is greater than the control (\\(t(57) = 4.442, p&lt;0.001\\), adjusted-\\(p&lt;0.001\\)); The estimated difference is 8.902 (95% CI: [4.079, 13.724]). There is also statistically significant evidence that the slope of month for the semaglitude treatment is greater than the calorie restricted treatment (\\(t(57) = 2.620, p = 0.03\\), adjusted-\\(p = 0.045\\)). The estimated difference is 5.252 (95% CI: [0.429, 10.074]).",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#conclusions",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#conclusions",
+    "title": "Mixed Effects Regression Article",
+    "section": "2.7 Conclusions",
+    "text": "2.7 Conclusions\n\n2.7.1 A Note on Model Assumptions and Truthfulness\n\n\nSource: McCartney Times\n\n\n\nTo find a paper, especially with as many analyses contained in like this one, that formally checks the assumptions of the statistical model chosen is exceptionally rare. It’s also true that there’s a fine line between advocacy and pedanticism when doing statistics. You can often feel like you’re yelling into a void as someone specializing in the statistics side of science. At a certain point we must recognize that the \\(p\\)-value is here to stay, if something can be a \\(t\\)-test, it will, and assumptions are for statisticians and no one else. That doesn’t mean that they don’t matter though. Maybe if people checked their assumptions more, reproducability would be higher in certain fields. I have no idea whether the authors of this article checked the assumptions of this linear mixed-model. In the reporting summary, the authors confirm that any assumptions are present in the main paper, the supplementary figures, or figure legends. It’s not hard to check that this isn’t true. The authors didn’t include any of the assumptions for the \\(t\\)-test either until reviewer #2 pointed it out. Once again, the only statistics people care about is the \\(t\\)-test.\nIt’s always jarring to me how many different tests and analyses researchers cram into their papers. I’ve analyzed one tiny part of the paper I’m using for this article. All of this analysis I’ve produced is stuffed into one square of a 9x9 grid of 1 out of 9 total figures. It’s like I’ve just analyzed one verse of one song of the Beatles White Album. Maybe this is a bad metaphor because the White Album is fantastic, but how many White Album journal articles could’ve been Abbey Road articles if more care was given to each test, each model, and each assumption?\nAlthough I think the evidence for their hypothesis is strong, I’d feel more strongly about it if each mouse had 1-2 more observations, making it more likely that the mixed-effects model wasn’t singular. That fact at least requires the results are paired with an unknowably large grain of salt.\n\n\n2.7.2 Summary of the Results\nEvidence for an interaction between months (a.k.a time) and treatment type is strong. That interaction explains a large proportion of the variance in time in the correct quadrant for the mice, much larger than either fixed effect alone (Table 3).\nThe difference in slopes for months across treatment time is very visually apparent (Figure 6). The difference is strongest between the semaglutide treatment and the control group (Table 5).\nHowever, the main goal of the research is to see if the semaglutide group ages differently than the calorie restricted group, and if that could mean something for effects of people on GLP-1 drugs as they age. In the comparison of those two groups, I’d say the difference is promising, but not strong enough to definitely conclude anything by itself for two reasons:\n\nThe mixed effects model didn’t pass all of the assumptions, possibly because of the small number of observations per mouse.\nDepending on who you ask, \\(0.01&lt;p&lt;0.05\\) could mean statistically significant, marginally significant, or not significant at all.\n\nWith increased sample size and better behaved model however, I think it’s plausible the results continue to point in the direction that was hypothesized.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#methods",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#methods",
+    "title": "Mixed Effects Regression Article",
+    "section": "3.1 Methods",
+    "text": "3.1 Methods\nAs far as I can tell, this is the entirety of the author’s discussion on this analysis in the manuscript: “Other longitudinal continuous data were analysed using linear mixed-effects models to assess ageing trajectories. Slopes for each group were determined and pairwise comparisons of slopes were performed with Tukey adjustment.”\nI’ve never personally heard of using Tukey’s adjustment for anything but ANOVA, but Claude AI tells me it’s an option for the pairs() function in R.\nDoing that adjustment instead of the Benjamini-Hochberg I’m accustomed to gives these differences:\n\n\n\n\n\nTable 6: Comparison of Adjustment Methods\n\n\n\n\n\n\nComparison\nRaw\nBH\nTukey\n\n\n\n\nControl - Calorie Restricted\n0.172\n0.172\n0.172\n\n\nControl - Semaglutide\n&lt;0.001\n&lt;0.001\n&lt;0.001\n\n\nCalorie Restricted - Semaglutide\n0.03\n0.045\n0.03\n\n\n\n\n\n\n\n\n\nThis doesn’t change the adjusted \\(p\\)-values much. Tukey’s adjustment is slightly less harsh on the third comparison than the Benjamini-Hochberg method but that’s all.",
+    "crumbs": [
+      "Coursework",
+      "Data Analysis II",
+      "Mixed Effects Regression Article"
+    ]
+  },
+  {
+    "objectID": "Data Analysis II/mixed_effects/WriteUp.html#results",
+    "href": "Data Analysis II/mixed_effects/WriteUp.html#results",
+    "title": "Mixed Effects Regression Article",
+    "section": "3.2 Results",
+    "text": "3.2 Results\nThe analysis reproduced corresponds to Fig. 5e in the article. Shown is the discussion in the results section and the corresponding figure:\n\n“Notably, semaglutide treatment led to improvements above the baseline, as well as to more favourable trajectories in contrast to calorie restriction, in open-field centre time (Fig. 5b), Barnes maze performance (Fig. 5e) and glucose tolerance (Fig. 5i). These findings indicate that GLP-1R activation late in life recapitulates many functional benefits of calorie restriction by attenuating age-associated decline, while conferring additional benefits in exploratory drive, spatial memory and glucose control, suggesting effects beyond reduced calorie intake alone.””\n\n\n\n\nFigure 7: Journal Figure\n\n\n\n\n\n\nCompared to my analysis of the estimated marginal trends of months (Table 4), the results in the paper are exactly the same. The same is true of the contrasts between the trends across treatment groups (Table 5), except for my \\(p\\)-value adjustments are slightly more harsh than there’s.\nAssuming that the researchers are using the standard cutoff (\\(p&lt;0.05\\)), it makes sense why they use this finding, along with the rest, as evidence for positive effects on aging for semaglutide treatments in mice. However, my point about \\(p = 0.04\\) being on the borderline also applies to their Figures 5b, 5d, and 5i, all which have \\(0.01&lt;p&lt;0.05\\). While all fit within the traditional convention for statistical significance, it isn’t ideal when that continually pops up across a study. I understand that sample size is often limited in animal studies for ethics reasons, but a linear mixed-effects model partially solves this issue by allowing repeated measures on the same mouse, which I still believe would’ve really helped this study. For where this analysis sits currently, the consistent direction in which the analyses point certainly make it promising for further studies on GLP-1 drugs and their effects on aging.",
     "crumbs": [
       "Coursework",
       "Data Analysis II",
