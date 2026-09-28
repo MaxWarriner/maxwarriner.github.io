@@ -1,0 +1,924 @@
+---
+title: "Circadian Rhythym and Sleep Research at Merrimack College"
+---
+
+Over the summer of 2024 I had the privilege of working under the supervision of Dr. Melissa St. Hilaire of Merrimack College. I worked mainly on two projects:
+
+- Experimenting with increased parameterization of a differential-equation-based model of human circadian rhythms
+- Data cleaning and merging of a study on the effects of sleep deprivation, measured with sleep journals and biomonitors, and menstural cycle stage on reaction time as measured by a PVT test. 
+
+This work is still in progress and much of it I cannot share on this website, but here is some of the code that I used as a template for someone else working on the project later for the sleep deprivation study:
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(stringr)
+
+#######   Attention Study: Original Coding Done by Max Warriner (Colgate University) ##################
+
+
+
+###########################    Sleep Data Cleaning      #################################
+
+#Read in all of the sleep journal files
+
+sleep1 <- read.csv("2401F_Sleep_eDiary.csv")
+sleep2 <- read.csv("2402F_Sleep_eDiary.csv")
+sleep3 <- read.csv("2403F_Sleep_eDiary.csv")
+sleep4 <- read.csv("2404F_Sleep_eDiary.csv")
+sleep5 <- read.csv("2405F_Sleep_eDiary.csv")
+
+
+#merge all of the sleep journals to one master data frame
+
+merged1 <- merge(sleep1, sleep2, all=T)
+
+merged2 <- merge(sleep3, sleep4, all=T )
+
+merged12 <- merge(merged1, merged2, all=T)
+
+sleepdat <- merge(merged12, sleep5, all=T)
+
+
+#Data cleaning
+
+
+sleepdat <- sleepdat |>
+  mutate(study_id = case_when(study_id == "11, 2402F" ~ 2,
+                              study_id == "14, 2401F" ~ 1,       #Change study ids
+                              study_id == "20, 2403F" ~ 3, 
+                              study_id == "21, 2404F" ~ 4,
+                              study_id == "31, 2405F" ~ 5)) |>
+  filter(daily_sleep_ediary_timestamp != "") |>                  #Remove empty rows
+  select(-daily_sleep_ediary_timestamp) |>                       #Remove empty column
+  select(-sleep_diary_date) |>                                   #Remove redundant column
+  rename(date = sleep_diary_date_2,
+         id = study_id)                                          #Rename columns
+
+
+#Manipulate dates so each one is in year-month-day format
+
+sleepdat <- sleepdat |>
+  mutate(date = paste(substr(date,ifelse(nchar(date) == 8, 5,6),ifelse(nchar(date) == 8, 8,9)),
+                      paste("0",substr(date,1,1),sep = ""),
+                      ifelse(nchar(date) == 8,paste("0",substr(date,3,3),sep = ""),substr(date,3,4)),
+                      sep = "-"))
+
+
+
+
+#Manipulate bedtimes so they're also in the same format
+
+
+sleepdat <- sleepdat |>
+  mutate(date_bedtime = paste(substr(date_bedtime,ifelse(nchar(date_bedtime) == 8, 5,6),ifelse(nchar(date_bedtime) == 8, 8,9)),
+                      paste("0",substr(date_bedtime,1,1),sep = ""),
+                      ifelse(nchar(date_bedtime) == 8,paste("0",substr(date_bedtime,3,3),sep = ""),substr(date_bedtime,3,4)),
+                      sep = "-"))
+
+
+
+#Calculate total nap time
+
+sleepdat$nap1_start <- sapply(strsplit(sleepdat$nap1_start, ":"), 
+                              function(x) {
+                                x <- as.numeric(x)
+                                x[1] + x[2]/60
+                              })
+
+sleepdat$nap1_end <- sapply(strsplit(sleepdat$nap1_end, ":"), 
+                              function(x) {
+                                x <- as.numeric(x)
+                                x[1] + x[2]/60
+                              })
+
+
+
+#Add nap time to total sleep time
+
+sleepdat <- sleepdat |>
+  mutate(nap1_time = nap1_end - nap1_start)
+
+
+sleepdat <- sleepdat |>
+  mutate(tst_time = tst_hours + tst_mins * (1/60))
+
+sleepdat <- sleepdat |>
+  rowwise() |>
+  mutate(total.sleep.day = sum(tst_time, nap1_time, na.rm = T))
+
+
+
+
+
+#Select necessary columns
+
+sleepdat <- sleepdat |>
+  select(id, date, sleep_sound, sleep_eval, tst_time,nap1_time, total.sleep.day)
+
+
+#Separate into data frames for each person
+
+id1 <- sleepdat |>
+  filter(id == 1)
+
+id2 <- sleepdat |>
+  filter(id == 2) 
+
+id3 <- sleepdat |>
+  filter(id == 3) 
+
+id4 <- sleepdat |>
+  filter(id == 4)
+
+id5 <- sleepdat |>
+  filter(id == 5)
+
+
+
+
+####################### add cumulative sleep columns #######################
+
+
+#id1
+
+id1$sleep48 <- rep(NA, 31)
+
+for(i in 2:31){
+  
+  id1$sleep48[i] <- id1$total.sleep.day[i] + id1$total.sleep.day[i-1]
+  
+  
+}
+
+id1$sleep72 <- rep(NA, 31)
+
+for(i in 3:31){
+  
+  id1$sleep72[i] <- id1$total.sleep.day[i] + id1$total.sleep.day[i-1] + id1$total.sleep.day[i-2]
+  
+  
+}
+
+
+id1$sound48 <- rep(NA, 31)
+
+for(i in 2:31){
+  
+  id1$sound48[i] <- (id1$sleep_sound[i] + id1$sleep_sound[i-1]) / 2
+  
+  
+}
+
+id1$sound72 <- rep(NA, 31)
+
+for(i in 3:31){
+  
+  id1$sound72[i] <- (id1$total.sleep.day[i] + id1$total.sleep.day[i-1] + id1$total.sleep.day[i-2]) / 3
+  
+  
+}
+ 
+
+id1$eval48 <- rep(NA, 31)
+
+for(i in 2:31){
+  
+  id1$eval48[i] <- (id1$sleep_eval[i] + id1$sleep_eval[i-1]) / 2
+  
+  
+}
+
+id1$eval72 <- rep(NA, 31)
+
+for(i in 3:31){
+  
+  id1$eval72[i] <- (id1$sleep_eval[i] + id1$sleep_eval[i-1] + id1$sleep_eval[i-2]) / 3
+  
+  
+}
+
+
+
+
+#id2
+
+
+id2$sleep48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id2$sleep48[i] <- id2$total.sleep.day[i] + id2$total.sleep.day[i-1]
+  
+  
+}
+
+id2$sleep72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id2$sleep72[i] <- id2$total.sleep.day[i] + id2$total.sleep.day[i-1] + id2$total.sleep.day[i-2]
+  
+  
+}
+
+
+id2$sound48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id2$sound48[i] <- (id2$sleep_sound[i] + id2$sleep_sound[i-1]) / 2
+  
+  
+}
+
+id2$sound72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id2$sound72[i] <- (id2$total.sleep.day[i] + id2$total.sleep.day[i-1] + id2$total.sleep.day[i-2]) / 3
+  
+  
+}
+
+
+id2$eval48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id2$eval48[i] <- (id2$sleep_eval[i] + id2$sleep_eval[i-1]) / 2
+  
+  
+}
+
+id2$eval72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id2$eval72[i] <- (id2$sleep_eval[i] + id2$sleep_eval[i-1] + id2$sleep_eval[i-2]) / 3
+  
+  
+}
+
+
+
+#id3
+
+id3$sleep48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id3$sleep48[i] <- id3$total.sleep.day[i] + id3$total.sleep.day[i-1]
+  
+  
+}
+
+id3$sleep72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id3$sleep72[i] <- id3$total.sleep.day[i] + id3$total.sleep.day[i-1] + id3$total.sleep.day[i-2]
+  
+  
+}
+
+
+id3$sound48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id3$sound48[i] <- (id3$sleep_sound[i] + id3$sleep_sound[i-1]) / 2
+  
+  
+}
+
+id3$sound72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id3$sound72[i] <- (id3$total.sleep.day[i] + id3$total.sleep.day[i-1] + id3$total.sleep.day[i-2]) / 3
+  
+  
+}
+
+
+id3$eval48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id3$eval48[i] <- (id3$sleep_eval[i] + id3$sleep_eval[i-1]) / 2
+  
+  
+}
+
+id3$eval72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id3$eval72[i] <- (id3$sleep_eval[i] + id3$sleep_eval[i-1] + id3$sleep_eval[i-2]) / 3
+  
+  
+}
+
+
+#id4
+
+
+id4$sleep48 <- rep(NA, 27)
+
+for(i in 2:27){
+  
+  id4$sleep48[i] <- id4$total.sleep.day[i] + id4$total.sleep.day[i-1]
+  
+  
+}
+
+id4$sleep72 <- rep(NA, 27)
+
+for(i in 3:27){
+  
+  id4$sleep72[i] <- id4$total.sleep.day[i] + id4$total.sleep.day[i-1] + id4$total.sleep.day[i-2]
+  
+  
+}
+
+
+id4$sound48 <- rep(NA, 27)
+
+for(i in 2:27){
+  
+  id4$sound48[i] <- (id4$sleep_sound[i] + id4$sleep_sound[i-1]) / 2
+  
+  
+}
+
+id4$sound72 <- rep(NA, 27)
+
+for(i in 3:27){
+  
+  id4$sound72[i] <- (id4$total.sleep.day[i] + id4$total.sleep.day[i-1] + id4$total.sleep.day[i-2]) / 3
+  
+  
+}
+
+
+id4$eval48 <- rep(NA, 27)
+
+for(i in 2:27){
+  
+  id4$eval48[i] <- (id4$sleep_eval[i] + id4$sleep_eval[i-1]) / 2
+  
+  
+}
+
+id4$eval72 <- rep(NA, 27)
+
+for(i in 3:27){
+  
+  id4$eval72[i] <- (id4$sleep_eval[i] + id4$sleep_eval[i-1] + id4$sleep_eval[i-2]) / 3
+  
+  
+}
+
+
+
+
+#id5
+
+
+id5$sleep48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id5$sleep48[i] <- id5$total.sleep.day[i] + id5$total.sleep.day[i-1]
+  
+  
+}
+
+id5$sleep72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id5$sleep72[i] <- id5$total.sleep.day[i] + id5$total.sleep.day[i-1] + id5$total.sleep.day[i-2]
+  
+  
+}
+
+
+id5$sound48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id5$sound48[i] <- (id5$sleep_sound[i] + id5$sleep_sound[i-1]) / 2
+  
+  
+}
+
+id5$sound72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id5$sound72[i] <- (id5$total.sleep.day[i] + id5$total.sleep.day[i-1] + id5$total.sleep.day[i-2]) / 3
+  
+  
+}
+
+
+id5$eval48 <- rep(NA, 30)
+
+for(i in 2:30){
+  
+  id5$eval48[i] <- (id5$sleep_eval[i] + id5$sleep_eval[i-1]) / 2
+  
+  
+}
+
+id5$eval72 <- rep(NA, 30)
+
+for(i in 3:30){
+  
+  id5$eval72[i] <- (id5$sleep_eval[i] + id5$sleep_eval[i-1] + id5$sleep_eval[i-2]) / 3
+  
+  
+}
+
+
+
+################ merge all the sleep journals back together ####################
+
+
+
+id12 <- merge(id1, id2, all = T)
+
+id34 <- merge(id3, id4, all = T)
+
+id1234 <- merge(id12, id34, all = T)
+
+final.sleep <- merge(id1234, id5, all = T)
+
+
+
+
+############################## Gonogo Data Cleaning ####################
+
+gonogo.raw <- read_xlsx("gonogo.xlsx")
+
+
+gonogo <- gonogo.raw |>
+  mutate(`Date Time` = substr(`Date Time`,            #Clean date column
+                              1,
+                              10)) |>
+  rename("Date" = `Date Time`)
+
+gonogo <- gonogo |>
+  mutate(Subcode = case_when(Subcode == "2401F" ~ 1,            #change ids
+                             Subcode == "2402F" ~ 2, 
+                             Subcode == "2403F" ~ 3, 
+                             Subcode == "2404F" ~ 4, 
+                             Subcode == "2405F" ~ 5)) |>
+  rename(id = Subcode) |>
+  group_by(id, Date,`Study Visit`, `Trial Type`, Correct) |>    #aggregate reaction times   
+  summarise(mean.reaction = mean(`Reaction Time`),
+            median.reaction = median(`Reaction Time`),
+            n = n()) |> 
+  rename(test = Correct) |>
+  pivot_wider(names_from = c(`Trial Type`, test),
+              values_from = c(mean.reaction,median.reaction,n)) |>       #add more columns based on correctness
+  rename(mean.go.correct = mean.reaction_go_0,
+         mean.nogo.correct = mean.reaction_nogo_0,
+         mean.nogo.wrong = mean.reaction_nogo_1,
+         mean.go.wrong = mean.reaction_go_1,
+         median.go.correct = median.reaction_go_0,
+         median.nogo.correct = median.reaction_nogo_0,
+         median.nogo.wrong = median.reaction_nogo_1,
+         median.go.wrong = median.reaction_go_1,
+         n.go.correct = n_go_0,
+         n.nogo.correct = n_nogo_0,
+         n.nogo.wrong = n_nogo_1,
+         n.go.wrong = n_go_1)
+
+gonogo <- gonogo |>
+  rename(date = Date)
+
+
+
+
+###################### PVT Data Cleaning #########################
+
+
+
+pvt <- read_xlsx("PVT.xlsx")
+
+pvt <- pvt |>
+  rename(date = `Trial Date Time`,
+         id = Subcode)
+
+pvt <- pvt |>
+  mutate(false.start = ifelse(`Reaction Time(ms)` == "FS",1,0),    #add false start
+         error = ifelse(`Reaction Time(ms)` == "ERR",1,0))         #add error
+
+pvt <- pvt |>
+  mutate(date = substr(date,1,10),
+         id = case_when(id == "2401F" ~ 1,
+                        id == "2402F" ~ 2,
+                        id == "2403F" ~ 3, 
+                        id == "2404F" ~ 4,
+                        id == "2405F" ~ 5),
+         `Reaction Time(ms)` = ifelse(`Reaction Time(ms)` == "FS",NA,`Reaction Time(ms)`),    #change to NA's
+         `Reaction Time(ms)` = ifelse(`Reaction Time(ms)` == "ERR",NA,`Reaction Time(ms)`),
+         Distraction = case_when(Distraction == "Not Distracted" ~ NA))
+
+pvt <- pvt |>
+  mutate(`Reaction Time(ms)` = as.numeric(`Reaction Time(ms)`))      #change to numeric
+
+pvt <- pvt |>
+  mutate(lapse = ifelse(`Reaction Time(ms)` > 500,1,0))       #add lapse column
+
+pvt <- pvt |>
+  mutate(KSS = replace_na(KSS,1))
+
+pvt <- pvt |>
+  group_by(id, date, StudyVisit) |>
+  summarise(mean.pvt = mean(`Reaction Time(ms)`, na.rm = T),
+            median.pvt = median(`Reaction Time(ms)`, na.rm = T),
+            kss = mean(KSS, na.rm = T),
+            distractions = sum(Distraction, na.rm = T),            #aggregate PVT data like the gonogo data
+            lapses = sum(lapse, na.rm = T),
+            false.starts = sum(false.start, na.rm = T),
+            errors = sum(error, na.rm = T),
+            n = n())
+
+
+
+
+
+
+######################### Final data merging  #################################
+
+reaction <- merge(gonogo, pvt) |>
+  select(-StudyVisit)
+
+dat <- merge(reaction, final.sleep, all.x = T)
+
+dat <- dat |>
+  rowwise() |>
+  mutate(n.gonogo.wrong = sum(n.go.wrong, n.nogo.wrong, na.rm = T))
+
+
+
+######################## add menstrual data ###############
+
+menstrual.dat <- read_xlsx("Menstrual Phase Data.xlsx")
+
+menstrual.dat <- menstrual.dat |>
+  select(-SubjectCode) |>
+  rename(id = Subject,
+         `Study Visit` = StudyVisit)
+
+
+dat <- merge(dat, menstrual.dat, by = c("id", "Study Visit")) 
+
+
+
+################## MotionWare Data ###########################
+
+motion.id1.day1 <- read.csv("2401F_02162024_D1.csv", skip = 17)
+
+motion.id1.day2 <- read.csv("2401F_02232024_D2.csv", skip = 17)
+
+motion.id1.day3 <- read.csv("2401F_03012024_D3.csv", skip = 17)
+
+motion.id1.day4 <- read.csv("2401F_03112024_D4.csv", skip = 18)
+
+motion.id2.day1 <- read.csv("2402F_02162024_D1.csv", skip = 17)
+
+motion.id2.day2 <- read.csv("2402F_02232024_D2.csv", skip = 17) 
+
+motion.id2.day3 <- read.csv("2402F_03012024_D3.csv", skip = 17)
+
+motion.id2.day4 <- read.csv("2402F_03112024_D4.csv", skip = 18)
+
+motion.id3.day1 <- read.csv("2403F_02212024_D1.csv", skip = 17)
+
+motion.id3.day2 <- read.csv("2403F_02282024_D2.csv", skip = 17)
+
+motion.id3.day3 <- read.csv("2403F_03122024_D3.csv", skip = 18)
+
+motion.id3.day4 <- read.csv("2403F_03202024_D4.csv", skip = 17)
+
+motion.id4.day1 <- read.csv("2404F_02222024_D1.csv", skip = 17)
+
+motion.id4.day2 <- read.csv("2404F_02292024_D2.csv", skip = 17)
+
+motion.id4.day3 <- read.csv("2404F_03112024_D3.csv", skip = 17)
+
+motion.id4.day4 <- read.csv("2404F_03202024_D4.csv", skip = 17)
+
+motion.id5.day1 <- read.csv("2405F_03202024_D1.csv", skip = 17)
+
+motion.id5.day2 <- read.csv("2405F_03252024_D2.csv", skip = 17)
+
+motion.id5.day3 <- read.csv("2405F_04052024_D3.csv", skip = 17)
+
+motion.id5.day4 <- read.csv("2405F_04102024_D4.csv", skip = 17)
+
+# motion.id.1.1 <- data.frame("Date" = motion.id1.day1$UserID[seq(18, 20194,by = 2)], 
+#                           "Activity" = motion.id1.day1$UserID[seq(19, 20195, by = 2)],
+#                           "Time" = motion.id1.day1$X2401F[seq(18, 20194, by = 2)],
+#                           "Light(lux)" = motion.id1.day1$X2401F[seq(19, 20195, by = 2)])
+# 
+# motion.id.1.2 <- data.frame("Date" = motion.id1.day2$UserID[seq(18, 20256,by = 2)], 
+#                             "Activity" = motion.id1.day2$UserID[seq(19, 20257, by = 2)],
+#                             "Time" = motion.id1.day2$X2401F[seq(18, 20256, by = 2)],
+#                             "Light(lux)" = motion.id1.day2$X2401F[seq(19, 20257, by = 2)])
+# 
+# motion.id.1.3 <- data.frame("Date" = motion.id1.day3$UserID[seq(18, 19980,by = 2)], 
+#                             "Activity" = motion.id1.day3$UserID[seq(19, 19981, by = 2)],
+#                             "Time" = motion.id1.day3$X2401F[seq(18, 19980, by = 2)],
+#                             "Light(lux)" = motion.id1.day3$X2401F[seq(19, 19981, by = 2)])
+# 
+# motion.id.1.4 <- data.frame("Date" = motion.id1.day4$UserID[seq(19, 28729, by = 2)], 
+#                             "Activity" = motion.id1.day4$UserID[seq(20, 28730, by = 2)],
+#                             "Time" = motion.id1.day4$X2401F[seq(19, 28729, by = 2)],
+#                             "Light(lux)" = motion.id1.day4$X2401F[seq(20, 28730, by = 2)])
+# 
+# motion.id.1.12 <- merge(motion.id.1.1, motion.id.1.2, all = T)
+# 
+# motion.id.1.34 <- merge(motion.id.1.3, motion.id.1.4, all = T)
+# 
+# motion.id1 <- merge(motion.id.1.12, motion.id.1.34, all = T) |>
+#   mutate(id = rep(1, 44547))
+# 
+# 
+# 
+# 
+# motion.id.2.1 <- data.frame("Date" = motion.id2.day1$UserID[seq(18, 20142,by = 2)], 
+#                             "Activity" = motion.id2.day1$UserID[seq(19, 20143, by = 2)],
+#                             "Time" = motion.id2.day1$X2402F[seq(18, 20142, by = 2)],
+#                             "Light(lux)" = motion.id2.day1$X2402F[seq(19, 20143, by = 2)])
+# 
+# motion.id.2.2 <- data.frame("Date" = motion.id2.day2$UserID[seq(18, 20202,by = 2)], 
+#                             "Activity" = motion.id2.day2$UserID[seq(19, 20203, by = 2)],
+#                             "Time" = motion.id2.day2$X2402F[seq(18, 20202, by = 2)],
+#                             "Light(lux)" = motion.id2.day2$X2402F[seq(19, 20203, by = 2)])
+# 
+# motion.id.2.3 <- data.frame("Date" = motion.id2.day3$UserID[seq(18, 20168,by = 2)], 
+#                             "Activity" = motion.id2.day3$UserID[seq(19, 20169, by = 2)],
+#                             "Time" = motion.id2.day3$X2402F[seq(18, 20168, by = 2)],
+#                             "Light(lux)" = motion.id2.day3$X2402F[seq(19, 20169, by = 2)])
+# 
+# motion.id.2.4 <- data.frame("Date" = motion.id2.day4$UserID[seq(19, 28691, by = 2)], 
+#                             "Activity" = motion.id2.day4$UserID[seq(20, 28692, by = 2)],
+#                             "Time" = motion.id2.day4$X2402F[seq(19, 28691, by = 2)],
+#                             "Light(lux)" = motion.id2.day4$X2402F[seq(20, 28692, by = 2)])
+# 
+# motion.id.2.12 <- merge(motion.id.1.1, motion.id.1.2, all = T)
+# 
+# motion.id.2.34 <- merge(motion.id.1.3, motion.id.1.4, all = T)
+# 
+# motion.id2 <- merge(motion.id.2.12, motion.id.2.34, all = T) |>
+#   mutate(id = rep(2, 44547))
+# 
+# 
+# 
+# 
+# 
+# motion.id.3.1 <- data.frame("Date" = motion.id3.day1$UserID[seq(18, 26068,by = 2)], 
+#                             "Activity" = motion.id3.day1$UserID[seq(19, 26069, by = 2)],
+#                             "Time" = motion.id3.day1$X2403F[seq(18, 26068, by = 2)],
+#                             "Light(lux)" = motion.id3.day1$X2403F[seq(19, 26069, by = 2)])
+# 
+# motion.id.3.2 <- data.frame("Date" = motion.id3.day2$UserID[seq(18, 20496,by = 2)], 
+#                             "Activity" = motion.id3.day2$UserID[seq(19, 20497, by = 2)],
+#                             "Time" = motion.id3.day2$X2403F[seq(18, 20496, by = 2)],
+#                             "Light(lux)" = motion.id3.day2$X2403F[seq(19, 20497, by = 2)])
+# 
+# motion.id.3.3 <- data.frame("Date" = motion.id3.day3$UserID[seq(19, 36763,by = 2)], 
+#                             "Activity" = motion.id3.day3$UserID[seq(20, 36764, by = 2)],
+#                             "Time" = motion.id3.day3$X2403F[seq(19, 36763, by = 2)],
+#                             "Light(lux)" = motion.id3.day3$X2403F[seq(20, 36764, by = 2)])
+# 
+# motion.id.3.4 <- data.frame("Date" = motion.id3.day4$UserID[seq(18, 22976, by = 2)], 
+#                             "Activity" = motion.id3.day4$UserID[seq(19, 22977, by = 2)],
+#                             "Time" = motion.id3.day4$X2403F[seq(18, 22976, by = 2)],
+#                             "Light(lux)" = motion.id3.day4$X2403F[seq(19, 22977, by = 2)])
+# 
+# motion.id.3.12 <- merge(motion.id.3.1, motion.id.3.2, all = T)
+# 
+# motion.id.3.34 <- merge(motion.id.3.3, motion.id.3.4, all = T)
+# 
+# motion.id3 <- merge(motion.id.3.12, motion.id.3.34, all = T) |>
+#   mutate(id = rep(3, 53119))
+# 
+# 
+# motion.id.4.1 <- data.frame("Date" = motion.id4.day1$UserID[seq(18, 28782,by = 2)], 
+#                             "Activity" = motion.id4.day1$UserID[seq(19, 28783, by = 2)],
+#                             "Time" = motion.id4.day1$X2404F[seq(18, 28782, by = 2)],
+#                             "Light(lux)" = motion.id4.day1$X2404F[seq(19, 28783, by = 2)])
+# 
+# motion.id.4.2 <- data.frame("Date" = motion.id4.day2$UserID[seq(18, 20226,by = 2)], 
+#                             "Activity" = motion.id4.day2$UserID[seq(19, 20227, by = 2)],
+#                             "Time" = motion.id4.day2$X2404F[seq(18, 20226, by = 2)],
+#                             "Light(lux)" = motion.id4.day2$X2404F[seq(19, 20227, by = 2)])
+# 
+# motion.id.4.3 <- data.frame("Date" = motion.id4.day3$UserID[seq(18, 34792,by = 2)], 
+#                             "Activity" = motion.id4.day3$UserID[seq(19, 34793, by = 2)],
+#                             "Time" = motion.id4.day3$X2404F[seq(18, 34792, by = 2)],
+#                             "Light(lux)" = motion.id4.day3$X2404F[seq(19, 34793, by = 2)])
+# 
+# motion.id.4.4 <- data.frame("Date" = motion.id4.day4$UserID[seq(18, 25428, by = 2)], 
+#                             "Activity" = motion.id4.day4$UserID[seq(19, 25429, by = 2)],
+#                             "Time" = motion.id4.day4$X2404F[seq(18, 25428, by = 2)],
+#                             "Light(lux)" = motion.id4.day4$X2404F[seq(19, 25429, by = 2)])
+# 
+# motion.id.4.12 <- merge(motion.id.4.1, motion.id.4.2, all = T)
+# 
+# motion.id.4.34 <- merge(motion.id.4.3, motion.id.4.4, all = T)
+# 
+# motion.id4 <- merge(motion.id.4.12, motion.id.4.34, all = T) |>
+#   mutate(id = rep(4, 54081))
+# 
+# motion.id12 <- merge(motion.id1 , motion.id2, all = T)
+# 
+# motion.id34 <- merge(motion.id3, motion.id4, all = T)
+
+motion.id1.day12 <- rbind(motion.id1.day1, motion.id1.day2)
+
+motion.id1.day34 <- rbind(motion.id1.day3, motion.id1.day4)
+
+motion.id1 <- rbind(motion.id1.day12, motion.id1.day34)
+
+write.csv(motion.id1, file = "ID-1 Motion Data.csv")
+
+
+
+motion.id2.day12 <- rbind(motion.id2.day1, motion.id2.day2)
+
+motion.id2.day34 <- rbind(motion.id2.day3, motion.id2.day4)
+
+motion.id2 <- rbind(motion.id2.day12, motion.id2.day34)
+
+write.csv(motion.id2, file = "ID-2 Motion Data.csv")
+
+
+
+motion.id3.day12 <- rbind(motion.id3.day1, motion.id3.day2)
+
+motion.id3.day34 <- rbind(motion.id3.day3, motion.id3.day4)
+
+motion.id3 <- rbind(motion.id3.day12, motion.id3.day34)
+
+write.csv(motion.id3, file = "ID-3 Motion Data.csv")
+
+
+
+motion.id4.day12 <- rbind(motion.id4.day1, motion.id4.day2)
+
+motion.id4.day34 <- rbind(motion.id4.day3, motion.id4.day4)
+
+motion.id4 <- rbind(motion.id4.day12, motion.id4.day34)
+
+write.csv(motion.id4, file = "ID-4 Motion Data.csv")
+
+
+
+
+
+motion.id5.day12 <- rbind(motion.id5.day1, motion.id5.day2)
+
+motion.id5.day34 <- rbind(motion.id5.day3, motion.id5.day4)
+
+motion.id5 <- rbind(motion.id5.day12, motion.id5.day34)
+
+write.csv(motion.id2, file = "ID-5 Motion Data.csv")
+
+
+
+################# Plotting tinkering  #####################################
+
+dat$id <- as.factor(dat$id)
+
+rainbow_colors <- rainbow(length(unique(dat$id)))
+
+ggplot(data = dat) +
+  geom_point(aes(x = total.sleep.day, 
+                 y = median.go.correct, 
+                 colour = id),
+             size = 3) +
+  scale_color_manual(values = rainbow_colors) +
+  theme_bw() +
+  xlab("Sleep in Last 24 Hours") +
+  ylab("Median Reaction Time in Correct Trials")
+
+
+ggplot(data = dat) +
+  geom_point(aes(x = sleep48, 
+                 y = median.go.correct, 
+                 colour = id),
+             size = 3) +
+  scale_color_manual(values = rainbow_colors) +
+  theme_bw() +
+  xlab("Sleep in Last 48 Hours") +
+  ylab("Median Reaction Time in Correct Trials")
+
+
+ggplot(data = dat) +
+  geom_point(aes(x = sleep72, 
+                 y = median.go.correct,
+                 colour = id), 
+             size = 3) +
+  scale_color_manual(values = rainbow_colors) +
+  theme_bw() +
+  xlab("Sleep in Last 72 Hours") +
+  ylab("Median Reaction Time in Correct Trials")
+
+
+ggplot(data = dat) +
+  geom_point(aes(x = sleep72,
+                 y = n.gonogo.wrong, 
+                 colour = id), 
+             size = 3) + 
+  scale_color_manual(values = rainbow_colors) +
+  theme_bw() + 
+  xlab("Sleep in Last 72 Hours") + 
+  ylab("Number of Incorrect Go Trials") +
+  geom_hline(yintercept = 0)
+
+
+ggplot(data = dat) + 
+  geom_point(aes(x = sleep48,
+                 y = median.pvt,
+                 colour = id),
+             size = 3) + 
+  scale_color_manual(values = rainbow_colors) + 
+  theme_bw() + 
+  xlab("Sleep in Last 48 Hours") + 
+  ylab("Median PVT Time")
+
+ggplot(data = dat) + 
+  geom_point(aes(x = total.sleep.day, 
+                 y = lapses, 
+                 colour = id),
+             size = 3) + 
+  scale_color_manual(values = rainbow_colors) + 
+  theme_bw() +
+  xlab("Sleep in Last 24 Hours") + 
+  ylab("Number of Lapses in GoNoGo Trials") + 
+  geom_hline(yintercept = 0)
+
+
+ggplot(data = dat) +
+  geom_histogram(aes(x = total.sleep.day,
+                     y = after_stat(count)), 
+                 bins = 6) +
+  theme_bw() +
+  geom_hline(yintercept = 0)
+
+
+ggplot(data = dat) +
+  geom_histogram(aes(x = median.pvt,
+                     y = after_stat(count)), 
+                 bins=8) +
+  theme_bw() +
+  geom_hline(yintercept = 0)
+
+ggplot(data = dat) +
+  geom_histogram(aes(x = median.go.correct,
+                     y = after_stat(count)), 
+                 bins = 8) +
+  theme_bw() +
+  geom_hline(yintercept = 0)
+
+
+############################## Data Analysis ##################################################
+
+cor(x = dat$median.pvt, y = dat$total.sleep.day, use = "complete.obs")
+
+cor(x = dat$total.sleep.day, y = dat$n.nogo.wrong, use = "complete.obs")
+
+
+t.test(dat$total.sleep.day ~ dat$MenstrualPhase, alternative = "greater")
+
+t.test(dat$median.pvt ~ dat$MenstrualPhase, alternative = "greater")
+
+t.test(dat$median.go.correct ~ dat$MenstrualPhase, alternative = "greater")
+
+t.dat <- dat |>
+  group_by(id, MenstrualPhase) |>
+  summarise(median.pvt = mean(median.pvt),
+            median.gonogo = mean(median.go.correct))
+
+t.test(t.dat$median.pvt ~ t.dat$MenstrualPhase, paired = T, alternative = "greater")
+
+t.test(t.dat$median.gonogo ~ t.dat$MenstrualPhase, paired = T, alternative = "greater")
+
+write.csv(x = dat, file = "C:/Users/12697/OneDrive/Documents/Attention Study/Cleaned Data.csv")
+
+
+
+```
+
+

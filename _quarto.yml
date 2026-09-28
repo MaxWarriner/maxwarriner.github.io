@@ -51,12 +51,14 @@ website:
         # Data Analysis II
           - section: "Data Analysis II"
             contents:
-              - href: Data Analysis I/overview.qmd
+              - href: Data Analysis II/overview.qmd
                 text: "Overview"
               - href: Data Analysis II\HW1\HW1WriteUp.qmd
                 text: "Homework 1"
               - href: Data Analysis II\HW2\HW2WriteUp.qmd
-                text: "Homework 2"       
+                text: "Homework 2"
+              - href: Data Analysis II\mixed_effects\WriteUp.qmd
+                text: "Mixed Effects Regression Article"                    
         # Geoinformatics
           - section: "Geoinformatics"
             contents:
@@ -85,10 +87,10 @@ website:
               - href: Multivariate Data Analysis/Assignment1/quarto.qmd
                 text: "Assignment 1"
               - href: Multivariate Data Analysis/Assignment2/quarto.qmd
-                text: "Assignment 2"                                                                                                               
-        # Data Analysis II
-          - section: "Data Analysis II"
-            contents:
+                text: "Assignment 2" 
+        # AI Use
+          - href: ai.qmd
+            text: "Statement on AI Use"                                                                                                                           
       # Research
       - section: "Research"
         icon: bar-chart
@@ -99,6 +101,8 @@ website:
           text: "Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren"
         - href: MATH481_Max_Alta/quarto.qmd
           text: "Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren"
+        - href: sleep_study.qmd
+          text: "Circadian Rhythym Model/Sleep Deprivation Research"
       # Internships
       - section: "Internships"
         icon: briefcase
@@ -109,10 +113,6 @@ website:
           text: "Colgate Data Science Collaboratory"
         - href: voting.qmd
           text: "County Voting Data for Michigan"                    
-      # AI Use
-      - href: ai.qmd
-        text: "Statement on AI Use"
-        icon: anthropic
 
 
   page-footer:

@@ -189,17 +189,18 @@ dat.mem <- tibble(subject = subjects,
                          MD = NA)
 
 for(i in 1:length(subjects)){
-  # Subject to check
-  curr.subject <- subjects[i]
-  curr.dat <- dat %>% filter(subject == curr.subject)
-  curr.n <- nrow(curr.dat)
-  # Bulid Covariance Matrix
-  var.r <- sigma(rand_slope_int_mod)^2 # estimated conditional error variance
-  Zi <- cbind(1, curr.dat$x)
-  Sigma.epsilon.i <- Zi %*% Sigma.gamma %*% t(Zi) + diag(var.r, nrow(curr.dat))
-  # Compute Distance
-  dat.mem$MD[i] = t(curr.dat$r.marginal) %*% solve(Sigma.epsilon.i) %*% curr.dat$r.marginal
+# Subject to check
+curr.subject <- subjects[i]
+curr.dat <- dat %>% filter(subject == curr.subject)
+curr.n <- nrow(curr.dat)
+# Bulid Covariance Matrix
+var.r <- sigma(rand_slope_int_mod)^2 # estimated conditional error variance
+Zi <- cbind(1, curr.dat$x)
+Sigma.epsilon.i <- Zi %*% Sigma.gamma %*% t(Zi) + diag(var.r, nrow(curr.dat))
+# Compute Distance
+dat.mem$MD[i] = t(curr.dat$r.marginal) %*% solve(Sigma.epsilon.i) %*% curr.dat$r.marginal
 }
+
 
 ggplot(data = dat.mem) + 
   stat_qq(aes(sample=MD),
@@ -306,9 +307,6 @@ library(performance)
 rand_int_mod <- lmer(y ~ x + (1|subject), data = dat)
 # Random intercept + slopes model
 rand_slope_int_mod <- lmer(y ~ x + (x|subject), data = dat)
-```
-
-```{r}
 
 #ANOVA
 anova(rand_int_mod, rand_slope_int_mod)
@@ -411,4 +409,4 @@ I would follow a procedure similar to parts c \& d. This time, I would assess th
 
 # AI Disclosure
 
-[https://claude.ai/share/0d2c97de-9713-4f78-8d93-98bd333e73be](Here) is the conversastion with Claude that shows all of the AI assistance used during the completion of this homework. 
+[Here](https://claude.ai/share/0d2c97de-9713-4f78-8d93-98bd333e73be) is the conversastion with Claude that shows all of the AI assistance used during the completion of this homework. 
