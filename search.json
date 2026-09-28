@@ -704,7 +704,7 @@
     "href": "Data Analysis II/mixed_effects/WriteUp.html#model-fit",
     "title": "Mixed Effects Regression Article",
     "section": "2.4 Model Fit",
-    "text": "2.4 Model Fit\n\n\nTesting the \\(R^2\\) for the model:\n\nConditional \\(R^2 =\\) NA\nMarginal \\(R^2 = 0.379\\)\n\nBecause our model was singular and wasn’t able to detect any random effects of the individual subjects, our conditional \\(R^2\\) was not able to be calculated. This means there is also no intraclass correlation coefficient.\nTesting the model performance (Lüdecke et al. 2021):\n\n\n\n\nTable 1: Model Performance Metrics",
+    "text": "2.4 Model Fit\n\n\nTesting the \\(R^2\\) for the model:\n\nConditional \\(R^2 =\\) NA\nMarginal \\(R^2 = 0.379\\)\n\nBecause our model was singular and wasn’t able to detect any random effects of the individual subjects, our conditional \\(R^2\\) was not able to be calculated. This means there is also no intraclass correlation coefficient.\nTesting the model performance (Lüdecke et al. 2021):\n\n\n\nRandom effect variances not available. Returned R2 does not account for random effects.\n\n\n\n\nTable 1: Model Performance Metrics\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAIC\nAICc\nBIC\nConditional R2\nMarginal R2\nRMSE\nSigma\n\n\n\n\n704.389\n706.167\n724.387\nNA\n0.379\n12.245\n12.675",
     "crumbs": [
       "Coursework",
       "Data Analysis II",

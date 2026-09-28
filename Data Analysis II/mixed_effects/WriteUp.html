@@ -799,17 +799,54 @@ Figure&nbsp;5: Model Marginal Residuals
 <p>Because our model was singular and wasn’t able to detect any random effects of the individual subjects, our conditional <span class="math inline">\(R^2\)</span> was not able to be calculated. This means there is also no intraclass correlation coefficient.</p>
 <p>Testing the model performance <span class="citation" data-cites="performance">(<a href="#ref-performance" role="doc-biblioref">Lüdecke et al. 2021</a>)</span>:</p>
 <p></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Random effect variances not available. Returned R2 does not account for random effects.</code></pre>
+</div>
 <div id="tbl-mod_performance" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mod_performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Model Performance Metrics
 </figcaption>
 <div aria-describedby="tbl-mod_performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div>
-
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 22%">
+<col style="width: 18%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">AIC</th>
+<th style="text-align: center;">AICc</th>
+<th style="text-align: center;">BIC</th>
+<th style="text-align: center;">Conditional R2</th>
+<th style="text-align: center;">Marginal R2</th>
+<th style="text-align: center;">RMSE</th>
+<th style="text-align: center;">Sigma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">704.389</td>
+<td style="text-align: center;">706.167</td>
+<td style="text-align: center;">724.387</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">0.379</td>
+<td style="text-align: center;">12.245</td>
+<td style="text-align: center;">12.675</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </figure>
+</div>
 </div>
 <p></p>
 </section>
