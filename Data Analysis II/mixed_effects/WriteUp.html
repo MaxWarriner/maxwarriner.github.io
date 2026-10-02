@@ -525,7 +525,7 @@ window.Quarto = {
   <li><a href="#model-assumptions" id="toc-model-assumptions" class="nav-link" data-scroll-target="#model-assumptions"><span class="header-section-number">2.3</span> Model Assumptions</a>
   <ul class="collapse">
   <li><a href="#normality-of-conditional-residuals" id="toc-normality-of-conditional-residuals" class="nav-link" data-scroll-target="#normality-of-conditional-residuals"><span class="header-section-number">2.3.1</span> Normality of Conditional Residuals</a></li>
-  <li><a href="#multivariate-normality-of-marginal-residuals" id="toc-multivariate-normality-of-marginal-residuals" class="nav-link" data-scroll-target="#multivariate-normality-of-marginal-residuals"><span class="header-section-number">2.3.2</span> Multivariate Normality of Marginal Residuals</a></li>
+  <li><a href="#multivariate-normality-of-marginal-residual-vectors" id="toc-multivariate-normality-of-marginal-residual-vectors" class="nav-link" data-scroll-target="#multivariate-normality-of-marginal-residual-vectors"><span class="header-section-number">2.3.2</span> Multivariate Normality of Marginal Residual Vectors</a></li>
   <li><a href="#normality-of-random-intercepts" id="toc-normality-of-random-intercepts" class="nav-link" data-scroll-target="#normality-of-random-intercepts"><span class="header-section-number">2.3.3</span> Normality of Random Intercepts</a></li>
   </ul></li>
   <li><a href="#model-fit" id="toc-model-fit" class="nav-link" data-scroll-target="#model-fit"><span class="header-section-number">2.4</span> Model Fit</a></li>
@@ -542,8 +542,9 @@ window.Quarto = {
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">3.1</span> Methods</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3.2</span> Results</a></li>
   </ul></li>
-  <li><a href="#acknowledgement" id="toc-acknowledgement" class="nav-link" data-scroll-target="#acknowledgement"><span class="header-section-number">4</span> Acknowledgement</a></li>
-  <li><a href="#ai-use" id="toc-ai-use" class="nav-link" data-scroll-target="#ai-use"><span class="header-section-number">5</span> AI Use</a></li>
+  <li><a href="#post-hoc-analysis" id="toc-post-hoc-analysis" class="nav-link" data-scroll-target="#post-hoc-analysis"><span class="header-section-number">4</span> Post-Hoc Analysis</a></li>
+  <li><a href="#acknowledgement" id="toc-acknowledgement" class="nav-link" data-scroll-target="#acknowledgement"><span class="header-section-number">5</span> Acknowledgement</a></li>
+  <li><a href="#ai-use" id="toc-ai-use" class="nav-link" data-scroll-target="#ai-use"><span class="header-section-number">6</span> AI Use</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="WriteUp.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -662,14 +663,14 @@ Figure&nbsp;1: Trend of Published Research on ‘GLP-1’
    &amp; \beta_2(x_{1ij})I(x_{3ij} = \text{"Semaglutide"}) + \epsilon_{ij}
 \end{align*}\]</span> where:</p>
 <ul>
-<li><span class="math inline">\(t\)</span> is the time each mouse spends in the correct quadrant</li>
+<li><span class="math inline">\(t_{ij}\)</span> is the time each mouse spends in the correct quadrant</li>
 <li><span class="math inline">\(i=1, 2, ..., n\)</span> is the index for each mouse</li>
 <li><span class="math inline">\(j=1, 2, ..., n_i\)</span> is the index for the observation on mouse <span class="math inline">\(i\)</span>.</li>
-<li><span class="math inline">\(\gamma\)</span> is the random intercept for the time each mouse takes to complete the maze</li>
+<li><span class="math inline">\(\gamma_{0i}\)</span> is the random intercept for the time each mouse takes to complete the maze</li>
 <li><span class="math inline">\(\beta_0\)</span> is the intercept which includes the slope of time for mice in the “Control” treatment</li>
 <li><span class="math inline">\(\beta_1\)</span> is the slope of time for mice in the “Calorie Restricted” treatment</li>
 <li><span class="math inline">\(\beta_2\)</span> is the slope of time for mice in the “Semaglutide” treatment</li>
-<li><span class="math inline">\(\epsilon\)</span> is the conditional residual</li>
+<li><span class="math inline">\(\epsilon_{ij}\)</span> is the conditional residual</li>
 </ul>
 </section>
 </section>
@@ -764,8 +765,8 @@ Figure&nbsp;4: Model Conditional Residuals
 <p></p>
 <p>When looking for normality, we check that a histogram is centered around 0 and appears roughly gaussian shaped, and that our points fit relatively closely to a qqplot of the normal distribution. In the case of our model, our conditional residuals are centered around 0 and do appear to be roughly gaussian shaped, with the distribution weighted slightly towards negative residuals. The qq-plot shows a close fit to a theoretical distribution. And while not necessarily the best test of approximate normality, a Shapiro-Wilk test for normality shows no statistically discernible deviation from normality (<span class="math inline">\(p = 0.41\)</span>)</p>
 </section>
-<section id="multivariate-normality-of-marginal-residuals" class="level3" data-number="2.3.2">
-<h3 data-number="2.3.2" class="anchored" data-anchor-id="multivariate-normality-of-marginal-residuals"><span class="header-section-number">2.3.2</span> Multivariate Normality of Marginal Residuals</h3>
+<section id="multivariate-normality-of-marginal-residual-vectors" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="multivariate-normality-of-marginal-residual-vectors"><span class="header-section-number">2.3.2</span> Multivariate Normality of Marginal Residual Vectors</h3>
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
@@ -1289,12 +1290,285 @@ Figure&nbsp;7: Journal Figure
 <p>Assuming that the researchers are using the standard cutoff (<span class="math inline">\(p&lt;0.05\)</span>), it makes sense why they use this finding, along with the rest, as evidence for positive effects on aging for semaglutide treatments in mice. However, my point about <span class="math inline">\(p = 0.04\)</span> being on the borderline also applies to their Figures 5b, 5d, and 5i, all which have <span class="math inline">\(0.01&lt;p&lt;0.05\)</span>. While all fit within the traditional convention for statistical significance, it isn’t ideal when that continually pops up across a study. I understand that sample size is often limited in animal studies for ethics reasons, but a linear mixed-effects model partially solves this issue by allowing repeated measures on the same mouse, which I still believe would’ve really helped this study. For where this analysis sits currently, the consistent direction in which the analyses point certainly make it promising for further studies on GLP-1 drugs and their effects on aging.</p>
 </section>
 </section>
-<section id="acknowledgement" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Acknowledgement</h1>
+<section id="post-hoc-analysis" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Post-Hoc Analysis</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Source: Pexels.com</figcaption>
+<p><img src="orange.JPG" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>After learning about a different, robust way of handling the singular fit of the lmer() model, this is an attempt at a second try of the analysis, with justice for the random effects.</p>
+<p>By using the vcovCR() function from the <em>clubSandwich</em> package, we can estimate a covariance matrix from our data, treating each mouse as a cluster. This adjusts the standard errors and addresses the dependence of each observation when estimating model coefficients.</p>
+<p>Here’s a summary of the model, using the robust covariance matrix and the Satterthwaite small-sample correction:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-posthoc_sum" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-posthoc_sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Robust Model Summary
+</figcaption>
+<div aria-describedby="tbl-posthoc_sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 54%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coefficient</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: center;">SE</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: left;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Intercept</td>
+<td style="text-align: right;">36.394</td>
+<td style="text-align: center;">4.354</td>
+<td style="text-align: right;">8.360</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">&lt;0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Months</td>
+<td style="text-align: right;">-3.198</td>
+<td style="text-align: center;">1.471</td>
+<td style="text-align: right;">-2.174</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">0.058</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Treatment = Calorie Restricted</td>
+<td style="text-align: right;">-1.991</td>
+<td style="text-align: center;">7.175</td>
+<td style="text-align: right;">-0.278</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: left;">0.785</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Treatment = Semaglutide</td>
+<td style="text-align: right;">0.423</td>
+<td style="text-align: center;">5.572</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: left;">0.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Months : Treatment = Calorie Restricted</td>
+<td style="text-align: right;">3.650</td>
+<td style="text-align: center;">2.743</td>
+<td style="text-align: right;">1.330</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: left;">0.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Months : Treatment = Semaglutide</td>
+<td style="text-align: right;">8.902</td>
+<td style="text-align: center;">2.004</td>
+<td style="text-align: right;">4.442</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: left;">&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>If you compare to the original table <a href="#tbl-mod_summary" class="quarto-xref">Table&nbsp;2</a>, you’ll notice the coefficient estimates are the same, but the standard errors and degrees-of-freedom have been adjusted. Now, the effect of the months alone is <em>marginally</em> discernible (<span class="math inline">\(t(9) = -2.174, p = 0.058\)</span>). The slope of months for the calorie restricted group has gone from showing a <em>marginal</em> effect to now being <strong>not</strong> discernibly different than 0 (<span class="math inline">\(t(18) = 1.330, p = 0.200\)</span>). Still, the slope of months on the semaglutide treatment group is statistically discernible (<span class="math inline">\(t(18) = 4.442, p &lt; 0.001\)</span>).</p>
+<p>Now let’s see if the untangled interaction is affected:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-posthoc_model_emt" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-posthoc_model_emt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Post-Hoc Model Estimated Marginal Trends
+</figcaption>
+<div aria-describedby="tbl-posthoc_model_emt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 16%">
+<col style="width: 6%">
+<col style="width: 3%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treatment</th>
+<th style="text-align: center;">Months Trend</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Control</td>
+<td style="text-align: center;">-3.198</td>
+<td style="text-align: right;">1.471</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: right;">-2.174</td>
+<td style="text-align: right;">0.032</td>
+<td style="text-align: right;">0.049</td>
+<td style="text-align: center;">-6.123</td>
+<td style="text-align: center;">-0.273</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Calorie Restricted</td>
+<td style="text-align: center;">0.452</td>
+<td style="text-align: right;">2.316</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: right;">0.195</td>
+<td style="text-align: right;">0.846</td>
+<td style="text-align: right;">0.846</td>
+<td style="text-align: center;">-4.153</td>
+<td style="text-align: center;">5.057</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Semaglutide</td>
+<td style="text-align: center;">5.703</td>
+<td style="text-align: right;">1.361</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: right;">4.191</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">2.997</td>
+<td style="text-align: center;">8.410</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Comparing to <a href="#tbl-model_emt" class="quarto-xref">Table&nbsp;4</a>, once again, the estimates for the trend of months are equal, while the hypothesis testing measures are slightly different now (also the degrees-of-freedom for some reason). The slope of months for the control group remains ever so slightly below the 0.05 cutoff for the adjusted-<span class="math inline">\(p\)</span> (<span class="math inline">\(t(84) = -2.174, p = 0.032\)</span>, adjusted-<span class="math inline">\(p = 0.049\)</span>). Interestingly, the slope for the semaglutide treatment is the only one to potentially have even stronger evidence after these post-hoc changes (<span class="math inline">\(t(84) = 4.191, p &lt;0.001\)</span>, adjusted-<span class="math inline">\(p &lt; 0.001\)</span>), compared to previously in <a href="#tbl-model_emt" class="quarto-xref">Table&nbsp;4</a>: (<span class="math inline">\(t(57) = 4.025, p&lt; 0.001\)</span>, adjusted-<span class="math inline">\(p = 0.001\)</span>). I can’t say for sure why this is the case. An interesting thing to note about the differences is that each of the slopes now have unique standard errors, compared to the uniform errors before.</p>
+<p>Now to see if anything’s changed visually, I’ll display a before and after of the plots:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-posthoc_marginal_trends" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-posthoc_marginal_trends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Post-Hoc Model Estimated Marginal Trends
+</figcaption>
+<div aria-describedby="fig-posthoc_marginal_trends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-posthoc_marginal_trends-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Obviously, the estimates for the slopes are the same, but it’s interesting to see the way the confidence interval ribbons change shape depending on the model.</p>
+<p>Finally, let’s see if this adjustment has made any difference in the main hypothesis of the paper: the difference between the slopes for the calorie restricted treatment and the semaglutide treatment.</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_emt_cont_post" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_emt_cont_post-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;9: Post-Hoc Model Estimated Marginal Trends Contrasts
+</figcaption>
+<div aria-describedby="tbl-model_emt_cont_post-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: center;">df</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: center;">adjusted-p</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Higher CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Control - Calorie Restricted</td>
+<td style="text-align: center;">-3.650</td>
+<td style="text-align: right;">2.743</td>
+<td style="text-align: center;">84</td>
+<td style="text-align: right;">-1.330</td>
+<td style="text-align: right;">0.382</td>
+<td style="text-align: center;">0.382</td>
+<td style="text-align: center;">-10.196</td>
+<td style="text-align: center;">2.896</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Semaglutide</td>
+<td style="text-align: center;">-8.902</td>
+<td style="text-align: right;">2.004</td>
+<td style="text-align: center;">84</td>
+<td style="text-align: right;">-4.442</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">&lt;0.001</td>
+<td style="text-align: center;">-13.683</td>
+<td style="text-align: center;">-4.120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Calorie Restricted - Semaglutide</td>
+<td style="text-align: center;">-5.252</td>
+<td style="text-align: right;">2.686</td>
+<td style="text-align: center;">84</td>
+<td style="text-align: right;">-1.955</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: center;">0.195</td>
+<td style="text-align: center;">-11.660</td>
+<td style="text-align: center;">1.157</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>In a comparison with <a href="#tbl-model_emt_cont" class="quarto-xref">Table&nbsp;5</a>, we see that the contrast test between the calorie restricted treatment and the semaglutide treatment was quite affected by this difference in approach. While the contrast was previously <em>marginally</em> discernible, it now appears to be not discernible at all (<span class="math inline">\(t(84) = -1.955, p = 0.130\)</span>, adjusted-<span class="math inline">\(p = 0.195\)</span>). This shows the dangers in making strong conclusions about hypothesis tests where the <span class="math inline">\(p\)</span>-value is dangerously close to 0.05.</p>
+<p>Does this radically change my assessment of the data? Not really. As previously mentioned, while <span class="math inline">\(p &lt; 0.001\)</span> and <span class="math inline">\(p&lt;0.05\)</span> are both reported as statistically significant and make for a publishable journal article, they are not the same. Lastly, this is a good lesson that if the statistical significance of your hypothesis changes depending on how you approach the question, whether it be parametric vs.&nbsp;non-parametric vs.&nbsp;bootstrap and so on, the juice might not be worth the squeeze.</p>
+</section>
+<section id="acknowledgement" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Acknowledgement</h1>
 <p>I give my appreciation to the authors of this study: Yufan Feng, Marine Barthez, Yifei Wang, Yibing Chen, Huixian Qiu, Chih-Ling Wang, Kartoosh Heydari, Melaine Delcroix, Lene Juel Rasmussen, Vilhelm A. Bohr &amp; Danica Chen. Making data available is a huge positive direction for science, and makes my project of reproducing analysis of journal articles possible.</p>
 </section>
-<section id="ai-use" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> AI Use</h1>
+<section id="ai-use" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> AI Use</h1>
 <p>All of the guidance given by generative AI for this article can be found in <a href="https://claude.ai/share/092e8d34-3cb6-429b-b4ee-7afe62a328e0">this conversation</a>.</p>
 
 
