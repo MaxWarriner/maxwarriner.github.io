@@ -332,6 +332,12 @@ window.Quarto = {
  <span class="menu-text">Linear Mixed Effects Regression Article</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/poisson/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson Regression Article</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -666,7 +672,7 @@ Figure&nbsp;1: Trend of Published Research on ‘GLP-1’
 <li><span class="math inline">\(t_{ij}\)</span> is the time each mouse spends in the correct quadrant</li>
 <li><span class="math inline">\(i=1, 2, ..., n\)</span> is the index for each mouse</li>
 <li><span class="math inline">\(j=1, 2, ..., n_i\)</span> is the index for the observation on mouse <span class="math inline">\(i\)</span>.</li>
-<li><span class="math inline">\(\gamma_{0i}\)</span> is the random intercept for the time each mouse takes to complete the maze</li>
+<li><span class="math inline">\(\gamma_{0i}\)</span> is the random intercept for each mouse</li>
 <li><span class="math inline">\(\beta_0\)</span> is the intercept which includes the slope of time for mice in the “Control” treatment</li>
 <li><span class="math inline">\(\beta_1\)</span> is the slope of time for mice in the “Calorie Restricted” treatment</li>
 <li><span class="math inline">\(\beta_2\)</span> is the slope of time for mice in the “Semaglutide” treatment</li>
@@ -1299,7 +1305,7 @@ Figure&nbsp;7: Journal Figure
 </figure>
 </div>
 <p>After learning about a different, robust way of handling the singular fit of the lmer() model, this is an attempt at a second try of the analysis, with justice for the random effects.</p>
-<p>By using the vcovCR() function from the <em>clubSandwich</em> package, we can estimate a covariance matrix from our data, treating each mouse as a cluster. This adjusts the standard errors and addresses the dependence of each observation when estimating model coefficients.</p>
+<p>By using the vcovCR() function from the <em>clubSandwich</em> package <span class="citation" data-cites="clubSandwich">(<a href="#ref-clubSandwich" role="doc-biblioref">Pustejovsky 2026</a>)</span>, we can estimate a covariance matrix from our data, treating each mouse as a cluster. This adjusts the standard errors and addresses the dependence of each observation when estimating model coefficients.</p>
 <p>Here’s a summary of the model, using the robust covariance matrix and the Satterthwaite small-sample correction:</p>
 <p></p>
 <div class="cell">
@@ -1602,6 +1608,9 @@ Lüdecke, Daniel, Mattan S. Ben-Shachar, Indrajeet Patil, Philip Waggoner, and D
 </div>
 <div id="ref-patchwork" class="csl-entry" role="listitem">
 Pedersen, Thomas Lin. 2025. <em>Patchwork: The Composer of Plots</em>. <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-clubSandwich" class="csl-entry" role="listitem">
+Pustejovsky, James E. 2026. <em>clubSandwich: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample Corrections</em>. <a href="https://CRAN.R-project.org/package=clubSandwich">https://CRAN.R-project.org/package=clubSandwich</a>.
 </div>
 <div id="ref-ggplot2" class="csl-entry" role="listitem">
 Wickham, Hadley. 2016. <em>Ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
