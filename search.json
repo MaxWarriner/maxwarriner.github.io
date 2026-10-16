@@ -321,7 +321,7 @@
     "href": "Data Analysis II/mixed_effects/WriteUp.html#data-summary",
     "title": "Linear Mixed Effects Regression Article",
     "section": "2.2 Data Summary",
-    "text": "2.2 Data Summary\nFirst, let’s look at the raw data (Wickham 2016), (Ammar 2019), (Arnold 2024):\n\n\n\n\n\n\nFigure 2: Maze Time Across Treatments and Mouse\n\n\n\n\n\n\n\n\n\nA little messy, but there’s a clear decline in time in the control group that’s not as present in the calorie restricted or semaglutide groups.\nWhat if we summarize this and take the individual out of it?\n\n\n\n\n\n\nFigure 3: Maze Time Across Treatments\n\n\n\n\n\n\n\n\n\nIn this view, the differences in time across diet appear to widen as time goes on.",
+    "text": "2.2 Data Summary\nFirst, let’s look at the raw data (Wickham 2016), (Ammar 2019), (Arnold 2024):\n\n\n\n\n\n\nFigure 2: Maze Time Against Months Across Treatments and Mouse\n\n\n\n\n\n\n\n\n\nA little messy, but there’s a clear decline in time in the control group that’s not as present in the calorie restricted or semaglutide groups.\nWhat if we summarize this and take the individual out of it?\n\n\n\n\n\n\nFigure 3: Maze Time Across Treatments\n\n\n\n\n\n\n\n\n\nIn this view, the differences in time across diet appear to widen as time goes on.",
     "crumbs": [
       "Coursework",
       "Data Analysis II",
