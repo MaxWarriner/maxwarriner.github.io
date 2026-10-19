@@ -985,6 +985,23 @@ Figure&nbsp;10: Randomized Quantile Residuals of Poisson Model
 </div>
 <p></p>
 <p>Our dispersion ratio here is very good. The bottom left of the cluster of points highlights the high amount of 1’s observed in the recruit measurement. Still, this is promising for our model.</p>
+<p>We can also check our predictions against the standardized Pearson residuals:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-predictions_residuals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Predictions Against Pearson Residuals
+</figcaption>
+<div aria-describedby="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-predictions_residuals-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
 </section>
 <section id="multicollinearity" class="level3" data-number="2.3.3">
 <h3 data-number="2.3.3" class="anchored" data-anchor-id="multicollinearity"><span class="header-section-number">2.3.3</span> Multicollinearity</h3>
@@ -1593,7 +1610,7 @@ Table&nbsp;6: Same Species Density Estimated Marginal Trend
 <div id="fig-emtrend_density" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emtrend_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;11: Same Species Estimated Marginal Trend
+Figure&nbsp;12: Same Species Estimated Marginal Trend
 </figcaption>
 <div aria-describedby="fig-emtrend_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="WriteUp_files/figure-html/fig-emtrend_density-1.png" class="img-fluid figure-img" width="960">
@@ -1667,7 +1684,7 @@ Table&nbsp;7: Contrast of Exclosure Types
 <div id="fig-emm_ex" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;12: Exclosure Type Estimated Marginal Means
+Figure&nbsp;13: Exclosure Type Estimated Marginal Means
 </figcaption>
 <div aria-describedby="fig-emm_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="WriteUp_files/figure-html/fig-emm_ex-1.png" class="img-fluid figure-img" width="960">
@@ -1765,7 +1782,7 @@ Table&nbsp;8: Contrast of Pesticide Types
 <div id="fig-emm_pest" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13: Pesticide Type Estimated Marginal Means
+Figure&nbsp;14: Pesticide Type Estimated Marginal Means
 </figcaption>
 <div aria-describedby="fig-emm_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="WriteUp_files/figure-html/fig-emm_pest-1.png" class="img-fluid figure-img" width="960">
@@ -1896,7 +1913,7 @@ Table&nbsp;9: Contrast of Insecticide Types by Exclosure Types
 <div id="fig-emm_pest_ex" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14: Pesticide Type by Exclosure Type Estimated Marginal Means
+Figure&nbsp;15: Pesticide Type by Exclosure Type Estimated Marginal Means
 </figcaption>
 <div aria-describedby="fig-emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="WriteUp_files/figure-html/fig-emm_pest_ex-1.png" class="img-fluid figure-img" width="960">
@@ -1994,7 +2011,7 @@ Table&nbsp;10: Estimated Marginal Trend of Same Species Density by Pesticide Typ
 <div id="fig-emt_pest_dens" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emt_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;15: Estimated Marginal Trends of Same Species Density by Pesticide Type
+Figure&nbsp;16: Estimated Marginal Trends of Same Species Density by Pesticide Type
 </figcaption>
 <div aria-describedby="fig-emt_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="WriteUp_files/figure-html/fig-emt_pest_dens-1.png" class="img-fluid figure-img" width="576">
@@ -2091,8 +2108,8 @@ Table&nbsp;11: Contrasts of Estimated Marginal Trend of Same Species Density by 
 </section>
 <section id="conclusions" class="level2" data-number="2.7">
 <h2 data-number="2.7" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">2.7</span> Conclusions</h2>
-<p>If we harken back to the study background, the Janzen-Connell effect tells us that we should expect new seedlings to struggle propagating in an area that is already densely populated with its own species, as there is a higher chance that natural enemies have begun to accumulate there. What we found through our data doesn’t necessarily support this in every case however. Looking at the global trend of same species density, seedlings tends to be better off when there is a higher density of their own species (<a href="#fig-emtrend_density" class="quarto-xref">Figure&nbsp;11</a>), though this is only true for groups with insecticide and fungicide (<a href="#tbl-model_emt_pest_density" class="quarto-xref">Table&nbsp;10</a>). The trend for the control group isn’t statistically discernible from zero, so we can’t say for sure which direction this trend goes (<a href="#tbl-model_emt_pest_density" class="quarto-xref">Table&nbsp;10</a>). However, if we look at the hypothesis generously, we might say that the groups being treated with pesticides, especially fungicide (<a href="#tbl-emt_pairs_pest_dens" class="quarto-xref">Table&nbsp;11</a>) would have fewer natural enemies to fight off, and in that case a higher same species density would likely just indicate that that species happens to do well there, and it makes sense for more seedlings to appear. Lastly when discussing the same species trend, the three-way interaction between exclosure type, pesticide, and same species density did not indicate that any of those trends differed by whether they were enclosed or not (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>).</p>
-<p>When investigating which natural enemies have the strongest effect on seedling recruitment, the global trend indicates that the fungicide had the most noticeable effect on recruitment, being noticeably greater than the control and insecticide groups (<a href="#tbl-model_pairs_pest" class="quarto-xref">Table&nbsp;8</a>). Across exclosure types, the effect of pesticides and being in the control groups shifted heavily (<a href="#tbl-model_emm_pest_ex" class="quarto-xref">Table&nbsp;9</a>). While little change was noticed in the fungicide group, being fenced in helped the insecticide group but hurt the control group (<a href="#fig-emm_pest_ex" class="quarto-xref">Figure&nbsp;14</a>). The fungicide group was only better off compared to the insecticide group when the exclosure was open, but that effect reversed compared to the control when the exclosure was fenced (<a href="#tbl-model_emm_pest_ex" class="quarto-xref">Table&nbsp;9</a>). For the global effect of exclosure type, there was no statistically discernible difference between the open and fenced groups (<a href="#tbl-model_emm_exclosure" class="quarto-xref">Table&nbsp;7</a>).</p>
+<p>If we harken back to the study background, the Janzen-Connell effect tells us that we should expect new seedlings to struggle propagating in an area that is already densely populated with its own species, as there is a higher chance that natural enemies have begun to accumulate there. What we found through our data doesn’t necessarily support this in every case however. Looking at the global trend of same species density, seedlings tends to be better off when there is a higher density of their own species (<a href="#fig-emtrend_density" class="quarto-xref">Figure&nbsp;12</a>), though this is only true for groups with insecticide and fungicide (<a href="#tbl-model_emt_pest_density" class="quarto-xref">Table&nbsp;10</a>). The trend for the control group isn’t statistically discernible from zero, so we can’t say for sure which direction this trend goes (<a href="#tbl-model_emt_pest_density" class="quarto-xref">Table&nbsp;10</a>). However, if we look at the hypothesis generously, we might say that the groups being treated with pesticides, especially fungicide (<a href="#tbl-emt_pairs_pest_dens" class="quarto-xref">Table&nbsp;11</a>) would have fewer natural enemies to fight off, and in that case a higher same species density would likely just indicate that that species happens to do well there, and it makes sense for more seedlings to appear. Lastly when discussing the same species trend, the three-way interaction between exclosure type, pesticide, and same species density did not indicate that any of those trends differed by whether they were enclosed or not (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>).</p>
+<p>When investigating which natural enemies have the strongest effect on seedling recruitment, the global trend indicates that the fungicide had the most noticeable effect on recruitment, being noticeably greater than the control and insecticide groups (<a href="#tbl-model_pairs_pest" class="quarto-xref">Table&nbsp;8</a>). Across exclosure types, the effect of pesticides and being in the control groups shifted heavily (<a href="#tbl-model_emm_pest_ex" class="quarto-xref">Table&nbsp;9</a>). While little change was noticed in the fungicide group, being fenced in helped the insecticide group but hurt the control group (<a href="#fig-emm_pest_ex" class="quarto-xref">Figure&nbsp;15</a>). The fungicide group was only better off compared to the insecticide group when the exclosure was open, but that effect reversed compared to the control when the exclosure was fenced (<a href="#tbl-model_emm_pest_ex" class="quarto-xref">Table&nbsp;9</a>). For the global effect of exclosure type, there was no statistically discernible difference between the open and fenced groups (<a href="#tbl-model_emm_exclosure" class="quarto-xref">Table&nbsp;7</a>).</p>
 </section>
 </section>
 <section id="disagreements-with-the-article" class="level1" data-number="3">
@@ -2111,7 +2128,7 @@ Table&nbsp;11: Contrasts of Estimated Marginal Trend of Same Species Density by 
 <p>“Suppression of insects also increased seedling recruitment at high conspecific adult densities (Poisson GLMM: Insecticide × conspecific adult density interaction, <span class="math inline">\(z = 2.19, P = 0.029\)</span>)…”</p>
 </blockquote>
 <p>In my model summary, the interaction between same species density and the insecticide treatment was not statistically discernible from zero, and it wasn’t particularly close (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>).</p>
-<p>If we compare their figure looking at the interaction between same species density and pesticide to mine (<a href="#fig-emt_pest_dens" class="quarto-xref">Figure&nbsp;15</a>):</p>
+<p>If we compare their figure looking at the interaction between same species density and pesticide to mine (<a href="#fig-emt_pest_dens" class="quarto-xref">Figure&nbsp;16</a>):</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption>Jie et al.</figcaption>
