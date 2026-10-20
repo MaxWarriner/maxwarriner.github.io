@@ -915,7 +915,7 @@
     "href": "Data Analysis II/HW3/HW3WriteUp.html#part-b",
     "title": "HW3",
     "section": "1.2 Part b",
-    "text": "1.2 Part b\nFit a Negative Binomial regression model that matches the Poisson model in part (a). Assess whether the model is appropriately fit."
+    "text": "1.2 Part b\nFit a Negative Binomial regression model that matches the Poisson model in part (a). Assess whether the model is appropriately fit.\n\n1.2.1 Answer\n\n\n\nCode\nnbinom_mod &lt;- MASS::glm.nb(formula, data = dat)\n\n\n\nOnce again, let’s check our dispersion ratio and our randomized-quantile residuals:\n\n\n\nCode\nlambdas &lt;- predict(nbinom_mod, type = \"response\")\nn = nrow(dat)\ny = dat$FinalEC\nrqr &lt;- rep(NA, n)\nfor(i in 1:n){\n  ai &lt;- ppois(y[i]-1, lambda=lambdas[i])\n  bi &lt;- ppois(y[i], lambda=lambdas[i])\n  ui &lt;- runif(1, ai, bi)\n  rqr[i] &lt;- qnorm(ui)\n}\n\npearson.ratio &lt;- sum(residuals(nbinom_mod, type = \"pearson\")^2) /nbinom_mod$df.residual\n\np1 &lt;- ggplot(data=tibble(lambda=lambdas,\n                         e=rqr)) + \n      geom_hline(yintercept=0, linetype=\"dotted\")+\n      geom_point(aes(x=lambda, y=e)) +\n      theme_bw()+\n      xlab(bquote(lambda))+\n      ylab(\"Randomized Quantile Residuals\")\np2 &lt;- ggplot(data=tibble(e=rqr)) +\n  stat_qq(aes(sample=e)) +\n  stat_qq_line(aes(sample=e)) +\n  theme_bw() +\n  ggtitle(paste(\"Dispersion Ratio =\", round(pearson.ratio, 4)))\np1+p2\n\n\n\n\n\nFigure 3: Randomized Quantile Residuals of the Negative Binomial Model\n\n\n\n\n\n\n\n\n\nOur dispersion ratio here is definitely better. It’s a bit hard to see the pattern of the residuals because of the massive negative outliers though."
   },
   {
     "objectID": "Data Analysis II/HW3/HW3WriteUp.html#part-c",

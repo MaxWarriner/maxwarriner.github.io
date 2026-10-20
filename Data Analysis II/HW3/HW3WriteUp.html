@@ -525,7 +525,10 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#answer" id="toc-answer" class="nav-link" data-scroll-target="#answer"><span class="header-section-number">1.1.1</span> Answer</a></li>
   </ul></li>
-  <li><a href="#part-b" id="toc-part-b" class="nav-link" data-scroll-target="#part-b"><span class="header-section-number">1.2</span> Part b</a></li>
+  <li><a href="#part-b" id="toc-part-b" class="nav-link" data-scroll-target="#part-b"><span class="header-section-number">1.2</span> Part b</a>
+  <ul class="collapse">
+  <li><a href="#answer-1" id="toc-answer-1" class="nav-link" data-scroll-target="#answer-1"><span class="header-section-number">1.2.1</span> Answer</a></li>
+  </ul></li>
   <li><a href="#part-c" id="toc-part-c" class="nav-link" data-scroll-target="#part-c"><span class="header-section-number">1.3</span> Part c</a></li>
   <li><a href="#part-d" id="toc-part-d" class="nav-link" data-scroll-target="#part-d"><span class="header-section-number">1.4</span> Part d</a></li>
   <li><a href="#part-e" id="toc-part-e" class="nav-link" data-scroll-target="#part-e"><span class="header-section-number">1.5</span> Part e</a></li>
@@ -703,6 +706,64 @@ Figure&nbsp;2: Predictions Against Pearson Residuals for the Poisson Model
 <section id="part-b" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="part-b"><span class="header-section-number">1.2</span> Part b</h2>
 <p>Fit a Negative Binomial regression model that matches the Poisson model in part (a). Assess whether the model is appropriately fit.</p>
+<section id="answer-1" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="answer-1"><span class="header-section-number">1.2.1</span> Answer</h3>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>nbinom_mod <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(formula, <span class="at">data =</span> dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>Once again, let’s check our dispersion ratio and our randomized-quantile residuals:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>lambdas <span class="ot">&lt;-</span> <span class="fu">predict</span>(nbinom_mod, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>n <span class="ot">=</span> <span class="fu">nrow</span>(dat)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a>y <span class="ot">=</span> dat<span class="sc">$</span>FinalEC</span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>rqr <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>  ai <span class="ot">&lt;-</span> <span class="fu">ppois</span>(y[i]<span class="sc">-</span><span class="dv">1</span>, <span class="at">lambda=</span>lambdas[i])</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a>  bi <span class="ot">&lt;-</span> <span class="fu">ppois</span>(y[i], <span class="at">lambda=</span>lambdas[i])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a>  ui <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>, ai, bi)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>  rqr[i] <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(ui)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a>}</span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>pearson.ratio <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(nbinom_mod, <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span>nbinom_mod<span class="sc">$</span>df.residual</span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">lambda=</span>lambdas,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>                         <span class="at">e=</span>rqr)) <span class="sc">+</span> </span>
+<span id="cb5-16"><a href="#cb5-16" aria-label="16"></a>      <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>, <span class="at">linetype=</span><span class="st">"dotted"</span>)<span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-label="17"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>lambda, <span class="at">y=</span>e)) <span class="sc">+</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-label="18"></a>      <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-label="19"></a>      <span class="fu">xlab</span>(<span class="fu">bquote</span>(lambda))<span class="sc">+</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-label="20"></a>      <span class="fu">ylab</span>(<span class="st">"Randomized Quantile Residuals"</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-label="21"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">e=</span>rqr)) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-label="22"></a>  <span class="fu">stat_qq</span>(<span class="fu">aes</span>(<span class="at">sample=</span>e)) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-label="23"></a>  <span class="fu">stat_qq_line</span>(<span class="fu">aes</span>(<span class="at">sample=</span>e)) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-label="24"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-label="25"></a>  <span class="fu">ggtitle</span>(<span class="fu">paste</span>(<span class="st">"Dispersion Ratio ="</span>, <span class="fu">round</span>(pearson.ratio, <span class="dv">4</span>)))</span>
+<span id="cb5-26"><a href="#cb5-26" aria-label="26"></a>p1<span class="sc">+</span>p2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-dispersion_nbinom" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-dispersion_nbinom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Randomized Quantile Residuals of the Negative Binomial Model
+</figcaption>
+<div aria-describedby="fig-dispersion_nbinom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW3WriteUp_files/figure-html/fig-dispersion_nbinom-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Our dispersion ratio here is definitely better. It’s a bit hard to see the pattern of the residuals because of the massive negative outliers though.</p>
+</section>
 </section>
 <section id="part-c" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="part-c"><span class="header-section-number">1.3</span> Part c</h2>
