@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>HW3 – Max Warriner</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6622afbb6a93371a7f6aaa1c40799739.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Max Warriner
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Max Warriner</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-person" role="img">
+</i> 
+ <span class="menu-text">About Me</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../resume.html" class="sidebar-item-text sidebar-link"><i class="bi bi-filetype-pdf" role="img">
+</i> 
+ <span class="menu-text">CV</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false"><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Coursework</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transcript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Transcript</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Biostatistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/hypothesis_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hypothesis Tests</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data Analysis I</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW1/HW1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW2/HW2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW3/HW3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW4/HW4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW5/HW5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW6/HW6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW7/HW7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 7</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data Analysis II</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW1/HW1WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW2/HW2WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/mixed_effects/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Mixed Effects Regression Article</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/poisson/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson Regression Article</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Geoinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 3/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 4/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 4</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Bioinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gene Locus Report</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">Multivariate Data Analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statement on AI Use</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false"><i class="bi bi-bar-chart" role="img">
+</i> 
+ <span class="menu-text">Research</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dog_research.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dog Mitochondria (Published)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Taye_Lab/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../MATH481_Max_Alta/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sleep_study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Circadian Rhythym Model/Sleep Deprivation Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false"><i class="bi bi-briefcase" role="img">
+</i> 
+ <span class="menu-text">Internships</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ionia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Public Health Report on Ionia County, MI</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dsc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colgate Data Science Collaboratory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../voting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">County Voting Data for Michigan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#question-1" id="toc-question-1" class="nav-link active" data-scroll-target="#question-1"><span class="header-section-number">1</span> Question 1</a>
+  <ul class="collapse">
+  <li><a href="#part-a" id="toc-part-a" class="nav-link" data-scroll-target="#part-a"><span class="header-section-number">1.1</span> Part a</a>
+  <ul class="collapse">
+  <li><a href="#answer" id="toc-answer" class="nav-link" data-scroll-target="#answer"><span class="header-section-number">1.1.1</span> Answer</a></li>
+  </ul></li>
+  <li><a href="#part-b" id="toc-part-b" class="nav-link" data-scroll-target="#part-b"><span class="header-section-number">1.2</span> Part b</a></li>
+  <li><a href="#part-c" id="toc-part-c" class="nav-link" data-scroll-target="#part-c"><span class="header-section-number">1.3</span> Part c</a></li>
+  <li><a href="#part-d" id="toc-part-d" class="nav-link" data-scroll-target="#part-d"><span class="header-section-number">1.4</span> Part d</a></li>
+  <li><a href="#part-e" id="toc-part-e" class="nav-link" data-scroll-target="#part-e"><span class="header-section-number">1.5</span> Part e</a></li>
+  <li><a href="#part-f" id="toc-part-f" class="nav-link" data-scroll-target="#part-f"><span class="header-section-number">1.6</span> Part f</a></li>
+  <li><a href="#part-g" id="toc-part-g" class="nav-link" data-scroll-target="#part-g"><span class="header-section-number">1.7</span> Part g</a></li>
+  <li><a href="#part-h" id="toc-part-h" class="nav-link" data-scroll-target="#part-h"><span class="header-section-number">1.8</span> Part h</a></li>
+  </ul></li>
+  <li><a href="#question-2" id="toc-question-2" class="nav-link" data-scroll-target="#question-2"><span class="header-section-number">2</span> Question 2</a>
+  <ul class="collapse">
+  <li><a href="#part-a-1" id="toc-part-a-1" class="nav-link" data-scroll-target="#part-a-1"><span class="header-section-number">2.1</span> Part a</a></li>
+  <li><a href="#part-b-1" id="toc-part-b-1" class="nav-link" data-scroll-target="#part-b-1"><span class="header-section-number">2.2</span> Part b</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW3WriteUp.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">HW3</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p></p>
+<p></p>
+<section id="question-1" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Question 1</h1>
+<p><span class="citation" data-cites="Greenberg26">Greenberg et al. (<a href="#ref-Greenberg26" role="doc-biblioref">2026</a>)</span> investigate the geographic patterning of federal environmental crime prosecutions in the United States between 2011 and 2020 to determine how environmental and social factors influence where the strongest forms of law enforcement occur.</p>
+<p>The study specifically addresses whether the US Environmental Protection Agency (EPA) and Department of Justice (DOJ) equitably protect communities by examining if criminal prosecutions are concentrated in the most polluted or socioeconomically disadvantaged areas.</p>
+<p>To address these questions, the researchers analyzed data from 732 EPA-referred criminal prosecutions across 3,143 US counties. They collected information regarding:</p>
+<ul>
+<li>EPA Criminal Prosecutions: The number of criminal prosecutions from 2011 to 2020.</li>
+<li>Overall Environmental Quality Index: A composite measure that combines environmental and social factors to provide a holistic view of a county’s conditions.</li>
+<li>Water Quality Index: A measure of various factors related to the quality of water within a county. Higher values indicate better quality.</li>
+<li>Air Quality Index: A measure of various factors related to the quality of air within a county. Higher values indicate better quality.</li>
+<li>Land Quality Index: A measure of various factors related to the quality of land and soil within a county. Higher values indicate better quality.</li>
+<li>Socioeconomic Index: A sociodemographic measure within the Environmental Quality Index that evaluates the socioeconomic status of a county’s population. A higher score indicates higher status.</li>
+<li>Percent Racial Minority: The percentage of non-white residents in each county, included separately because race is not part of the EPA’s sociodemographic index.</li>
+<li>Metropolitan Status: A urban/rural indicator based on USDA rural-urban continuum codes (1 = metropolitan, 0 = non-metropolitan).</li>
+<li>County-level GDP (in billions of dollars): A measure of total economic production within a county that also indicates the level of industrial or commercial activity.</li>
+<li>Past Number of EPA Civil Penalties: A count of previous civil enforcement actions in the county, indicating historical levels of non-compliance.</li>
+<li>Distance from EPA Region Criminal Prosecution Office: The distance in kilometers from the county to the nearest office.</li>
+<li>EPA Region (1-10): an indicator to one of the ten geographic administrative districts established by the U.S. Environmental Protection Agency. Region 1 is the New England Area.</li>
+</ul>
+<section id="part-a" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="part-a"><span class="header-section-number">1.1</span> Part a</h2>
+<p>Fit a Poisson regression model for EPA Criminal Prosecutions (<code>FinalEC</code>) using Overall Environmental Quality Index (<code>eqi_2jan2018_vc</code>), Percent Racial Minority (<code>pctnonwhite10</code>), Metropolitan Status (<code>metro</code>), County-level GDP (<code>gdp2017b</code>), Past Number of EPA Civil Penalties (<code>fac_penalty_count</code>), Distance from EPA Region Criminal Prosecution Office (<code>CIDDist</code>), and EPA Region (<code>EPAregion</code>). Assess whether the model is appropriately fit.</p>
+<section id="answer" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="answer"><span class="header-section-number">1.1.1</span> Answer</h3>
+<p>Fitting the model here:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>formula <span class="ot">&lt;-</span> FinalEC <span class="sc">~</span> eqi_2jan2018_vc <span class="sc">+</span> pctnonwhite10 <span class="sc">+</span> metro <span class="sc">+</span> gdp2017b <span class="sc">+</span> fac_penalty_count <span class="sc">+</span> CIDDist <span class="sc">+</span> EPAregion</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'Greenberg26.csv'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="co">#Data had some NAs that were screwing with the RQR's</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>pois_mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(formula, <span class="at">data =</span> dat, <span class="at">family =</span> poisson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>First checking the dispersion ratio of our model:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>lambdas <span class="ot">&lt;-</span> <span class="fu">predict</span>(pois_mod, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>n <span class="ot">=</span> <span class="fu">nrow</span>(dat)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>y <span class="ot">=</span> dat<span class="sc">$</span>FinalEC</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>rqr <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>  ai <span class="ot">&lt;-</span> <span class="fu">ppois</span>(y[i]<span class="sc">-</span><span class="dv">1</span>, <span class="at">lambda=</span>lambdas[i])</span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>  bi <span class="ot">&lt;-</span> <span class="fu">ppois</span>(y[i], <span class="at">lambda=</span>lambdas[i])</span>
+<span id="cb2-8"><a href="#cb2-8" aria-label="8"></a>  ui <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>, ai, bi)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-label="9"></a>  rqr[i] <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(ui)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-label="10"></a>}</span>
+<span id="cb2-11"><a href="#cb2-11" aria-label="11"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-label="12"></a>pearson.ratio <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(pois_mod, <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span>pois_mod<span class="sc">$</span>df.residual</span>
+<span id="cb2-13"><a href="#cb2-13" aria-label="13"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-label="14"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">lambda=</span>lambdas,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-label="15"></a>                         <span class="at">e=</span>rqr)) <span class="sc">+</span> </span>
+<span id="cb2-16"><a href="#cb2-16" aria-label="16"></a>      <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>, <span class="at">linetype=</span><span class="st">"dotted"</span>)<span class="sc">+</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-label="17"></a>      <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>lambda, <span class="at">y=</span>e)) <span class="sc">+</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-label="18"></a>      <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-label="19"></a>      <span class="fu">xlab</span>(<span class="fu">bquote</span>(lambda))<span class="sc">+</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-label="20"></a>      <span class="fu">ylab</span>(<span class="st">"Randomized Quantile Residuals"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-label="21"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">tibble</span>(<span class="at">e=</span>rqr)) <span class="sc">+</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-label="22"></a>  <span class="fu">stat_qq</span>(<span class="fu">aes</span>(<span class="at">sample=</span>e)) <span class="sc">+</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-label="23"></a>  <span class="fu">stat_qq_line</span>(<span class="fu">aes</span>(<span class="at">sample=</span>e)) <span class="sc">+</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-label="24"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-label="25"></a>  <span class="fu">ggtitle</span>(<span class="fu">paste</span>(<span class="st">"Dispersion Ratio ="</span>, <span class="fu">round</span>(pearson.ratio, <span class="dv">4</span>)))</span>
+<span id="cb2-26"><a href="#cb2-26" aria-label="26"></a>p1<span class="sc">+</span>p2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-dispersion_poisson" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-dispersion_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Randomized Quantile Residuals of the Poisson Model
+</figcaption>
+<div aria-describedby="fig-dispersion_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW3WriteUp_files/figure-html/fig-dispersion_poisson-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p><strong>EEK.</strong></p>
+<p>Our dispersion ratio is quite a bit higher than we’d like to see. We also see a big clump of <span class="math inline">\(\lambda\)</span>’s near zero, which may be negatively affecting our model.</p>
+<p>Checking our predictions against the standardized Pearson residuals:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>ggdat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">r2=</span> <span class="fu">resid</span>(pois_mod, <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>                <span class="at">lambdas =</span> <span class="fu">fitted</span>(pois_mod))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>p<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(ggdat) <span class="sc">+</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>lambdas, <span class="at">y=</span>r2)) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">linetype=</span><span class="st">"dotted"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x=</span>lambdas, <span class="at">y=</span>r2)) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a>  <span class="fu">xlab</span>(<span class="fu">bquote</span>(lambda)) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a>  <span class="fu">ylab</span>(<span class="fu">bquote</span>(r<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a>p<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(ggdat) <span class="sc">+</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-label="13"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>lambdas, <span class="at">y=</span>r2)) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-label="14"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">linetype=</span><span class="st">"dotted"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-label="15"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x=</span>lambdas, <span class="at">y=</span>r2)) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-label="16"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb3-17"><a href="#cb3-17" aria-label="17"></a>  <span class="fu">xlab</span>(<span class="fu">bquote</span>(lambda)) <span class="sc">+</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-label="18"></a>  <span class="fu">ylab</span>(<span class="fu">bquote</span>(r<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">+</span> </span>
+<span id="cb3-19"><a href="#cb3-19" aria-label="19"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-label="20"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"Y-Axis limits shrunk"</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-label="21"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-label="22"></a>p<span class="fl">.1</span> <span class="sc">+</span> p<span class="fl">.2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-poisson_predictions_residuals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-poisson_predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Predictions Against Pearson Residuals for the Poisson Model
+</figcaption>
+<div aria-describedby="fig-poisson_predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW3WriteUp_files/figure-html/fig-poisson_predictions_residuals-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Looking at the shrunk down version, a curved shape indicates that another model like a quasi-poisson or negative binomial might be more appropriate here.</p>
+</section>
+</section>
+<section id="part-b" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="part-b"><span class="header-section-number">1.2</span> Part b</h2>
+<p>Fit a Negative Binomial regression model that matches the Poisson model in part (a). Assess whether the model is appropriately fit.</p>
+</section>
+<section id="part-c" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="part-c"><span class="header-section-number">1.3</span> Part c</h2>
+<p>Use a likelihood ratio test to compare the Poisson model in part (a) to the Negative Binomial model in part (b).<br>
+</p>
+<p><strong>Note</strong>: You can use the <code>lrtest(...)</code> function from the <code>lmtest</code> package <span class="citation" data-cites="lmtest">(<a href="#ref-lmtest" role="doc-biblioref">Zeileis and Hothorn 2002</a>)</span>.</p>
+</section>
+<section id="part-d" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="part-d"><span class="header-section-number">1.4</span> Part d</h2>
+<p>The researchers wanted to evaluate whether the specific indexes Water Quality Index, Air Quality Index, Land Quality Index were more informative than the Overall Environmental Quality Index. Further, they wanted to evaluate if including the Socioeconomic Index would explain additional variability in the outcome compared to the model with just the Percent Racial Minority as a socioeconomic predictor.</p>
+<p>Fit a Poisson regression model for EPA Criminal Prosecutions (<code>FinalEC</code>) using Water Quality Index (<code>water_eqi_2jan2018_vc</code>), Air Quality Index (<code>air_eqi_2jan2018_vc</code>), Land Quality Index (<code>land_eqi_2jan2018_vc</code>), Socioeconomic Index (<code>sociod_eqi_2jan2018_vc</code>) Percent Racial Minority (<code>pctnonwhite10</code>), Metropolitan Status (<code>metro</code>), County-level GDP (<code>gdp2017b</code>), Past Number of EPA Civil Penalties (<code>fac_penalty_count</code>), Distance from EPA Region Criminal Prosecution Office (<code>CIDDist</code>), and EPA Region (<code>EPAregion</code>). Assess whether the model is appropriately fit.</p>
+</section>
+<section id="part-e" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="part-e"><span class="header-section-number">1.5</span> Part e</h2>
+<p>Fit a Negative Binomial regression model that matches the Poisson model in part (d). Assess whether the model is appropriately fit.</p>
+</section>
+<section id="part-f" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="part-f"><span class="header-section-number">1.6</span> Part f</h2>
+<p>Use a likelihood ratio test to compare the Poisson model in part (d) to the Negative Binomial model in part (e).<br>
+</p>
+<p><strong>Note</strong>: You can use the <code>lrtest(...)</code> function from the <code>lmtest</code> package <span class="citation" data-cites="lmtest">(<a href="#ref-lmtest" role="doc-biblioref">Zeileis and Hothorn 2002</a>)</span>.</p>
+</section>
+<section id="part-g" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="part-g"><span class="header-section-number">1.7</span> Part g</h2>
+<p>Use the “winning” model in part (c) to show how EPA Criminal Prosecutions change with the the Overall Environmental Quality Index. Use the “winning” model in part (f) to show how EPA Criminal Prosecutions change with the Water Quality Index, Air Quality Index, Land Quality Index, Socioeconomic Index, and Percent Racial Minority. Combine the plots using <code>patchwork</code> so that it matches Figure 2 in <a href="https://www.nature.com/articles/s41893-025-01736-0#Fig2">the manuscript</a>.</p>
+<p><strong>Note</strong>: I would create the plot differently than the authors have, though I see why they did it this way.</p>
+</section>
+<section id="part-h" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="part-h"><span class="header-section-number">1.8</span> Part h</h2>
+<p>Compare the “winning” model in part (c) with the “winning” model in part (f) using a non-nested Vuong test. First, explain why the Vuong test is necessary and then interpret the result in the context of the research question.</p>
+<p><strong>Note</strong>: You can use the <code>vuongtest(...)</code> function from the <code>nonnest2</code> package <span class="citation" data-cites="nonnest2">(<a href="#ref-nonnest2" role="doc-biblioref">Merkle and You 2024</a>)</span>.</p>
+</section>
+</section>
+<section id="question-2" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Question 2</h1>
+<section id="part-a-1" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="part-a-1"><span class="header-section-number">2.1</span> Part a</h2>
+<p>In class we discussed data from <span class="citation" data-cites="Mcmillan01">McMillan (<a href="#ref-Mcmillan01" role="doc-biblioref">2001</a>)</span>, who recorded the number of capuchin monkeys caught by Ache tribe members.</p>
+<p>As part of this work, the researchers also recorded the number of nine-banded armadillo (Dasypus novemcinctus) they captured. Of note, these animals are most important in terms of biomass harvested.</p>
+<p>Recall the capuchin monkeys required complex tasks of chasing the monkeys and showing an arrow straight up. In contrast, armadillos, which are burrowing animals, are caught by hand.</p>
+<p><strong>Research Question</strong>: Is the hunting of armadillo a skill that requires long periods of learning? Do those skills diminish with age?</p>
+<p>Use the data on <span class="math inline">\(n=38\)</span> hunters in <code>McMillanAcheArmadillo.csv</code> to answer the research question. Show that you have selected a reasonable model for the data and interpret your model to answer the research question.</p>
+</section>
+<section id="part-b-1" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="part-b-1"><span class="header-section-number">2.2</span> Part b</h2>
+<p><span class="citation" data-cites="Hill09">Hill and Kintigh (<a href="#ref-Hill09" role="doc-biblioref">2009</a>)</span> investigate the same age patterns of hunting ability among the Ache tribe.</p>
+<p>Again, the central question is whether hunting requires extended periods of skill acquisition and whether those skills diminish with age.</p>
+<p>Use the data on <span class="math inline">\(n=147\)</span> hunters in <code>Hill09.csv</code> who went on 1 to 1049 hunting day-long treks between 1981 and 2007 to answer the research question.</p>
+<p>The researchers recorded:</p>
+<ul>
+<li>Month: The numeric month of each hunting trek</li>
+<li>Day: The numeric day of each hunting trek</li>
+<li>Year: The four-digit year of each hunting trek</li>
+<li>ID: The Ache hunter unique identifier</li>
+<li>Age: The age of each Ache hunter at the time of each hunting trek</li>
+<li>Meat: The amount of meat resulting from each Ache hunter during each trek (in kg)</li>
+<li>Hours: The duration of each trek (in hours)</li>
+<li>Data Type: Whether the hours were recorded (1 = Yes, 0 = No)</li>
+</ul>
+<p><strong>Note:</strong> Roughly 20% of observations have the duration of the trek in hours. Here, I would simply use a per-trek analysis. Still, it would be interesting to see if the analysis would match if duration was taken into account.</p>
+<p>Show that you have selected a reasonable model for the data and interpret your model to answer the research question.</p>
+
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Greenberg26" class="csl-entry" role="listitem">
+Greenberg, Pierce, Erik W Johnson, Jennifer Schwartz, and Rylie Wartinger. 2026. <span>“Social Factors Shape Federal Environmental Crime Prosecution Patterns in the USA.”</span> <em>Nature Sustainability</em>, 1–5.
+</div>
+<div id="ref-Hill09" class="csl-entry" role="listitem">
+Hill, Kim, and Keith Kintigh. 2009. <span>“Can Anthropologists Distinguish Good and Poor Hunters? Implications for Hunting Hypotheses, Sharing Conventions, and Cultural Transmission.”</span> <em>Current Anthropology</em> 50 (3): 369–78.
+</div>
+<div id="ref-Mcmillan01" class="csl-entry" role="listitem">
+McMillan, Garnett Pierre. 2001. <em>Ache Residential Grouping and Social Foraging</em>. The University of New Mexico.
+</div>
+<div id="ref-nonnest2" class="csl-entry" role="listitem">
+Merkle, Edgar, and Dongjun You. 2024. <em>Nonnest2: Tests of Non-Nested Models</em>. <a href="https://doi.org/10.32614/CRAN.package.nonnest2">https://doi.org/10.32614/CRAN.package.nonnest2</a>.
+</div>
+<div id="ref-lmtest" class="csl-entry" role="listitem">
+Zeileis, Achim, and Torsten Hothorn. 2002. <span>“Diagnostic Checking in Regression Relationships.”</span> <em>R News</em> 2 (3): 7–10. <a href="https://CRAN.R-project.org/doc/Rnews/">https://CRAN.R-project.org/doc/Rnews/</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/MaxWarriner\.github\.io\/maxwarriner\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Colgate University Student Portfolio</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/MaxWarriner">GitHub Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
