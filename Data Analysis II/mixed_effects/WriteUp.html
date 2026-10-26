@@ -344,6 +344,12 @@ window.Quarto = {
  <span class="menu-text">Poisson Regression Article</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/negative_binomial/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Negative Binomial Regression Article</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -539,6 +545,7 @@ window.Quarto = {
   <li><a href="#normality-of-conditional-residuals" id="toc-normality-of-conditional-residuals" class="nav-link" data-scroll-target="#normality-of-conditional-residuals"><span class="header-section-number">2.3.1</span> Normality of Conditional Residuals</a></li>
   <li><a href="#multivariate-normality-of-marginal-residual-vectors" id="toc-multivariate-normality-of-marginal-residual-vectors" class="nav-link" data-scroll-target="#multivariate-normality-of-marginal-residual-vectors"><span class="header-section-number">2.3.2</span> Multivariate Normality of Marginal Residual Vectors</a></li>
   <li><a href="#normality-of-random-intercepts" id="toc-normality-of-random-intercepts" class="nav-link" data-scroll-target="#normality-of-random-intercepts"><span class="header-section-number">2.3.3</span> Normality of Random Intercepts</a></li>
+  <li><a href="#influential-points" id="toc-influential-points" class="nav-link" data-scroll-target="#influential-points"><span class="header-section-number">2.3.4</span> Influential Points</a></li>
   </ul></li>
   <li><a href="#model-fit" id="toc-model-fit" class="nav-link" data-scroll-target="#model-fit"><span class="header-section-number">2.4</span> Model Fit</a></li>
   <li><a href="#model-inference" id="toc-model-inference" class="nav-link" data-scroll-target="#model-inference"><span class="header-section-number">2.5</span> Model Inference</a></li>
@@ -803,6 +810,28 @@ Figure&nbsp;5: Model Marginal Residuals
 <p><span class="math display">\[\begin{align}
 \gamma_i = 0 \, \forall \, i \in \{1, 2, ...\, , n = 30\}
 \end{align}\]</span></p>
+</section>
+<section id="influential-points" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="influential-points"><span class="header-section-number">2.3.4</span> Influential Points</h3>
+<p>We can test to see if there are any observations with high influence on the model:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-influence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Model Influence
+</figcaption>
+<div aria-describedby="fig-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-influence-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p><strong>Note: As standard DFFITs are not defined for mixed effects models, these values are estimated using hlm_influence() from the <em>HLMdiag</em> package <span class="citation" data-cites="HLMdiag">(<a href="#ref-HLMdiag" role="doc-biblioref">Loy and Hofmann 2014</a>)</span></strong></p>
+<p>Apart from whatever’s going on with the leverage, the rest looks standard. There are 3 observations with somewhat large studentized residuals, but nothing extremely large.</p>
 </section>
 </section>
 <section id="model-fit" class="level2" data-number="2.4">
@@ -1112,7 +1141,7 @@ Table&nbsp;4: Model Estimated Marginal Trends
 <div id="fig-marginal_trends" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-marginal_trends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: Model Estimated Marginal Trends
+Figure&nbsp;7: Model Estimated Marginal Trends
 </figcaption>
 <div aria-describedby="fig-marginal_trends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="WriteUp_files/figure-html/fig-marginal_trends-1.png" class="img-fluid figure-img" width="576">
@@ -1218,7 +1247,7 @@ Table&nbsp;5: Model Estimated Marginal Trends Contrasts
 <section id="summary-of-the-results" class="level3" data-number="2.7.2">
 <h3 data-number="2.7.2" class="anchored" data-anchor-id="summary-of-the-results"><span class="header-section-number">2.7.2</span> Summary of the Results</h3>
 <p>Evidence for an interaction between months (a.k.a time) and treatment type is strong. That interaction explains a large proportion of the variance in time in the correct quadrant for the mice, much larger than either fixed effect alone (<a href="#tbl-model_eff" class="quarto-xref">Table&nbsp;3</a>).</p>
-<p>The difference in slopes for months across treatment time is very visually apparent (<a href="#fig-marginal_trends" class="quarto-xref">Figure&nbsp;6</a>). The difference is strongest between the semaglutide treatment and the control group (<a href="#tbl-model_emt_cont" class="quarto-xref">Table&nbsp;5</a>).</p>
+<p>The difference in slopes for months across treatment time is very visually apparent (<a href="#fig-marginal_trends" class="quarto-xref">Figure&nbsp;7</a>). The difference is strongest between the semaglutide treatment and the control group (<a href="#tbl-model_emt_cont" class="quarto-xref">Table&nbsp;5</a>).</p>
 <p>However, the main goal of the research is to see if the semaglutide group ages differently than the calorie restricted group, and if that could mean something for effects of people on GLP-1 drugs as they age. In the comparison of those two groups, I’d say the difference is promising, but not strong enough to definitely conclude anything by itself for two reasons:</p>
 <ol type="1">
 <li>The mixed effects model didn’t pass all of the assumptions, possibly because of the small number of observations per mouse.</li>
@@ -1291,7 +1320,7 @@ Table&nbsp;6: Comparison of Adjustment Methods
 <div id="fig-journal_fig" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-journal_fig-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: Journal Figure
+Figure&nbsp;8: Journal Figure
 </figcaption>
 <div aria-describedby="fig-journal_fig-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="paper.png" class="img-fluid figure-img">
@@ -1484,7 +1513,7 @@ Table&nbsp;8: Post-Hoc Model Estimated Marginal Trends
 <div id="fig-posthoc_marginal_trends" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-posthoc_marginal_trends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8: Post-Hoc Model Estimated Marginal Trends
+Figure&nbsp;9: Post-Hoc Model Estimated Marginal Trends
 </figcaption>
 <div aria-describedby="fig-posthoc_marginal_trends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="WriteUp_files/figure-html/fig-posthoc_marginal_trends-1.png" class="img-fluid figure-img" width="960">
@@ -1608,6 +1637,9 @@ Kuznetsova, Alexandra, Per B. Brockhoff, and Rune H. B. Christensen. 2017. <span
 </div>
 <div id="ref-emmeans" class="csl-entry" role="listitem">
 Lenth, Russell V. 2025. <em>Emmeans: Estimated Marginal Means, Aka Least-Squares Means</em>. <a href="https://CRAN.R-project.org/package=emmeans">https://CRAN.R-project.org/package=emmeans</a>.
+</div>
+<div id="ref-HLMdiag" class="csl-entry" role="listitem">
+Loy, Adam, and Heike Hofmann. 2014. <span>“HLMdiag: A Suite of Diagnostics for Hierarchical Linear Models in r.”</span> <em>Journal of Statistical Software</em> 56 (5): 1–28. <a href="https://doi.org/10.18637/jss.v056.i05">https://doi.org/10.18637/jss.v056.i05</a>.
 </div>
 <div id="ref-performance" class="csl-entry" role="listitem">
 Lüdecke, Daniel, Mattan S. Ben-Shachar, Indrajeet Patil, Philip Waggoner, and Dominique Makowski. 2021. <span>“<span class="nocase">performance</span>: An <span>R</span> Package for Assessment, Comparison and Testing of Statistical Models.”</span> <em>Journal of Open Source Software</em> 6 (60): 3139. <a href="https://doi.org/10.21105/joss.03139">https://doi.org/10.21105/joss.03139</a>.

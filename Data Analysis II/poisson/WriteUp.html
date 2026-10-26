@@ -344,6 +344,12 @@ window.Quarto = {
  <span class="menu-text">Poisson Regression Article</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/negative_binomial/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Negative Binomial Regression Article</span></a>
+  </div>
+</li>
       </ul>
   </li>
           <li class="sidebar-item sidebar-item-section">
@@ -542,7 +548,8 @@ window.Quarto = {
   <li><a href="#gaussian-residuals" id="toc-gaussian-residuals" class="nav-link" data-scroll-target="#gaussian-residuals"><span class="header-section-number">2.3.1</span> Gaussian Residuals</a></li>
   <li><a href="#dispersion" id="toc-dispersion" class="nav-link" data-scroll-target="#dispersion"><span class="header-section-number">2.3.2</span> Dispersion</a></li>
   <li><a href="#multicollinearity" id="toc-multicollinearity" class="nav-link" data-scroll-target="#multicollinearity"><span class="header-section-number">2.3.3</span> Multicollinearity</a></li>
-  <li><a href="#sufficient-sample-size-for-predictors" id="toc-sufficient-sample-size-for-predictors" class="nav-link" data-scroll-target="#sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.4</span> Sufficient Sample Size for Predictors</a></li>
+  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</a></li>
+  <li><a href="#sufficient-sample-size-for-predictors" id="toc-sufficient-sample-size-for-predictors" class="nav-link" data-scroll-target="#sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</a></li>
   </ul></li>
   <li><a href="#model-fit" id="toc-model-fit" class="nav-link" data-scroll-target="#model-fit"><span class="header-section-number">2.4</span> Model Fit</a></li>
   <li><a href="#model-inference" id="toc-model-inference" class="nav-link" data-scroll-target="#model-inference"><span class="header-section-number">2.5</span> Model Inference</a></li>
@@ -1107,8 +1114,12 @@ Table&nbsp;1: Model VIF
 <p></p>
 <p>The collinearity for the model looks good, with only some slight colinearity for pesticide treatment, exclosure, and same species density. VIF values for interaction terms are usually high, so there’s not really anything to worry about here.</p>
 </section>
-<section id="sufficient-sample-size-for-predictors" class="level3" data-number="2.3.4">
-<h3 data-number="2.3.4" class="anchored" data-anchor-id="sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.4</span> Sufficient Sample Size for Predictors</h3>
+<section id="influential-observations" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</h3>
+<p>Testing influence through leverage, Cook’s D, DFFITs, and studentized residuals is very difficult for glmer() models. Trust me. I tried.</p>
+</section>
+<section id="sufficient-sample-size-for-predictors" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</h3>
 <p>Ideally we should have at least 10 events counted per predictor:</p>
 <p><span class="math display">\[\begin{align*}
 \sum_{i=1}^{n = 1019} \lambda_{i} = 3666 \geq 10p = 10(10) = 100 \quad \checkmark
