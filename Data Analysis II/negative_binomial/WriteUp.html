@@ -548,7 +548,8 @@ window.Quarto = {
   <li><a href="#gaussian-residuals" id="toc-gaussian-residuals" class="nav-link" data-scroll-target="#gaussian-residuals"><span class="header-section-number">2.3.1</span> Gaussian Residuals</a></li>
   <li><a href="#dispersion" id="toc-dispersion" class="nav-link" data-scroll-target="#dispersion"><span class="header-section-number">2.3.2</span> Dispersion</a></li>
   <li><a href="#multicollinearity" id="toc-multicollinearity" class="nav-link" data-scroll-target="#multicollinearity"><span class="header-section-number">2.3.3</span> Multicollinearity</a></li>
-  <li><a href="#sufficient-sample-size-for-predictors" id="toc-sufficient-sample-size-for-predictors" class="nav-link" data-scroll-target="#sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.4</span> Sufficient Sample Size for Predictors</a></li>
+  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</a></li>
+  <li><a href="#sufficient-sample-size-for-predictors" id="toc-sufficient-sample-size-for-predictors" class="nav-link" data-scroll-target="#sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</a></li>
   </ul></li>
   <li><a href="#model-fit" id="toc-model-fit" class="nav-link" data-scroll-target="#model-fit"><span class="header-section-number">2.4</span> Model Fit</a></li>
   <li><a href="#model-inference" id="toc-model-inference" class="nav-link" data-scroll-target="#model-inference"><span class="header-section-number">2.5</span> Model Inference</a></li>
@@ -951,8 +952,12 @@ Table&nbsp;1: Model VIF
 <p></p>
 <p>The collinearity for the model looks good, with all the VIFs under 2.</p>
 </section>
-<section id="sufficient-sample-size-for-predictors" class="level3" data-number="2.3.4">
-<h3 data-number="2.3.4" class="anchored" data-anchor-id="sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.4</span> Sufficient Sample Size for Predictors</h3>
+<section id="influential-observations" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</h3>
+<p>Testing influence through leverage, Cook’s D, DFFITs, and studentized residuals is very difficult for glmer() models. Trust me. I tried.</p>
+</section>
+<section id="sufficient-sample-size-for-predictors" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</h3>
 <p>Ideally we should have at least 10 events counted per predictor:</p>
 <p><span class="math display">\[\begin{align*}
 \sum_{i=1}^{n = 3,213} \lambda_{i} = 253,237 \geq 10p = 10(3) = 30 \quad \checkmark
@@ -1106,7 +1111,7 @@ Table&nbsp;3: Model Summary
 <ul>
 <li>Our model predicts that we’d see <span class="math inline">\(e^{5.066} = 158.816\)</span> eggs for a control site in week 0.</li>
 </ul>
-<p>Now let’s try to untangle all those interactions.</p>
+<p>Now let’s try to untangle all those interactions <span class="citation" data-cites="emmeans">(<a href="#ref-emmeans" role="doc-biblioref">Lenth 2025</a>)</span>.</p>
 </section>
 <section id="model-interactions" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="model-interactions"><span class="header-section-number">2.6</span> Model Interactions</h2>
@@ -1661,6 +1666,7 @@ Table&nbsp;8: Contrasts of Estimated Marginal Means of Treatment Gruop by Week (
 <li><em>patchwork</em> for combined plots <span class="citation" data-cites="patchwork">(<a href="#ref-patchwork" role="doc-biblioref">Pedersen 2025</a>)</span></li>
 <li><em>glmmTMB</em> for inference of negative binomial GLMM model <span class="citation" data-cites="brooks2017glmmtmb">(<a href="#ref-brooks2017glmmtmb" role="doc-biblioref">Brooks et al. 2017</a>)</span></li>
 <li><em>performance</em> for model fit statistics <span class="citation" data-cites="performance">(<a href="#ref-performance" role="doc-biblioref">Lüdecke et al. 2021</a>)</span></li>
+<li><em>emmeans</em> for interaction analysis <span class="citation" data-cites="emmeans">(<a href="#ref-emmeans" role="doc-biblioref">Lenth 2025</a>)</span></li>
 </ul>
 
 
@@ -1676,6 +1682,9 @@ Arnold, Jeffrey B. 2024. <em>Ggthemes: Extra Themes, Scales and Geoms for ’Ggp
 </div>
 <div id="ref-brooks2017glmmtmb" class="csl-entry" role="listitem">
 Brooks, Mollie E., Kasper Kristensen, Koen J. van Benthem, et al. 2017. <span>“<span class="nocase">glmmTMB</span> Balances Speed and Flexibility Among Packages for Zero-Inflated Generalized Linear Mixed Modeling.”</span> <em>The R Journal</em> 9 (2): 378–400. <a href="https://doi.org/10.32614/RJ-2017-066">https://doi.org/10.32614/RJ-2017-066</a>.
+</div>
+<div id="ref-emmeans" class="csl-entry" role="listitem">
+Lenth, Russell V. 2025. <em>Emmeans: Estimated Marginal Means, Aka Least-Squares Means</em>. <a href="https://CRAN.R-project.org/package=emmeans">https://CRAN.R-project.org/package=emmeans</a>.
 </div>
 <div id="ref-performance" class="csl-entry" role="listitem">
 Lüdecke, Daniel, Mattan S. Ben-Shachar, Indrajeet Patil, Philip Waggoner, and Dominique Makowski. 2021. <span>“<span class="nocase">performance</span>: An <span>R</span> Package for Assessment, Comparison and Testing of Statistical Models.”</span> <em>Journal of Open Source Software</em> 6 (60): 3139. <a href="https://doi.org/10.21105/joss.03139">https://doi.org/10.21105/joss.03139</a>.
