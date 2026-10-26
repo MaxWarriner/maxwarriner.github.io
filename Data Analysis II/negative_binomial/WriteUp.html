@@ -624,7 +624,7 @@ Figure&nbsp;1: Negative Binomial Distribution Examples
 <p>To set up the regression model, we need to work out the mean and variance of our distribution <span class="citation" data-cites="youtube">(<a href="#ref-youtube" role="doc-biblioref"><span class="nocase">statisticsmatt</span> 2020</a>)</span>.</p>
 <p>Expected Value / Mean:</p>
 <p><span class="math display">\[\begin{align*}
-E(X) =&amp; \sum_{x=0}^{\infty} x \cdot f_X(x,n,p) \\
+E(X) =&amp; \sum_{x=0}^{\infty} x \cdot f_x(x,n,p) \\
 =&amp; \sum_{x=0}^{\infty} x \cdot \binom{n+x-1}{n-1}\,p^n(1-p)^x \\
 =&amp; np^{-1}(1-p)\cdot \sum_{x=1}^{\infty}\frac{(n+x-1)}{n!(x-1)!} p^{n+1}(1-p)^{x-1} \\
 (\text{Let} \, y = x-1) =&amp; np^{-1}(1-p)\cdot \sum_{y=0}^{\infty}\frac{(n+y)!}{n!\,y!}p^{n+1}(1-p)^y \\
