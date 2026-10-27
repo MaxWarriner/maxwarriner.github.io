@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Negative Binommial Regression Article – Max Warriner</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6622afbb6a93371a7f6aaa1c40799739.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../transcript.html">Coursework</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/overview.html">Data Analysis II</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/negative_binomial/WriteUp.html">Negative Binomial Regression Article</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Max Warriner</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-person" role="img">
+</i> 
+ <span class="menu-text">About Me</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../resume.html" class="sidebar-item-text sidebar-link"><i class="bi bi-filetype-pdf" role="img">
+</i> 
+ <span class="menu-text">CV</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Coursework</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transcript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Transcript</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Biostatistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/hypothesis_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hypothesis Tests</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data Analysis I</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW1/HW1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW2/HW2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW3/HW3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW4/HW4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW5/HW5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW6/HW6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW7/HW7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 7</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data Analysis II</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW1/HW1WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW2/HW2WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW3/HW3WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/mixed_effects/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Mixed Effects Regression Article</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/poisson/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson Regression Article</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/negative_binomial/WriteUp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Negative Binomial Regression Article</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Geoinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 3/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 4/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 4</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Bioinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gene Locus Report</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">Multivariate Data Analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statement on AI Use</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false"><i class="bi bi-bar-chart" role="img">
+</i> 
+ <span class="menu-text">Research</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dog_research.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dog Mitochondria (Published)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Taye_Lab/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../MATH481_Max_Alta/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sleep_study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Circadian Rhythym Model/Sleep Deprivation Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false"><i class="bi bi-briefcase" role="img">
+</i> 
+ <span class="menu-text">Internships</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ionia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Public Health Report on Ionia County, MI</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dsc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colgate Data Science Collaboratory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../voting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">County Voting Data for Michigan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="header-section-number">1</span> Background</a>
+  <ul class="collapse">
+  <li><a href="#understanding-the-technique" id="toc-understanding-the-technique" class="nav-link" data-scroll-target="#understanding-the-technique"><span class="header-section-number">1.1</span> Understanding the Technique</a>
+  <ul class="collapse">
+  <li><a href="#the-negative-binomial-distribution" id="toc-the-negative-binomial-distribution" class="nav-link" data-scroll-target="#the-negative-binomial-distribution"><span class="header-section-number">1.1.1</span> The Negative Binomial Distribution</a></li>
+  <li><a href="#negative-binomial-regression" id="toc-negative-binomial-regression" class="nav-link" data-scroll-target="#negative-binomial-regression"><span class="header-section-number">1.1.2</span> Negative Binomial Regression</a></li>
+  </ul></li>
+  <li><a href="#the-study" id="toc-the-study" class="nav-link" data-scroll-target="#the-study"><span class="header-section-number">1.2</span> The Study</a></li>
+  <li><a href="#goal-of-statistical-analysis" id="toc-goal-of-statistical-analysis" class="nav-link" data-scroll-target="#goal-of-statistical-analysis"><span class="header-section-number">1.3</span> Goal of Statistical Analysis</a></li>
+  </ul></li>
+  <li><a href="#reproduction-of-the-study" id="toc-reproduction-of-the-study" class="nav-link" data-scroll-target="#reproduction-of-the-study"><span class="header-section-number">2</span> Reproduction of the Study</a>
+  <ul class="collapse">
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning"><span class="header-section-number">2.1</span> Data Cleaning</a></li>
+  <li><a href="#data-summary" id="toc-data-summary" class="nav-link" data-scroll-target="#data-summary"><span class="header-section-number">2.2</span> Data Summary</a></li>
+  <li><a href="#model-assumptions" id="toc-model-assumptions" class="nav-link" data-scroll-target="#model-assumptions"><span class="header-section-number">2.3</span> Model Assumptions</a>
+  <ul class="collapse">
+  <li><a href="#gaussian-residuals" id="toc-gaussian-residuals" class="nav-link" data-scroll-target="#gaussian-residuals"><span class="header-section-number">2.3.1</span> Gaussian Residuals</a></li>
+  <li><a href="#dispersion" id="toc-dispersion" class="nav-link" data-scroll-target="#dispersion"><span class="header-section-number">2.3.2</span> Dispersion</a></li>
+  <li><a href="#multicollinearity" id="toc-multicollinearity" class="nav-link" data-scroll-target="#multicollinearity"><span class="header-section-number">2.3.3</span> Multicollinearity</a></li>
+  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</a></li>
+  <li><a href="#sufficient-sample-size-for-predictors" id="toc-sufficient-sample-size-for-predictors" class="nav-link" data-scroll-target="#sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</a></li>
+  </ul></li>
+  <li><a href="#model-fit" id="toc-model-fit" class="nav-link" data-scroll-target="#model-fit"><span class="header-section-number">2.4</span> Model Fit</a></li>
+  <li><a href="#model-inference" id="toc-model-inference" class="nav-link" data-scroll-target="#model-inference"><span class="header-section-number">2.5</span> Model Inference</a></li>
+  <li><a href="#model-interactions" id="toc-model-interactions" class="nav-link" data-scroll-target="#model-interactions"><span class="header-section-number">2.6</span> Model Interactions</a>
+  <ul class="collapse">
+  <li><a href="#effect-of-mosquito-intervention" id="toc-effect-of-mosquito-intervention" class="nav-link" data-scroll-target="#effect-of-mosquito-intervention"><span class="header-section-number">2.6.1</span> Effect of Mosquito Intervention</a></li>
+  <li><a href="#effect-of-time-on-mosquito-intervention" id="toc-effect-of-time-on-mosquito-intervention" class="nav-link" data-scroll-target="#effect-of-time-on-mosquito-intervention"><span class="header-section-number">2.6.2</span> Effect of Time on Mosquito Intervention</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">2.7</span> Conclusions</a></li>
+  </ul></li>
+  <li><a href="#disagreements-with-the-article" id="toc-disagreements-with-the-article" class="nav-link" data-scroll-target="#disagreements-with-the-article"><span class="header-section-number">3</span> Disagreements With the Article</a>
+  <ul class="collapse">
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3.1</span> Results</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">3.2</span> Discussion</a></li>
+  </ul></li>
+  <li><a href="#acknowledgement" id="toc-acknowledgement" class="nav-link" data-scroll-target="#acknowledgement"><span class="header-section-number">4</span> Acknowledgement</a></li>
+  <li><a href="#ai-use" id="toc-ai-use" class="nav-link" data-scroll-target="#ai-use"><span class="header-section-number">5</span> AI Use</a></li>
+  <li><a href="#statistical-packages-used" id="toc-statistical-packages-used" class="nav-link" data-scroll-target="#statistical-packages-used"><span class="header-section-number">6</span> Statistical Packages Used</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="WriteUp.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../transcript.html">Coursework</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/overview.html">Data Analysis II</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/negative_binomial/WriteUp.html">Negative Binomial Regression Article</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Negative Binommial Regression Article</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p></p>
+<p></p>
+<section id="background" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Background</h1>
+<section id="understanding-the-technique" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="understanding-the-technique"><span class="header-section-number">1.1</span> Understanding the Technique</h2>
+<section id="the-negative-binomial-distribution" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="the-negative-binomial-distribution"><span class="header-section-number">1.1.1</span> The Negative Binomial Distribution</h3>
+<p>Negative binomial regression extends the linear least-squares regression model to data that fits a negative binomial distribution. My wording there is careful, because most often the data doesn’t fit what the negative binomial is actually modeled after. The negative binomial distribution measures the probability of <span class="math inline">\(X\)</span> failures occuring before the <span class="math inline">\(n\)</span>-th success, where the probability of a success is <span class="math inline">\(p\)</span>. For example, the probability of getting <span class="math inline">\(X = 6\)</span> tails before getting the <span class="math inline">\(n = 3\)</span> heads, where the the probability of getting a head or tail <span class="math inline">\(p = 0.5\)</span>.</p>
+<p><span class="math display">\[\begin{align*}
+P(X=x | n, p) = f_x(x,n,p) = \binom{x+n-1}{n-1} p^n (1-p)^x
+\end{align*}\]</span></p>
+<p>We can plot the probability mass function (PMF) to see the probability of <span class="math inline">\(x\)</span> failures occuring for every <span class="math inline">\(X\)</span>, while changing the probability of success and keeping our number of success targets constant:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-nbinom_dist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-nbinom_dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Negative Binomial Distribution Examples
+</figcaption>
+<div aria-describedby="fig-nbinom_dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-nbinom_dist-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>To set up the regression model, we need to work out the mean and variance of our distribution <span class="citation" data-cites="youtube">(<a href="#ref-youtube" role="doc-biblioref"><span class="nocase">statisticsmatt</span> 2020</a>)</span>.</p>
+<p>Expected Value / Mean:</p>
+<p><span class="math display">\[\begin{align*}
+E(X) =&amp; \sum_{x=0}^{\infty} x \cdot f_x(x,n,p) \\
+=&amp; \sum_{x=0}^{\infty} x \cdot \binom{n+x-1}{n-1}\,p^n(1-p)^x \\
+=&amp; np^{-1}(1-p)\cdot \sum_{x=1}^{\infty}\frac{(n+x-1)}{n!(x-1)!} p^{n+1}(1-p)^{x-1} \\
+(\text{Let} \, y = x-1) =&amp; np^{-1}(1-p)\cdot \sum_{y=0}^{\infty}\frac{(n+y)!}{n!\,y!}p^{n+1}(1-p)^y \\
+=&amp; \frac{n(1-p)}{p}\cdot \sum_{y=0}^{\infty}\binom{(n+1)+y-1}{y}\,p^{n+1}(1-p)^y \\
+=&amp; \frac{n(1-p)}{p}
+\end{align*}\]</span></p>
+<p>The second moment of the negative binomial distribution is given by:</p>
+<p><span class="math display">\[\begin{align*}
+E[X(X-1)] &amp;= \sum_{x=0}^{\infty} x(x-1) f_x(x) = \sum_{x=0}^{\infty} x(x-1)\frac{(n+x-1)!}{(n-1 !x!}p^n(1-p)^x \\
+&amp;= \frac{n(n+1)(1-p)^2}{p^2}\cdot \sum_{x=2}^{\infty} \frac{[(n+2)+(x-2)-1]!}{(n+1)!(x-2)!}\, p^{n+2}(1-p)^{x-2} \\
+(\text{Let }y = x-2) &amp;= \frac{n(n+1)(1-p)^2}{p^2}\cdot \sum_{y=0}^{\infty}\binom{(n+2)+y-1}{y}\, p^{n+2}(1-p)^y \\
+&amp;= \frac{n(n+1)(1-p)^2}{p^2}
+\end{align*}\]</span></p>
+<p>To solve for the variance:</p>
+<p><span class="math display">\[\begin{align*}
+Var(x) &amp;= E(x^2) - E(x)^2 = E(x^2)-E(x)+E(x)-E(x)^2 \\
+&amp;= E[x(x-1)]+E(x)-E(x)^2 \\
+&amp;= \frac{n(n+1)(1-p)^2}{p^2} + \frac{n(1-p)}{p} - \frac{n^2(1-p)^2}{p^2} \\
+&amp;= \frac{n^2(1-p)^2 + n(1-p)^2 + np(1-p) - n^2(1-p)^2}{p^2} \\
+&amp;= \frac{n(1-p)[(1-p)+p]}{p^2} \\
+&amp;= \frac{n(1-p)}{p^2}
+\end{align*}\]</span></p>
+<p>We can verify this numerically. Here I simulate 10,000 negative binomial distributed datasets with <span class="math inline">\(n = 20\)</span> successes waiting for, probability <span class="math inline">\(p = 0.75\)</span> and sample size <span class="math inline">\(N=25\)</span>:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">13</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>sims <span class="ot">=</span> <span class="dv">10000</span> <span class="co"># Simulations</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>n <span class="ot">=</span> <span class="dv">20</span>  <span class="co"># Successes</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>N <span class="ot">=</span> <span class="dv">25</span>  <span class="co"># Sample Size</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>p <span class="ot">=</span> <span class="fl">0.75</span> <span class="co"># Probability</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>means <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, sims) <span class="co">#Place to store means</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>vars <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, sims)  <span class="co">#Place to store variances</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>sims){</span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a>  nbinom_dat <span class="ot">&lt;-</span> <span class="fu">rnbinom</span>(<span class="at">n =</span> N, <span class="at">size =</span> n, <span class="at">prob =</span> p) <span class="co">#Simulate random data</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>  means[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(nbinom_dat)   <span class="co">#Store the mean of the data</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a>  vars[i] <span class="ot">&lt;-</span> <span class="fu">var</span>(nbinom_dat)     <span class="co">#Store the variance of the data</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>Theoretically we’d expect our mean number of failures to be: <span class="math display">\[\begin{align*}
+\frac{n(1-p)}{p} = \frac{20(1-0.75)}{0.75} = 6.6\bar{6}
+\end{align*}\]</span></p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-means" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Negative Binomial Mean
+</figcaption>
+<div aria-describedby="fig-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-means-1.png" class="img-fluid figure-img" width="480">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>And our variance in the number of failures to be:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{n(1-p)}{p^2} = \frac{20(1-0.75)}{(0.75)^2} = 8.8\bar{8}
+\end{align*}\]</span></p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-vars" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Negative Binomial Variances
+</figcaption>
+<div aria-describedby="fig-vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-vars-1.png" class="img-fluid figure-img" width="480">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p><strong>Note that the boxplot shows the median of all the datasets.</strong></p>
+<p>For some context, the variance of the negative binomial distribution approaches the variance of a poisson distribution as the number of failures increases while keeping the mean and successes the same:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-nbinom_pois" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-nbinom_pois-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Negative Binomial and Poisson Variances
+</figcaption>
+<div aria-describedby="fig-nbinom_pois-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-nbinom_pois-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+</section>
+<section id="negative-binomial-regression" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="negative-binomial-regression"><span class="header-section-number">1.1.2</span> Negative Binomial Regression</h3>
+<p>Where the typical linear regression goes as follows: <span class="math display">\[\begin{align*}
+Y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \cdots + \beta_{p-1} x_{(p-1)i} + \epsilon_i
+\end{align*}\]</span></p>
+<p>Since <span class="math inline">\(Y_i\)</span> is assumed to be continuous, both sides of the equation can range from <span class="math inline">\((-\infty, \infty)\)</span>. To model a variable that is based on counts, and therefore strictly <span class="math inline">\(&gt;0\)</span>, we have to transform the data to sit in the <span class="math inline">\((-\infty, \infty)\)</span> range, and this can be achieved with a log transformation:</p>
+<p><span class="math display">\[\begin{align*}
+log(\mu_{Y_i|x_i}) = \beta_0 + \beta_1 x_{1i} + \cdots + \beta_{p-1} x_{(p-1)i}
+\end{align*}\]</span> where <span class="math inline">\(\mu_{Y_i|x_i}\)</span> is the mean of the Negative Binomial distribution from which the <span class="math inline">\(i\text{th}\)</span> response is drawn.</p>
+</section>
+</section>
+<section id="the-study" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="the-study"><span class="header-section-number">1.2</span> The Study</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>News-Medical.net</figcaption>
+<p><img src="mosquito.jpg" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>Everybody hates mosquitoes, especially Australians. <em>Aedes notoscriptus</em> mosquitoes, also known as the Australian backyard mosquito, are particularly harmful in any area where they’re found. These mosquitoes have been found to spread <em>Mycobacterium ulcerans</em> in humans and other animals, resulting in a severe skin condition known as Buruli ulcer (no, I’m not showing a picture for that). In areas around Melbourne, cases of infection have been increasing in recent years, affecting potentially hundreds or thousands of people. People are often exposed in the warmer months where the mosquitoes are active, but because of a 3-6 month incubation period, can have symptoms much later.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Paris et al.</figcaption>
+<p><img src="stations.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>In2Care™ Mosquito Stations attempt to reduce adult populations and prevent the development of immature mosquitoes. Luring the adults in with scented water, the laid eggs and the adults are in contact with pyriproxyfen, which prevents the eggs’ normal development and growth, and the adults spread to other areas. The adult mosquitoes are also infected with <em>Beauveria bassiana</em>, a fungus that is deadly to them eventually.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Paris et al.</figcaption>
+<p><img src="design.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>So for this study, treatment and control sites were placed across a 50 km area in the suburbs of Melbourne, Australia, with each area having 80 partipating residential houses and 100 mosquito dissemination stations each. Baseline levels of mosquito populations were taken for 3 weeks prior to the intervention, with counts taken 6 weeks later for an additional 4 weeks <span class="citation" data-cites="paris2026">(<a href="#ref-paris2026" role="doc-biblioref">Paris et al. 2026</a>)</span>.</p>
+</section>
+<section id="goal-of-statistical-analysis" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="goal-of-statistical-analysis"><span class="header-section-number">1.3</span> Goal of Statistical Analysis</h2>
+<p>Because I can’t seem to escape mixed effect models, the negative binomial regression predicts mosquito eggs with factors:</p>
+<ul>
+<li>Treatment Status</li>
+<li>Sampling</li>
+<li>Treatment Status x Sampling Interaction</li>
+<li>Trap Site (Random Intercept)</li>
+</ul>
+<p>In <em>R</em>, our formula call looks like this:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>formula <span class="ot">&lt;-</span> eggs <span class="sc">~</span> group<span class="sc">*</span>week <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+</section>
+</section>
+<section id="reproduction-of-the-study" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Reproduction of the Study</h1>
+<section id="data-cleaning" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="data-cleaning"><span class="header-section-number">2.1</span> Data Cleaning</h2>
+<p>Data is very nice! I removed the rows with NAs for egg counts as I’m assuming data is unavailable for those collections.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'mosquitos.csv'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>dat<span class="sc">$</span>site <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>site, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"5"</span>, <span class="st">"6"</span>, <span class="st">"7"</span>, <span class="st">"8"</span>, <span class="st">"9"</span>, <span class="st">"10"</span>, <span class="st">"11"</span>, <span class="st">"12"</span>))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>dat<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>group, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"control"</span>, <span class="st">"treatment"</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>  <span class="fu">drop_na</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+</section>
+<section id="data-summary" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="data-summary"><span class="header-section-number">2.2</span> Data Summary</h2>
+<p>We can look at each study site’s mosquito eggs over time:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sum_treatment_site" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_treatment_site-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Treatment and Week Across Sites
+</figcaption>
+<div aria-describedby="fig-sum_treatment_site-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-sum_treatment_site-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Let’s take a quick summary of our mosquito egg counts by treatment group and week:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sum_treatment" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_treatment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Treatment and Week Summary
+</figcaption>
+<div aria-describedby="fig-sum_treatment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-sum_treatment-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>This looks promising for the effectiveness of the treament! Interestingly, the egg counts for both the control and treatment sites drops sharply after the intervention, indicating that the effects of the intervention could be having a crossover effect into the control areas.</p>
+</section>
+<section id="model-assumptions" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="model-assumptions"><span class="header-section-number">2.3</span> Model Assumptions</h2>
+<section id="gaussian-residuals" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="gaussian-residuals"><span class="header-section-number">2.3.1</span> Gaussian Residuals</h3>
+<p>Since our model is a generalized linear mixed effect model, we need to check the assumption that our random intercepts for our sites are gaussian:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-intercepts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-intercepts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Random intercepts of Sites
+</figcaption>
+<div aria-describedby="fig-intercepts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-intercepts-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Even with a small sample (<span class="math inline">\(n=12\)</span> sites), our random intercepts look roughly gaussian and follow the qq-plot pretty well.</p>
+</section>
+<section id="dispersion" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="dispersion"><span class="header-section-number">2.3.2</span> Dispersion</h3>
+<p>Dispertion ratios aren’t quite as straightforward for mixed models, so we’ll be using this approximation function provided by Dr.&nbsp;Ben Bolker, a mathematical statistician at McMaster University <span class="citation" data-cites="bolker_glmmfaq">(<a href="#ref-bolker_glmmfaq" role="doc-biblioref"><span class="nocase">Bolker et al.</span> 2025</a>)</span>.</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-residual_poisson" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-residual_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Randomized Quantile Residuals of Negative Binomial Model
+</figcaption>
+<div aria-describedby="fig-residual_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-residual_poisson-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Our dispertion ratio here is <strong>extremely</strong> low. The randomized quantile residuals don’t look terrible though.</p>
+<p>We can also check our predictions against the standardized Pearson residuals:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-predictions_residuals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Predictions Against Pearson Residuals
+</figcaption>
+<div aria-describedby="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-predictions_residuals-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>This is a better sign at least. We see a relatively flat line near 1 which is good.</p>
+</section>
+<section id="multicollinearity" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="multicollinearity"><span class="header-section-number">2.3.3</span> Multicollinearity</h3>
+<p></p>
+<div class="cell">
+<div id="tbl-model_vif" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_vif-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Model VIF
+</figcaption>
+<div aria-describedby="tbl-model_vif-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Term</th>
+<th style="text-align: right;">VIF</th>
+<th style="text-align: right;">Lower CI</th>
+<th style="text-align: right;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Treatment</td>
+<td style="text-align: right;">1.278</td>
+<td style="text-align: right;">1.229</td>
+<td style="text-align: right;">1.337</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Week</td>
+<td style="text-align: right;">1.729</td>
+<td style="text-align: right;">1.649</td>
+<td style="text-align: right;">1.819</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Treatment : Week</td>
+<td style="text-align: right;">1.951</td>
+<td style="text-align: right;">1.856</td>
+<td style="text-align: right;">2.056</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>The collinearity for the model looks good, with all the VIFs under 2.</p>
+</section>
+<section id="influential-observations" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</h3>
+<p>Testing influence through leverage, Cook’s D, DFFITs, and studentized residuals is very difficult for glmer() models. Trust me. I tried.</p>
+</section>
+<section id="sufficient-sample-size-for-predictors" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</h3>
+<p>Ideally we should have at least 10 events counted per predictor:</p>
+<p><span class="math display">\[\begin{align*}
+\sum_{i=1}^{n = 3,213} \lambda_{i} = 253,237 \geq 10p = 10(3) = 30 \quad \checkmark
+\end{align*}\]</span></p>
+</section>
+</section>
+<section id="model-fit" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="model-fit"><span class="header-section-number">2.4</span> Model Fit</h2>
+<p>We can obtain an overall model fit:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_performance" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Model Fit
+</figcaption>
+<div aria-describedby="tbl-model_performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">AIC</th>
+<th style="text-align: right;">AICc</th>
+<th style="text-align: right;">BIC</th>
+<th style="text-align: right;">R2_conditional</th>
+<th style="text-align: right;">R2_marginal</th>
+<th style="text-align: right;">ICC</th>
+<th style="text-align: right;">RMSE</th>
+<th style="text-align: right;">Sigma</th>
+<th style="text-align: right;">Score_log</th>
+<th style="text-align: right;">Score_spherical</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">26712.43</td>
+<td style="text-align: right;">26712.46</td>
+<td style="text-align: right;">26748.88</td>
+<td style="text-align: right;">0.974</td>
+<td style="text-align: right;">0.937</td>
+<td style="text-align: right;">0.586</td>
+<td style="text-align: right;">128.399</td>
+<td style="text-align: right;">301.955</td>
+<td style="text-align: right;">-5.592</td>
+<td style="text-align: right;">0.013</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Our fixed effects explain 93.7% of the variance in mosquito eggs (extremely high). The total model including the random effects explains 97.4% of the variance in mosquito eggs.</p>
+</section>
+<section id="model-inference" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="model-inference"><span class="header-section-number">2.5</span> Model Inference</h2>
+<p>Now to see if the treatment on the sites had an effect on the number of mosquito eggs, and if time had any additional effects:</p>
+<p>A general summary our model gives us:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_sum" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Model Summary
+</figcaption>
+<div aria-describedby="tbl-model_sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">significance</th>
+<th style="text-align: center;">Percent Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Intercept</td>
+<td style="text-align: center;">5.066</td>
+<td style="text-align: right;">0.081</td>
+<td style="text-align: right;">62.459</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">***</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group = Treatment</td>
+<td style="text-align: center;">0.291</td>
+<td style="text-align: right;">0.109</td>
+<td style="text-align: right;">2.669</td>
+<td style="text-align: right;">0.008</td>
+<td style="text-align: right;">**</td>
+<td style="text-align: center;">33.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Week</td>
+<td style="text-align: center;">-0.116</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">-17.443</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">***</td>
+<td style="text-align: center;">-11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group = Treatment : Week</td>
+<td style="text-align: center;">-0.093</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">-9.270</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">***</td>
+<td style="text-align: center;">-8.9</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>where the percent change <span class="math inline">\(= (e^{\text{estimate}}-1) \times 100\)</span>.</p>
+<p>Because all of the terms are included in interactions, we’ll skip the interpretations for now.</p>
+<p>For the intercept:</p>
+<ul>
+<li>Our model predicts that we’d see <span class="math inline">\(e^{5.066} = 158.816\)</span> eggs for a control site in week 0.</li>
+</ul>
+<p>Now let’s try to untangle all those interactions <span class="citation" data-cites="emmeans">(<a href="#ref-emmeans" role="doc-biblioref">Lenth 2025</a>)</span>.</p>
+</section>
+<section id="model-interactions" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="model-interactions"><span class="header-section-number">2.6</span> Model Interactions</h2>
+<section id="effect-of-mosquito-intervention" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="effect-of-mosquito-intervention"><span class="header-section-number">2.6.1</span> Effect of Mosquito Intervention</h3>
+<p>Testing the contrast of mosquito eggs by treatment group:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_emm_treatment" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_emm_treatment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Contrast of Treatment Groups
+</figcaption>
+<div aria-describedby="tbl-model_emm_treatment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 11%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 9%">
+<col style="width: 18%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: center;">p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Upper CI</th>
+<th style="text-align: center;">Lower CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">0.348</td>
+<td style="text-align: right;">0.098</td>
+<td style="text-align: right;">3.54</td>
+<td style="text-align: center;">&lt;0.001</td>
+<td style="text-align: center;">41.639</td>
+<td style="text-align: center;">71.745</td>
+<td style="text-align: center;">16.81</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Plotting the predicted number of mosquito eggs by treatment group:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-emm_treatment" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_treatment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Treatment Group Estimated Marginal Means
+</figcaption>
+<div aria-describedby="fig-emm_treatment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-emm_treatment-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Our model predicts that a control site will have 41.6% more mosquito eggs than the treated site (95% CI: [16.8, 71.7]). As we can see from the table and plot, the global effect of treatment group is statistically discernible (<span class="math inline">\(Z = 3.540, p&lt;0.001\)</span>).</p>
+</section>
+<section id="effect-of-time-on-mosquito-intervention" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="effect-of-time-on-mosquito-intervention"><span class="header-section-number">2.6.2</span> Effect of Time on Mosquito Intervention</h3>
+<p>To see if time affects the mosquito intervention’s effect:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_emt_treat_week" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_emt_treat_week-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Estimated Marginal Trend of Week by Treatment Group
+</figcaption>
+<div aria-describedby="tbl-model_emt_treat_week-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 15%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Treatment Group</th>
+<th style="text-align: center;">Week Trend</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: right;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">-0.116</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">-17.443</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">-10.976</td>
+<td style="text-align: center;">-12.131</td>
+<td style="text-align: center;">-9.805</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">-0.210</td>
+<td style="text-align: right;">0.008</td>
+<td style="text-align: right;">-27.320</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">-18.913</td>
+<td style="text-align: center;">-20.123</td>
+<td style="text-align: center;">-17.684</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Both of the trends of week across groups are statistically discernible:</p>
+<ul>
+<li>Our model predicts that for every additional week, the number of mosquito eggs we’d see for the <em>control</em> group would decrease by 10.976% (95% CI: [9.805, 12.131]). This effect is statistically discernible (<span class="math inline">\(Z = 17.443, p &lt; 0.001\)</span>, adjusted-<span class="math inline">\(p &lt; 0.001\)</span>).</li>
+<li>Our model predicts that for every additional week, the number of mosquito eggs we’d see for the <em>treatment</em> group would decrease by 18.913% (95% CI: [17.684, 20.123]). This effect is statistically discernible (<span class="math inline">\(Z = 27.320, p &lt; 0.001\)</span>, adjusted-<span class="math inline">\(p &lt;0.001\)</span>).</li>
+</ul>
+<p>Visualizing those trends:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-emt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Estimated Marginal Trends of Week by Treatment Group
+</figcaption>
+<div aria-describedby="fig-emt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-emt-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Testing the differences in those trends:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-emt_pairs" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emt_pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Contrasts of Estimated Marginal Trend of Week by Treatment Group
+</figcaption>
+<div aria-describedby="tbl-emt_pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 12%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 18%">
+<col style="width: 10%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">Percent Change</th>
+<th style="text-align: right;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">0.093</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">9.27</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">9.788</td>
+<td style="text-align: right;">7.642</td>
+<td style="text-align: center;">11.977</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>We can see:</p>
+<ul>
+<li>The trend for week is discernibly greater for the control versus the treatment group (<span class="math inline">\(Z = 9.27, p&lt;0.001\)</span>). Our model predicts that for additional week the percent change in mosquito eggs is 9.788 % greater (95% CI: [7.642, 11.977]) for the control group than the treament group.</li>
+</ul>
+</section>
+</section>
+<section id="conclusions" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">2.7</span> Conclusions</h2>
+<p>The results from our model are quite convincing. Before getting into those results, I should mention that the model is quite underdispersed, so perhaps another model would be better suited for this data.</p>
+<p>Aside from that though, the treatment has very solid evidence for reducing the number of mosquito eggs. Just looking at the overall effect, the number of expected mosquito eggs is firmly lower in the treatment group (<a href="#fig-emm_treatment" class="quarto-xref">Figure&nbsp;10</a>). Often times, biological interventions can have quite small effects even when discernible, but an estimated 40% reduction in mosquito egss is quite striking.</p>
+<p>The effect of time, specifically across treatment groups is also very interesting. When looking at the estimated marginal trends across treatment groups, the shapes of both curves appear to indicate an exponential decay in the expected mosquito eggs (<a href="#fig-emt" class="quarto-xref">Figure&nbsp;11</a>), just with slightly greater decay in the treatment group. This lends to the idea that the treatment group helps reduce the number of mosquito eggs, but not only for those sites with the treatment, but also across the whole study area. It’d be interesting to see if this pattern would continue if they kept measuring the eggs across even more weeks.</p>
+</section>
+</section>
+<section id="disagreements-with-the-article" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Disagreements With the Article</h1>
+<section id="results" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="results"><span class="header-section-number">3.1</span> Results</h2>
+<p>Unfortunately, while the authors of this article and I come to similar conclusions about the effectiveness of the treatment, the way we went about assessing those differences were quite different, and make direct comparisons challenging.</p>
+<p>A direct comparison I do think I can make is against this sentence in their results:</p>
+<blockquote class="blockquote">
+<p>” We first fitted a generalized linear mixed model (GLMM) that indicated the number of eggs per trap was influenced by the sampling area as well as the sampling week (z = 78.05, P &lt; 0.001)”</p>
+</blockquote>
+<p>I think their wording here is a bit strange. I believe they’re referring to the reaction term, but I wouldn’t necessarily say that I would interpret the coefficient from an interaction term in that way. If they’re referring to the individual terms, why give one Z-statistic and <span class="math inline">\(p\)</span>-value? If we assume they’re referring to the interaction term, their statistics are much much larger than my model came up with (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;3</a>). When I went looking for answers in their code as to why this discrepancy is there, I noticed all of their code in their repository is in python, though they say in the article their analysis was done in <em>R</em>.</p>
+<p>The second large claim they make in the results is:</p>
+<blockquote class="blockquote">
+<p>“Post hoc comparisons showed no significant differences in egg counts between the control and treatment areas in the 3 weeks of baseline egg counting undertaken before the intervention. The first sampling after the 8-week intervention was completed, showed significantly lower egg counts at all treatment areas compared with all control areas (Fig. 2a and Supplementary Table 3). This trend continued in the second week of egg counts after the intervention. Egg numbers at treatment areas started to merge with control area egg counts in weeks 3 and 4 after the cessation of the intervention (Supplementary Table 3, and Fig. 2a).”</p>
+</blockquote>
+<p>This is a very different way than I analyzed their data. If I attempt to analyze the estimated marginal means at each of the weeks, instead of looking at the trend of weeks:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-emm_weeks_predict" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emm_weeks_predict-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Estimated Marginal Means of Treatment Group by Week (Post-hoc)
+</figcaption>
+<div aria-describedby="tbl-emm_weeks_predict-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Group</th>
+<th style="text-align: center;">Week</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">141.134</td>
+<td style="text-align: right;">11.081</td>
+<td style="text-align: center;">121.003</td>
+<td style="text-align: center;">164.614</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">171.971</td>
+<td style="text-align: right;">13.286</td>
+<td style="text-align: center;">147.807</td>
+<td style="text-align: center;">200.085</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">125.643</td>
+<td style="text-align: right;">9.602</td>
+<td style="text-align: center;">108.166</td>
+<td style="text-align: center;">145.945</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">139.447</td>
+<td style="text-align: right;">10.507</td>
+<td style="text-align: center;">120.302</td>
+<td style="text-align: center;">161.638</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">111.853</td>
+<td style="text-align: right;">8.373</td>
+<td style="text-align: center;">96.589</td>
+<td style="text-align: center;">129.530</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">113.074</td>
+<td style="text-align: right;">8.388</td>
+<td style="text-align: center;">97.772</td>
+<td style="text-align: center;">130.770</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">55.680</td>
+<td style="text-align: right;">4.332</td>
+<td style="text-align: center;">47.804</td>
+<td style="text-align: center;">64.853</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">32.143</td>
+<td style="text-align: right;">2.676</td>
+<td style="text-align: center;">27.303</td>
+<td style="text-align: center;">37.841</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">49.568</td>
+<td style="text-align: right;">3.978</td>
+<td style="text-align: center;">42.354</td>
+<td style="text-align: center;">58.012</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">26.064</td>
+<td style="text-align: right;">2.270</td>
+<td style="text-align: center;">21.974</td>
+<td style="text-align: center;">30.915</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">44.128</td>
+<td style="text-align: right;">3.670</td>
+<td style="text-align: center;">37.491</td>
+<td style="text-align: center;">51.939</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">21.134</td>
+<td style="text-align: right;">1.932</td>
+<td style="text-align: center;">17.668</td>
+<td style="text-align: center;">25.280</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">39.284</td>
+<td style="text-align: right;">3.397</td>
+<td style="text-align: center;">33.160</td>
+<td style="text-align: center;">46.541</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">treatment</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">17.137</td>
+<td style="text-align: right;">1.647</td>
+<td style="text-align: center;">14.195</td>
+<td style="text-align: center;">20.690</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<div id="tbl-emm_weeks" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emm_weeks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Contrasts of Estimated Marginal Means of Treatment Gruop by Week (Post-hoc)
+</figcaption>
+<div aria-describedby="tbl-emm_weeks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Week</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">-0.198</td>
+<td style="text-align: right;">0.105</td>
+<td style="text-align: right;">-1.887</td>
+<td style="text-align: right;">0.059</td>
+<td style="text-align: right;">0.083</td>
+<td style="text-align: center;">-17.931</td>
+<td style="text-align: center;">-33.161</td>
+<td style="text-align: center;">0.768</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: right;">-0.104</td>
+<td style="text-align: right;">0.101</td>
+<td style="text-align: right;">-1.029</td>
+<td style="text-align: right;">0.303</td>
+<td style="text-align: right;">0.354</td>
+<td style="text-align: center;">-9.899</td>
+<td style="text-align: center;">-26.119</td>
+<td style="text-align: center;">9.883</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: right;">-0.011</td>
+<td style="text-align: right;">0.099</td>
+<td style="text-align: right;">-0.110</td>
+<td style="text-align: right;">0.912</td>
+<td style="text-align: right;">0.912</td>
+<td style="text-align: center;">-1.079</td>
+<td style="text-align: center;">-18.480</td>
+<td style="text-align: center;">20.035</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: right;">0.549</td>
+<td style="text-align: right;">0.105</td>
+<td style="text-align: right;">5.253</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">73.226</td>
+<td style="text-align: center;">41.117</td>
+<td style="text-align: center;">112.642</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: right;">0.643</td>
+<td style="text-align: right;">0.109</td>
+<td style="text-align: right;">5.905</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">90.182</td>
+<td style="text-align: center;">53.641</td>
+<td style="text-align: center;">135.413</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: right;">0.736</td>
+<td style="text-align: right;">0.114</td>
+<td style="text-align: right;">6.466</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">108.797</td>
+<td style="text-align: center;">67.036</td>
+<td style="text-align: center;">160.998</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">control - treatment</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: right;">0.830</td>
+<td style="text-align: right;">0.119</td>
+<td style="text-align: right;">6.942</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">129.234</td>
+<td style="text-align: center;">81.370</td>
+<td style="text-align: center;">189.729</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Looking at it this way, we can see that their first sentence makes sense. There are no discernible differences between the control and the treatment groups in the three weeks before the intervention, which makes sense. For the first two weeks after the intervention, weeks 9 &amp; 10, we can now see that the difference between the two treatment groups is strongly discernible for both weeks. The part where I’m now confused, is when they say that the “Egg numbers at treatment areas started to merge with control area egg counts in weeks 3 and 4 after the cessation of the intervention.” I’m not sure what led them to conclude that, given the estimated marginal means at weeks 3 &amp; 4 after the intervention (weeks 11 &amp; 12 in the model), are even more strongly different for the following weeks between the control and the treatment groups (<a href="#tbl-emm_weeks" class="quarto-xref">Table&nbsp;8</a>). If you’re wondering if their reference to figure 2a and Supplementary Table 3 clear this up, this is Figure 2a:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Paris et al.</figcaption>
+<p><img src="2a.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>As you can see, not a figure which indicates statistics. Lastly, Supplementary Table 3 is simply the raw data for the study.</p>
+<p>Sadly, that’s where the discussion of the results for this analysis ends in their results section, so we’re left on a bit of a cliffhanger for a lot of these results.</p>
+<p>On one last interesting note from the results, the authors mention a period of low amounts of rain during the middle weeks of the study, which could explain a lot of the reduction in mosquito egg counts across both treatment groups. While this is helpful in adding context, I wonder why they didn’t just include rainfall as a factor in the model if that data was available, instead of doing a separate analysis to test if rainfall alone was predictive of mosquito egg counts. The same could be said of temperature data.</p>
+</section>
+<section id="discussion" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="discussion"><span class="header-section-number">3.2</span> Discussion</h2>
+<p>In the discussion, as well as the abstract, the authors bring up this statistic as a large piece of evidence for the effectiveness of the intervention:</p>
+<blockquote class="blockquote">
+<p>“The 70% reduction in egg counts in intervention areas compared to control areas we observed after the 8-week trial confirms the effectiveness of autodissemination systems for mosquito population reduction in urban settings.”</p>
+</blockquote>
+<p>I think the researchers might be slightly misinterpreting the data here. When they claim that there is a 70% reduction in egg counts in the intervention areas compared to the control groups, I think they really mean that the control groups have about 70% more mosquito eggs compared to the treatment groups, which is slightly different, and aligns with what my model predicts (<a href="#tbl-emm_weeks" class="quarto-xref">Table&nbsp;8</a>). Also, if they wanted to have a more convincing statistic, I don’t understand why they wouldn’t go with the larger difference, which is at week 12, when the control groups have 129% more mosquito eggs than the treatment groups (<a href="#tbl-emm_weeks" class="quarto-xref">Table&nbsp;8</a>).</p>
+<p>So while the data is quite convincing for the efficacy of these interventions, these, what I would regard as misinterpretations or unclear results, unfortunatenly weaken their findings and message in my opinion.</p>
+</section>
+</section>
+<section id="acknowledgement" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Acknowledgement</h1>
+<p>I would like to thank the researchers who published this paper: Véronique Paris, Andrew H. Buultjens, Nicholas Bell, Thomas L. Schmidt, Wendy M. Bamberg, Michael T. Birrell, Finn Romanes, Catarina A. Antao, Maria Globan, Caroline Lavender, Katherine Bond, Sally Dougall, Jake A. Lacey, Yichen Zhai, Peihong Guo, Norelle L. Sherry, Katherine B. Gibney, Jue Tao Lim, Paul D. R. Johnson, Timothy P. Stinear &amp; Ary A. Hoffmann. Transparency in data and code availability is hugely important for research ethics, and it makes my project possible.</p>
+</section>
+<section id="ai-use" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> AI Use</h1>
+<p>All of the guidance given by generative AI for this article can be found in <a href="https://claude.ai/share/3806fc57-e7ba-40a4-a521-58d4ec8b1126">this conversation</a>.</p>
+</section>
+<section id="statistical-packages-used" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Statistical Packages Used</h1>
+<ul>
+<li><em>tidyverse</em> for… everything it’s <em>tidyverse</em> <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span></li>
+<li><em>ggplot2</em> for plotting <span class="citation" data-cites="ggplot2">(<a href="#ref-ggplot2" role="doc-biblioref">Wickham 2016</a>)</span></li>
+<li><em>ggthemes</em> for theme_clean() <span class="citation" data-cites="ggthemes">(<a href="#ref-ggthemes" role="doc-biblioref">Arnold 2024</a>)</span></li>
+<li><em>patchwork</em> for combined plots <span class="citation" data-cites="patchwork">(<a href="#ref-patchwork" role="doc-biblioref">Pedersen 2025</a>)</span></li>
+<li><em>glmmTMB</em> for inference of negative binomial GLMM model <span class="citation" data-cites="brooks2017glmmtmb">(<a href="#ref-brooks2017glmmtmb" role="doc-biblioref">Brooks et al. 2017</a>)</span></li>
+<li><em>performance</em> for model fit statistics <span class="citation" data-cites="performance">(<a href="#ref-performance" role="doc-biblioref">Lüdecke et al. 2021</a>)</span></li>
+<li><em>emmeans</em> for interaction analysis <span class="citation" data-cites="emmeans">(<a href="#ref-emmeans" role="doc-biblioref">Lenth 2025</a>)</span></li>
+</ul>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-ggthemes" class="csl-entry" role="listitem">
+Arnold, Jeffrey B. 2024. <em>Ggthemes: Extra Themes, Scales and Geoms for ’Ggplot2’</em>. <a href="https://CRAN.R-project.org/package=ggthemes">https://CRAN.R-project.org/package=ggthemes</a>.
+</div>
+<div id="ref-bolker_glmmfaq" class="csl-entry" role="listitem">
+<span class="nocase">Bolker, Ben et al.</span> 2025. <em><span>GLMM FAQ</span></em>. <a href="https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html" class="uri">Https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html</a>.
+</div>
+<div id="ref-brooks2017glmmtmb" class="csl-entry" role="listitem">
+Brooks, Mollie E., Kasper Kristensen, Koen J. van Benthem, et al. 2017. <span>“<span class="nocase">glmmTMB</span> Balances Speed and Flexibility Among Packages for Zero-Inflated Generalized Linear Mixed Modeling.”</span> <em>The R Journal</em> 9 (2): 378–400. <a href="https://doi.org/10.32614/RJ-2017-066">https://doi.org/10.32614/RJ-2017-066</a>.
+</div>
+<div id="ref-emmeans" class="csl-entry" role="listitem">
+Lenth, Russell V. 2025. <em>Emmeans: Estimated Marginal Means, Aka Least-Squares Means</em>. <a href="https://CRAN.R-project.org/package=emmeans">https://CRAN.R-project.org/package=emmeans</a>.
+</div>
+<div id="ref-performance" class="csl-entry" role="listitem">
+Lüdecke, Daniel, Mattan S. Ben-Shachar, Indrajeet Patil, Philip Waggoner, and Dominique Makowski. 2021. <span>“<span class="nocase">performance</span>: An <span>R</span> Package for Assessment, Comparison and Testing of Statistical Models.”</span> <em>Journal of Open Source Software</em> 6 (60): 3139. <a href="https://doi.org/10.21105/joss.03139">https://doi.org/10.21105/joss.03139</a>.
+</div>
+<div id="ref-paris2026" class="csl-entry" role="listitem">
+Paris, Véronique, Andrew H. Buultjens, Nicholas Bell, et al. 2026. <span>“Autodissemination Stations Suppress <span><em>Aedes Notoscriptus</em></span> Mosquitoes and Reduce <span>Buruli</span> Ulcer Risk in Urban <span>Australia</span>: A Randomized Controlled Field Trial.”</span> <em>Nature Microbiology</em> 11 (9): 2493–504. <a href="https://doi.org/10.1038/s41564-026-02439-8">https://doi.org/10.1038/s41564-026-02439-8</a>.
+</div>
+<div id="ref-patchwork" class="csl-entry" role="listitem">
+Pedersen, Thomas Lin. 2025. <em>Patchwork: The Composer of Plots</em>. <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-youtube" class="csl-entry" role="listitem">
+<span class="nocase">statisticsmatt</span>. 2020. <em>Mean and Variance Negative Binomial Distribution</em>. YouTube. <a href="https://www.youtube.com/watch?v=bMrISdCWXes">https://www.youtube.com/watch?v=bMrISdCWXes</a>.
+</div>
+<div id="ref-ggplot2" class="csl-entry" role="listitem">
+Wickham, Hadley. 2016. <em>Ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-tidyverse" class="csl-entry" role="listitem">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, et al. 2019. <span>“Welcome to the <span class="nocase">tidyverse</span>.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/MaxWarriner\.github\.io\/maxwarriner\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Colgate University Student Portfolio</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/MaxWarriner">GitHub Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

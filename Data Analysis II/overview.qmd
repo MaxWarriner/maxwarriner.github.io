@@ -5,7 +5,7 @@ resources:
   - project.pdf
 ---
 
-I'm currently taking this class in the Fall of 2026 as an independent study with Prof. William Cipolli
+I'm currently taking this class in the Fall of 2026 as an independent study with Prof. William Cipolli.
 
 This is the description of the course from the Colgate catalog:
 
@@ -30,4 +30,4 @@ and find recently published journal articles, with data available, that use thes
 
 Also available is the traditional homeworks from the class that I'll use to learn about the topics before applying them. 
 
-
+All of the code used for this portfolio can be found [here](https://github.com/MaxWarriner/maxwarriner.github.io/tree/cac9f5d815f2ee41b2f1423a087a166a3952e3f9/Data%20Analysis%20II). 

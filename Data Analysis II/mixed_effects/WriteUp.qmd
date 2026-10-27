@@ -1,5 +1,5 @@
 ---
-title: Mixed Effects Regression Article           # Title of the document
+title: Linear Mixed Effects Regression Article           # Title of the document
 
 # Bibliography Details
 bibliography: bib.bib  # Name of bib file in the same folder 
@@ -31,6 +31,7 @@ format:
           \usepackage{hyperref}
           \usepackage{geometry}
           \usepackage{float}
+          \usepackage{bm}
     geometry:
       - top=0.75in
       - left=0.75in
@@ -50,6 +51,10 @@ library(patchwork)
 library(emmeans)
 library(r2glmm)
 library(performance)
+library(rentrez)
+library(xml2)
+library(clubSandwich)
+library(car)
 ```
 ```{r}
 #| echo: false
@@ -90,9 +95,7 @@ where:
 
 ## Finding a Study
 
-```{=html}
-<iframe width="100%" height="200px" src="https://pubmed.ncbi.nlm.nih.gov/42686906/" title="Journal Article"></iframe>
-```
+ ![Source: PubMed](title.png){width=100%}
 
 Because the journal Nature requires data availability in recently published papers, that allows for a large variety in available data sets for use in this portfolio. Especially appreciated is authors who provide their data directly instead of requiring the corresponding author to reply to an email... but anyways. 
 
@@ -152,14 +155,14 @@ The basic model of their regression is as follows:
 \end{align*}
 where:
 
-- $t$ is the time each mouse spends in the correct quadrant
+- $t_{ij}$ is the time each mouse spends in the correct quadrant
 - $i=1, 2, ..., n$ is the index for each mouse
 - $j=1, 2, ..., n_i$ is the index for the observation on mouse $i$. 
-- $\gamma$ is the random intercept for the time each mouse takes to complete the maze
+- $\gamma_{0i}$ is the random intercept for each mouse
 - $\beta_0$ is the intercept which includes the slope of time for mice in the "Control" treatment
 - $\beta_1$ is the slope of time for mice in the "Calorie Restricted" treatment
 - $\beta_2$ is the slope of time for mice in the "Semaglutide" treatment
-- $\epsilon$ is the conditional residual
+- $\epsilon_{ij}$ is the conditional residual
 
 # Reproduction of the Study
 ## Data Cleaning
@@ -195,9 +198,9 @@ First, let's look at the raw data [@ggplot2], [@random], [@ggthemes]:
 ```{r}
 #| echo: false
 #| label: fig-raw
-#| fig-cap: "Maze Time Across Treatments and Mouse"
-#| fig-width: 6
-#| fig-height: 4
+#| fig-cap: "Maze Time  Against Months Across Treatments and Mouse"
+#| fig-width: 7
+#| fig-height: 5
 
 
 dat <- read_csv('mice.csv')
@@ -219,11 +222,11 @@ ggplot(data = dat, aes(x = months, y = time, color = subject)) +
   geom_point() + 
   geom_line() + 
   theme_clean() + 
-  theme(legend.position = "none") + 
   scale_x_continuous(breaks = c(0,2,4)) + 
   ylab('Time(s)') + 
   xlab('Months') + 
-  scale_color_manual(values = all_colors)
+  scale_color_manual(values = all_colors) +
+  labs(color = "mouse")
 
 ```
 
@@ -293,7 +296,7 @@ p.hist + p.qq
 
 When looking for normality, we check that a histogram is centered around 0 and appears roughly gaussian shaped, and that our points fit relatively closely to a qqplot of the normal distribution. In the case of our model, our conditional residuals are centered around 0 and do appear to be roughly gaussian shaped, with the distribution weighted slightly towards negative residuals. The qq-plot shows a close fit to a theoretical distribution. And while not necessarily the best test of approximate normality, a Shapiro-Wilk test for normality shows no statistically discernible deviation from normality ($p = 0.41$)
 
-### Multivariate Normality of Marginal Residuals
+### Multivariate Normality of Marginal Residual Vectors
 
 ```{r}
 #| echo: false
@@ -351,6 +354,29 @@ Likely due to small sample size (3 observations per mouse), the linear mixed mod
 \gamma_i = 0 \, \forall \, i \in \{1, 2, ...\, , n = 30\}
 \end{align}
 
+### Influential Points
+
+We can test to see if there are any observations with high influence on the model:
+
+```{r}
+#| echo: false
+#| label: fig-influence
+#| fig-cap: "Model Influence"
+#| fig-width: 6
+#| fig-height: 4
+
+source('plotInfluence.R')
+
+plotInfluence(mod)
+
+
+```
+
+**Note: As standard DFFITs are not defined for mixed effects models, these values are estimated using hlm_influence() from the *HLMdiag* package [@HLMdiag]**
+
+Apart from whatever's going on with the leverage, the rest looks standard. There are 3 observations with somewhat large studentized residuals, but nothing extremely large. 
+
+
 ## Model Fit
 
 ```{r}
@@ -377,9 +403,11 @@ Testing the model performance [@performance]:
 #| echo: false
 #| label: tbl-mod_performance
 #| tbl-cap: "Model Performance Metrics"
-#| output: false
+#| warning: false
+#| message: false
 
 model_performance <- model_performance(mod)
+colnames(model_performance) <- c("AIC", "AICc", "BIC", "Conditional R2", "Marginal R2", "RMSE", "Sigma")
 
 knitr::kable(model_performance, digits = 3, align = "c")
 
@@ -474,14 +502,19 @@ Visualizing those trends:
 #| fig-height: 4
 
 
-emmip(mod, treatment ~ months, 
-      at = list(months = seq(min(dat$months), max(dat$months), length.out = 100)), 
-      CIs = TRUE) +
+emm_data <- emmip(mod, treatment ~ months,
+                   at = list(months = seq(min(dat$months), max(dat$months), length.out = 100)),
+                   CIs = TRUE,
+                   plotit = FALSE)
+
+
+ggplot(emm_data, aes(x = months, y = yvar, color = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = LCL, ymax = UCL), alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1) +
   ylab("Estimated Marginal Mean Time (s)") +
   xlab("Months") +
-  labs(color = "Treatment") + 
+  labs(color = "Treatment", fill = "Treatment") +
   theme_clean()
-
 
 ```
 
@@ -579,6 +612,139 @@ Compared to my analysis of the estimated marginal trends of months ([@tbl-model_
 
 Assuming that the researchers are using the standard cutoff ($p<0.05$), it makes sense why they use this finding, along with the rest, as evidence for positive effects on aging for semaglutide treatments in mice. However, my point about $p = 0.04$ being on the borderline also applies to their Figures 5b, 5d, and 5i, all which have $0.01<p<0.05$. While all fit within the traditional convention for statistical significance, it isn't ideal when that continually pops up across a study. I understand that sample size is often limited in animal studies for ethics reasons, but a linear mixed-effects model partially solves this issue by allowing repeated measures on the same mouse, which I still believe would've really helped this study. For where this analysis sits currently, the consistent direction in which the analyses point certainly make it promising for further studies on GLP-1 drugs and their effects on aging. 
 
+
+# Post-Hoc Analysis
+
+ ![Source: Pexels.com](orange.JPG){width=80%}
+
+After learning about a different, robust way of handling the singular fit of the lmer() model, this is an attempt at a second try of the analysis, with justice for the random effects. 
+
+By using the vcovCR() function from the *clubSandwich* package [@clubSandwich], we can estimate a covariance matrix from our data, treating each mouse as a cluster. This adjusts the standard errors and addresses the dependence of each observation when estimating model coefficients. 
+
+Here's a summary of the model, using the robust covariance matrix and the Satterthwaite small-sample correction: 
+
+```{r}
+#| echo: false
+#| label: tbl-posthoc_sum
+
+# Account for dependence with cluster-robust standard errors
+V_cr2 <- vcovCR(mod, cluster = dat$subject, type = "CR2")
+
+post_model_sum <- data.frame(coef_test(mod, vcov = V_cr2, test = "Satterthwaite"))
+
+rownames(post_model_sum) <- NULL
+post_model_sum$Coef <- c("Intercept", "Months", "Treatment = Calorie Restricted", "Treatment = Semaglutide", "Months : Treatment = Calorie Restricted", "Months : Treatment = Semaglutide")
+post_model_sum <- post_model_sum[,c(1, 2, 3, 5, 6, 7)]
+colnames(post_model_sum) <- c("Coefficient", "Estimate", "SE", "t", "df", "p")
+
+post_model_sum <- post_model_sum |>
+  mutate(p = ifelse(p < 0.001, "<0.001", round(p,3)))
+
+knitr::kable(post_model_sum, digits = 3, label = "post_model_sum", caption = "Robust Model Summary", align = c("l", "r", "c", "r", "r"))
+
+```
+
+If you compare to the original table [@tbl-mod_summary], you'll notice the coefficient estimates are the same, but the standard errors and degrees-of-freedom have been adjusted. Now, the effect of the months alone is *marginally* discernible ($t(9) = -2.174, p = 0.058$). The slope of months for the calorie restricted group has gone from showing a *marginal* effect to now being **not** discernibly different than 0 ($t(18) = 1.330, p = 0.200$). Still, the slope of months on the semaglutide treatment group is statistically discernible ($t(18) = 4.442, p < 0.001$). 
+
+Now let's see if the untangled interaction is affected: 
+
+```{r}
+#| echo: false
+#| label: tbl-posthoc_model_emt
+
+mod_emt <- data.frame(test(emtrends(mod, "treatment", var = "months", vcov. = V_cr2)))
+conf_emt <- confint(emtrends(mod, "treatment", var = "months", vcov. = V_cr2))
+
+mod_emt$adjusted <- p.adjust(mod_emt$p.value, method = "BH")
+mod_emt$lower_ci <- conf_emt$lower.CL
+mod_emt$upper.ci <- conf_emt$upper.CL
+colnames(mod_emt) <- c("Treatment", "Months Trend", "SE", "df", "t", "p", "adjusted-p", "Lower CI", "Upper CI")
+mod_emt$Treatment <- c("Control", "Calorie Restricted", "Semaglutide")
+mod_emt$p <- ifelse(mod_emt$p<0.001, "<0.001", round(mod_emt$p, 3))
+mod_emt$`adjusted-p` <- ifelse(mod_emt$`adjusted-p`<0.001, "<0.001", round(mod_emt$`adjusted-p`, 3))
+
+knitr::kable(mod_emt, digits = 3, label = "model_emt_post", caption = "Post-Hoc Model Estimated Marginal Trends", align = c("l", "c", "r", "r", "r", "r", "r", "c", "c"), include.rownames = F)
+
+```
+
+Comparing to [@tbl-model_emt], once again, the estimates for the trend of months are equal, while the hypothesis testing measures are slightly different now (also the degrees-of-freedom for some reason). The slope of months for the control group remains ever so slightly below the 0.05 cutoff for the adjusted-$p$ ($t(84) = -2.174, p = 0.032$, adjusted-$p = 0.049$). Interestingly, the slope for the semaglutide treatment is the only one to potentially have even stronger evidence after these post-hoc changes ($t(84) = 4.191, p <0.001$, adjusted-$p < 0.001$), compared to previously in [@tbl-model_emt]: ($t(57) = 4.025, p< 0.001$, adjusted-$p = 0.001$). I can't say for sure why this is the case. An interesting thing to note about the differences is that each of the slopes now have unique standard errors, compared to the uniform errors before. 
+
+Now to see if anything's changed visually, I'll display a before and after of the plots:
+
+```{r}
+#| echo: false
+#| label: fig-posthoc_marginal_trends
+#| fig-cap: "Post-Hoc Model Estimated Marginal Trends"
+#| fig-width: 10
+#| fig-height: 6
+
+
+emm_data_pre <- emmip(mod, treatment ~ months,
+                   at = list(months = seq(min(dat$months), max(dat$months), length.out = 100)),
+                   CIs = TRUE,
+                   plotit = FALSE)
+
+emm_data_post <- emmip(mod, treatment ~ months,
+                   at = list(months = seq(min(dat$months), max(dat$months), length.out = 100)),
+                   CIs = TRUE,
+                   plotit = FALSE, 
+                   vcov. = V_cr2)
+
+
+pre <- ggplot(emm_data_pre, aes(x = months, y = yvar, color = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = LCL, ymax = UCL), alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1) +
+  ylab("Estimated Marginal Mean Time (s)") +
+  xlab("Months") +
+  labs(color = "Treatment", fill = "Treatment") +
+  theme_bw() +
+  ggtitle("Original")
+
+post <- ggplot(emm_data_post, aes(x = months, y = yvar, color = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = LCL, ymax = UCL), alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1) +
+  ylab("Estimated Marginal Mean Time (s)") +
+  xlab("Months") +
+  labs(color = "Treatment", fill = "Treatment") +
+  theme_bw() + 
+  ggtitle("Post-Hoc")
+
+pre + post + 
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+
+```
+
+
+Obviously, the estimates for the slopes are the same, but it's interesting to see the way the confidence interval ribbons change shape depending on the model. 
+
+Finally, let's see if this adjustment has made any difference in the main hypothesis of the paper: the difference between the slopes for the calorie restricted treatment and the semaglutide treatment. 
+
+```{r}
+#| echo: false
+#| label: tbl-model_emt_cont_post
+
+emt_pairs_post <- data.frame(pairs(emtrends(mod, "treatment", var = "months", vcov. = V_cr2)))
+emt_pairs_post$adjusted_p <- p.adjust(emt_pairs_post$p.value, method = "BH")
+confidence_post <- confint(pairs(emtrends(mod, "treatment", var = "months", vcov. = V_cr2)))
+emt_pairs_post$cl_low <- confidence_post$lower.CL
+emt_pairs_post$cl_high <- confidence_post$upper.CL
+
+colnames(emt_pairs_post) <- c("Contrast", "Estimate", "SE", "df", "t", "p", "adjusted-p", "Lower CI", "Higher CI")
+emt_pairs_post$Contrast <- c("Control - Calorie Restricted", "Control - Semaglutide", "Calorie Restricted - Semaglutide")
+emt_pairs_post$p <- round(emt_pairs_post$p, 3)
+emt_pairs_post$p <- ifelse(emt_pairs_post$p < 0.001, "<0.001", emt_pairs_post$p)
+emt_pairs_post$`adjusted-p` <- round(emt_pairs_post$`adjusted-p`, 3)
+emt_pairs_post$`adjusted-p` <- ifelse(emt_pairs_post$`adjusted-p` < 0.001, "<0.001", emt_pairs_post$`adjusted-p`)
+
+
+knitr::kable(emt_pairs_post, digits = 3, label = "model_emt_post", caption = "Post-Hoc Model Estimated Marginal Trends Contrasts", align = c("c", "c", "r", "c", "r", "r", "c", "c"), include.rownames = F)
+
+```
+
+In a comparison with [@tbl-model_emt_cont], we see that the contrast test between the calorie restricted treatment and the semaglutide treatment was quite affected by this difference in approach. While the contrast was previously *marginally* discernible, it now appears to be not discernible at all ($t(84) = -1.955, p = 0.130$, adjusted-$p = 0.195$). This shows the dangers in making strong conclusions about hypothesis tests where the $p$-value is dangerously close to 0.05. 
+
+Does this radically change my assessment of the data? Not really. As previously mentioned, while $p < 0.001$ and $p<0.05$ are both reported as statistically significant and make for a publishable journal article, they are not the same. Lastly, this is a good lesson that if the statistical significance of your hypothesis changes depending on how you approach the question, whether it be parametric vs. non-parametric vs. bootstrap and so on, the juice might not be worth the squeeze. 
 
 # Acknowledgement
 

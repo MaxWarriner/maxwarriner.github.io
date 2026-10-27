@@ -13,7 +13,7 @@ website:
         icon: person
       # Resume
       - href: resume.qmd
-        text: "Resume"
+        text: "CV"
         icon: filetype-pdf
       # Coursework
       - section: "Coursework"
@@ -57,8 +57,14 @@ website:
                 text: "Homework 1"
               - href: Data Analysis II\HW2\HW2WriteUp.qmd
                 text: "Homework 2"
+              - href: Data Analysis II\HW3\HW3WriteUp.qmd
+                text: "Homework 3"
               - href: Data Analysis II\mixed_effects\WriteUp.qmd
-                text: "Mixed Effects Regression Article"                    
+                text: "Linear Mixed Effects Regression Article"
+              - href: Data Analysis II\poisson\WriteUp.qmd
+                text: "Poisson Regression Article"
+              - href: Data Analysis II\negative_binomial\WriteUp.qmd
+                text: "Negative Binomial Regression Article"                     
         # Geoinformatics
           - section: "Geoinformatics"
             contents:

@@ -9,9 +9,6 @@ I contributed data analysis and writing review on this study by primary author D
 
 
 
-```{=html}
-<iframe width="100%" height="500px" src="https://doi.org/10.1016/j.bbabio.2026.149605" title="Journal Article"></iframe>
-```
-
+ ![Source: ScienceDirect](images/dog_title.png){width=100%}
 
 

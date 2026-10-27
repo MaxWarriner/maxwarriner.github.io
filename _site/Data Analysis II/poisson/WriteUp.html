@@ -1,0 +1,3069 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Poisson Regression Article – Max Warriner</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6622afbb6a93371a7f6aaa1c40799739.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../transcript.html">Coursework</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/overview.html">Data Analysis II</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/poisson/WriteUp.html">Poisson Regression Article</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Max Warriner</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-person" role="img">
+</i> 
+ <span class="menu-text">About Me</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../resume.html" class="sidebar-item-text sidebar-link"><i class="bi bi-filetype-pdf" role="img">
+</i> 
+ <span class="menu-text">CV</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Coursework</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../transcript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Transcript</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Biostatistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Biostatistics/hypothesis_tests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hypothesis Tests</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data Analysis I</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW1/HW1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW2/HW2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW3/HW3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW4/HW4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW5/HW5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW6/HW6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis I/HW7/HW7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 7</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data Analysis II</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW1/HW1WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW2/HW2WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/HW3/HW3WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Homework 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/mixed_effects/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Mixed Effects Regression Article</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/poisson/WriteUp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Poisson Regression Article</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Data Analysis II/negative_binomial/WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Negative Binomial Regression Article</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Geoinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 3/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Geoinformatics/Practical 4/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Practical 4</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Bioinformatics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Bioinformatics/report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gene Locus Report</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">Multivariate Data Analysis</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment1/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Multivariate Data Analysis/Assignment2/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Assignment 2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statement on AI Use</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false"><i class="bi bi-bar-chart" role="img">
+</i> 
+ <span class="menu-text">Research</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dog_research.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dog Mitochondria (Published)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Taye_Lab/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Socioeconomic Factor Effects on Gut Microbiome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../MATH481_Max_Alta/quarto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dietary Factor Machine Learning on Gut Microbiome/Metabolome Composition of Ethiopian Schoolchildren</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sleep_study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Circadian Rhythym Model/Sleep Deprivation Research</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false"><i class="bi bi-briefcase" role="img">
+</i> 
+ <span class="menu-text">Internships</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../ionia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Public Health Report on Ionia County, MI</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../dsc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Colgate Data Science Collaboratory</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../voting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">County Voting Data for Michigan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="header-section-number">1</span> Background</a>
+  <ul class="collapse">
+  <li><a href="#understanding-the-technique" id="toc-understanding-the-technique" class="nav-link" data-scroll-target="#understanding-the-technique"><span class="header-section-number">1.1</span> Understanding the Technique</a>
+  <ul class="collapse">
+  <li><a href="#the-poisson-distribution" id="toc-the-poisson-distribution" class="nav-link" data-scroll-target="#the-poisson-distribution"><span class="header-section-number">1.1.1</span> The Poisson Distribution</a></li>
+  <li><a href="#poisson-regression" id="toc-poisson-regression" class="nav-link" data-scroll-target="#poisson-regression"><span class="header-section-number">1.1.2</span> Poisson Regression</a></li>
+  </ul></li>
+  <li><a href="#the-study" id="toc-the-study" class="nav-link" data-scroll-target="#the-study"><span class="header-section-number">1.2</span> The Study</a></li>
+  <li><a href="#goal-of-statistical-analysis" id="toc-goal-of-statistical-analysis" class="nav-link" data-scroll-target="#goal-of-statistical-analysis"><span class="header-section-number">1.3</span> Goal of Statistical Analysis</a></li>
+  </ul></li>
+  <li><a href="#reproduction-of-the-study" id="toc-reproduction-of-the-study" class="nav-link" data-scroll-target="#reproduction-of-the-study"><span class="header-section-number">2</span> Reproduction of the Study</a>
+  <ul class="collapse">
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning"><span class="header-section-number">2.1</span> Data Cleaning</a></li>
+  <li><a href="#data-summary" id="toc-data-summary" class="nav-link" data-scroll-target="#data-summary"><span class="header-section-number">2.2</span> Data Summary</a></li>
+  <li><a href="#model-assumptions" id="toc-model-assumptions" class="nav-link" data-scroll-target="#model-assumptions"><span class="header-section-number">2.3</span> Model Assumptions</a>
+  <ul class="collapse">
+  <li><a href="#gaussian-residuals" id="toc-gaussian-residuals" class="nav-link" data-scroll-target="#gaussian-residuals"><span class="header-section-number">2.3.1</span> Gaussian Residuals</a></li>
+  <li><a href="#dispersion" id="toc-dispersion" class="nav-link" data-scroll-target="#dispersion"><span class="header-section-number">2.3.2</span> Dispersion</a></li>
+  <li><a href="#multicollinearity" id="toc-multicollinearity" class="nav-link" data-scroll-target="#multicollinearity"><span class="header-section-number">2.3.3</span> Multicollinearity</a></li>
+  <li><a href="#influential-observations" id="toc-influential-observations" class="nav-link" data-scroll-target="#influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</a></li>
+  <li><a href="#sufficient-sample-size-for-predictors" id="toc-sufficient-sample-size-for-predictors" class="nav-link" data-scroll-target="#sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</a></li>
+  </ul></li>
+  <li><a href="#model-fit" id="toc-model-fit" class="nav-link" data-scroll-target="#model-fit"><span class="header-section-number">2.4</span> Model Fit</a></li>
+  <li><a href="#model-inference" id="toc-model-inference" class="nav-link" data-scroll-target="#model-inference"><span class="header-section-number">2.5</span> Model Inference</a></li>
+  <li><a href="#model-interactions" id="toc-model-interactions" class="nav-link" data-scroll-target="#model-interactions"><span class="header-section-number">2.6</span> Model Interactions</a>
+  <ul class="collapse">
+  <li><a href="#same-species-density-trend" id="toc-same-species-density-trend" class="nav-link" data-scroll-target="#same-species-density-trend"><span class="header-section-number">2.6.1</span> Same Species Density Trend</a></li>
+  <li><a href="#effect-of-fencing-in-plots" id="toc-effect-of-fencing-in-plots" class="nav-link" data-scroll-target="#effect-of-fencing-in-plots"><span class="header-section-number">2.6.2</span> Effect of Fencing in Plots</a></li>
+  <li><a href="#effect-of-pesticides" id="toc-effect-of-pesticides" class="nav-link" data-scroll-target="#effect-of-pesticides"><span class="header-section-number">2.6.3</span> Effect of Pesticides</a></li>
+  <li><a href="#pesticide-type-and-exclosure-type-interaction" id="toc-pesticide-type-and-exclosure-type-interaction" class="nav-link" data-scroll-target="#pesticide-type-and-exclosure-type-interaction"><span class="header-section-number">2.6.4</span> Pesticide Type and Exclosure Type Interaction</a></li>
+  <li><a href="#pesticide-type-and-same-species-density-interaction" id="toc-pesticide-type-and-same-species-density-interaction" class="nav-link" data-scroll-target="#pesticide-type-and-same-species-density-interaction"><span class="header-section-number">2.6.5</span> Pesticide Type and Same Species Density Interaction</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">2.7</span> Conclusions</a></li>
+  </ul></li>
+  <li><a href="#disagreements-with-the-article" id="toc-disagreements-with-the-article" class="nav-link" data-scroll-target="#disagreements-with-the-article"><span class="header-section-number">3</span> Disagreements With the Article</a>
+  <ul class="collapse">
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3.1</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#pesticide-and-same-species-density-interaction" id="toc-pesticide-and-same-species-density-interaction" class="nav-link" data-scroll-target="#pesticide-and-same-species-density-interaction"><span class="header-section-number">3.1.1</span> Pesticide and Same Species Density Interaction</a></li>
+  <li><a href="#effect-of-fencing-in-plots-1" id="toc-effect-of-fencing-in-plots-1" class="nav-link" data-scroll-target="#effect-of-fencing-in-plots-1"><span class="header-section-number">3.1.2</span> Effect of Fencing in Plots</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">3.2</span> Discussion</a>
+  <ul class="collapse">
+  <li><a href="#effect-of-same-species-density-on-unmanipulated-plots" id="toc-effect-of-same-species-density-on-unmanipulated-plots" class="nav-link" data-scroll-target="#effect-of-same-species-density-on-unmanipulated-plots"><span class="header-section-number">3.2.1</span> Effect of Same Species Density on Unmanipulated Plots</a></li>
+  <li><a href="#diagnosing-the-differences" id="toc-diagnosing-the-differences" class="nav-link" data-scroll-target="#diagnosing-the-differences"><span class="header-section-number">3.2.2</span> Diagnosing the Differences</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#acknowledgement" id="toc-acknowledgement" class="nav-link" data-scroll-target="#acknowledgement"><span class="header-section-number">4</span> Acknowledgement</a></li>
+  <li><a href="#ai-use" id="toc-ai-use" class="nav-link" data-scroll-target="#ai-use"><span class="header-section-number">5</span> AI Use</a></li>
+  <li><a href="#statistical-packages-used" id="toc-statistical-packages-used" class="nav-link" data-scroll-target="#statistical-packages-used"><span class="header-section-number">6</span> Statistical Packages Used</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="WriteUp.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../transcript.html">Coursework</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/overview.html">Data Analysis II</a></li><li class="breadcrumb-item"><a href="../../Data Analysis II/poisson/WriteUp.html">Poisson Regression Article</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Poisson Regression Article</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p></p>
+<p></p>
+<section id="background" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Background</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Siméon Denis Poisson. Source: Wikipedia</figcaption>
+<p><img src="poisson.jpg" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+<section id="understanding-the-technique" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="understanding-the-technique"><span class="header-section-number">1.1</span> Understanding the Technique</h2>
+<section id="the-poisson-distribution" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="the-poisson-distribution"><span class="header-section-number">1.1.1</span> The Poisson Distribution</h3>
+<p>Poisson regression extends the linear least-squares regression model to poisson distributed data. Often used to represent physical events occurring, the poisson distribution measures the probability of <span class="math inline">\(X\)</span> events occuring over a given interval of time, and the average rate of those events occuring is <span class="math inline">\(\lambda\)</span>. For example, the probability of <span class="math inline">\(X = 6\)</span> hurricanes happening over a year, when the historic average is <span class="math inline">\(\lambda = \frac{4\, \text{hurricanes}}{\text{year}}\)</span>.</p>
+<p>The poisson distribution can be viewed as a special case of the binomial distribution, which models the number of successes in a fixed number of trials <span class="citation" data-cites="OxfordMathCenter">(<a href="#ref-OxfordMathCenter" role="doc-biblioref">Oxford College of Emory University, Math Center, n.d.</a>)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+P(X=x) = f_x(x) = {}_{n}C_xp^xq^{n-x}
+\end{align*}\]</span></p>
+<p>Where <span class="math inline">\(n\)</span> is the number of trials, and <span class="math inline">\(x\)</span> is the number of successes.</p>
+<p>For the binomial distribution, the mean/expected value is <span class="math inline">\(np\)</span>, which we’ll call <span class="math inline">\(\lambda\)</span>. So,</p>
+<p><span class="math display">\[\begin{align*}
+p = \frac{\lambda}{n}
+\end{align*}\]</span></p>
+<p>If <span class="math inline">\(q\)</span> is the probability of a failure, <span class="math inline">\(q = 1-p\)</span>, or</p>
+<p><span class="math display">\[\begin{align*}
+q = 1 - \frac{\lambda}{n}
+\end{align*}\]</span></p>
+<p>Plugging back into our original equation:</p>
+<p><span class="math display">\[\begin{align*}
+P(X = x) &amp;= f_x(x) = {}_nC_x(\frac{\lambda}{n})^x(1-\frac{\lambda}{n})^{n-x} \\
+&amp;= \frac{n(n-1)(n-2)\cdots(n - x + 1)}{x!}\cdot \frac{\lambda^x}{n^x}(1 - \frac{\lambda}{n})^{n-x} \\
+&amp;= \frac{n}{n}\cdot\frac{n-1}{n}\cdots \frac{n-x+1}{n}\cdot \frac{\lambda^x}{x!}(1-\frac{\lambda}{n})^{n-x} \\
+&amp;= \frac{n}{n}\cdot \frac{n-1}{n}\cdots \frac{n-x+1}{n}\cdot \frac{\lambda^x}{x!}(1-\frac{\lambda}{n})^n(1-\frac{\lambda}{n})^{-x}
+\end{align*}\]</span></p>
+<p>Note that the second to last expression is an expression for <span class="math inline">\(e^{-\lambda}\)</span>.</p>
+<p>If we take the limit as our number of trials <span class="math inline">\(n\)</span> approaches infinity while keeping <span class="math inline">\(x\)</span> and <span class="math inline">\(\lambda\)</span> fixed, all the terms except the second and third to last trend approach 1:</p>
+<p><span class="math display">\[\begin{align*}
+\lim_{n \to \infty}P(X=x) = f_x(x) = \frac{e^{-\lambda}\lambda^x}{x!}
+\end{align*}\]</span></p>
+<p>This is the exact probability of <span class="math inline">\(x\)</span> events occuring over <span class="math inline">\(\lambda\)</span> time.</p>
+<p>We can plot the probability mass function (PMF) to see the probability of <span class="math inline">\(x\)</span> events occuring for every <span class="math inline">\(X\)</span>, noting how different <span class="math inline">\(\lambda\)</span> values change that distribution:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-poisson_dist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-poisson_dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Poisson Distribution Examples
+</figcaption>
+<div aria-describedby="fig-poisson_dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-poisson_dist-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p><strong>remark: notice how as <span class="math inline">\(\lambda\)</span> increases the distribution is more bell curved shaped.</strong></p>
+<p>The poisson distribution is particularly well behaved because of it’s distributions properties. It’s first two moments are given <span class="citation" data-cites="soch_statproofbook">(<a href="#ref-soch_statproofbook" role="doc-biblioref">Soch and The Book of Statistical Proofs contributors 2020</a>)</span>:</p>
+<p>Expected Value / Mean:</p>
+<p><span class="math display">\[\begin{align*}
+E(x) =&amp; \sum_{x\in \mathcal{X}}^{} x \cdot f_X(x) \\
+=&amp; \sum_{x = 0}^{\infty} x \cdot \frac{\lambda^xe^{-\lambda}}{x!} \\
+=&amp; \sum_{x = 1}^{\infty} x \cdot \frac{\lambda^xe^{-\lambda}}{x!} \\
+= &amp; e^{-\lambda} \cdot \sum_{x = 1}^{\infty} \frac{x}{x!}\lambda^x \\
+= &amp; \lambda e^{-\lambda} \cdot \sum_{x = 1}^{\infty} \frac{\lambda^{x-1}}{(x-1)!} \\
+\end{align*}\]</span></p>
+<p>Let <span class="math inline">\(z = x-1 \implies x = z+1\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+E(X) =&amp; \lambda e^{-\lambda} \cdot \sum_{z = 0}^{\infty}\frac{\lambda^z}{z!}
+\end{align*}\]</span></p>
+<p>Remember that the power series expansion of <span class="math inline">\(e^x = \sum_{n=0}^{\infty}\frac{x^n}{n!}\)</span>.</p>
+<p>Finally, <span class="math display">\[\begin{align*}
+E(X) =&amp; \lambda e^{-\lambda} \cdot e^{\lambda} \\
+=&amp; \lambda
+\end{align*}\]</span></p>
+<p>Variance:</p>
+<p><span class="math display">\[\begin{align*}
+Var(X) =&amp; E(X^2) - E(X)^2
+\end{align*}\]</span></p>
+<p>If we look at the expectation of <span class="math inline">\(X(X-1)\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+E[X(X-1)] &amp;= \sum_{x\in \mathcal{X}} x (x-1) \cdot f_X(x) \\
+&amp;= \sum_{x=0}^{\infty}x (x-1) \cdot \frac{\lambda^xe^{-\lambda}}{x!} \\
+&amp;= \sum_{x=2}^{\infty}x(x-1)\cdot \frac{\lambda^xe^{-\lambda}}{x!} \\
+&amp;= e^{-\lambda}\cdot \sum_{x=2}^{\infty}x(x-1)\cdot \frac{\lambda^x}{x\cdot(x-1)\cdot(x-2)!} \\
+&amp;= \lambda^2 \cdot e^{-\lambda}\cdot \sum_{x=2}^{\infty}\frac{\lambda^{x-2}}{(x-2)!} \cdot
+\end{align*}\]</span></p>
+<p>let <span class="math inline">\(z=x-2 \implies x=z+2\)</span>, hence: <span class="math display">\[\begin{align*}
+E[X(X-1)] &amp;= \lambda^2\cdot e^{-\lambda} \cdot \sum_{z=0}^{\infty}\frac{\lambda^z}{z!}
+\end{align*}\]</span></p>
+<p>recall the power series expansion of <span class="math inline">\(e^x = \sum_{n=0}^{\infty}\frac{x^n}{n!}\)</span>:</p>
+<p><span class="math display">\[\begin{align*}
+E[X(X-1)] = \lambda^2 \cdot e^{-\lambda} \cdot e^{\lambda} = \lambda^2
+\end{align*}\]</span></p>
+<p>Since, <span class="math display">\[\begin{align*}
+E[X(X-1)] = E(X^2-X) = E(X^2) - E(X)
+\end{align*}\]</span> now: <span class="math display">\[\begin{align*}
+E(X^2) - E(X) = \lambda^2 \implies E(X^2) = \lambda^2 + \lambda
+\end{align*}\]</span></p>
+<p>Finally, by plugging in: <span class="math display">\[\begin{align*}
+Var(X) =&amp; E(X^2) - E(X)^2 \\
+=&amp; \lambda^2 + \lambda - \lambda^2 \\
+=&amp; \lambda
+\end{align*}\]</span></p>
+<p>We can verify this numerically. Here I simulate 10,000 poisson distributed datasets with <span class="math inline">\(\lambda = 1\)</span> and sample size <span class="math inline">\(n=25\)</span>:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">13</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>sims <span class="ot">=</span> <span class="dv">10000</span> <span class="co">#Simulations</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>lambda <span class="ot">=</span> <span class="dv">1</span>  <span class="co">#Frequency Parameter</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>n <span class="ot">=</span> <span class="dv">25</span>      <span class="co">#Sample Size</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>means <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, sims) <span class="co">#Place to store means</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>vars <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, sims)  <span class="co">#Place to store variances</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>sims){</span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>  poisson_dat <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, lambda) <span class="co">#Simulate random data</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a>  means[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(poisson_dat)   <span class="co">#Store the mean of the data</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>  vars[i] <span class="ot">&lt;-</span> <span class="fu">var</span>(poisson_dat)     <span class="co">#Store the variance of the data</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p>The means and variances should both be centered around 1:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-means_vars" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-means_vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Poisson Means and Variances
+</figcaption>
+<div aria-describedby="fig-means_vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-means_vars-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Even with some outliers here and there, it checks out.</p>
+</section>
+<section id="poisson-regression" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="poisson-regression"><span class="header-section-number">1.1.2</span> Poisson Regression</h3>
+<p>Where the typical linear regression goes as follows: <span class="math display">\[\begin{align*}
+Y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \cdots + \beta_{p-1} x_{(p-1)i} + \epsilon_i
+\end{align*}\]</span></p>
+<p>Since <span class="math inline">\(Y_i\)</span> is assumed to be continuous, both sides of the equation can range from <span class="math inline">\((-\infty, \infty)\)</span>. To model a variable that is based on counts, and therefore strictly <span class="math inline">\(&gt;0\)</span>, we have to transform the data to sit in the <span class="math inline">\((-\infty, \infty)\)</span> range, and this can be achieved with a log transformation:</p>
+<p><span class="math display">\[\begin{align*}
+log(\lambda_i) = \beta_0 + \beta_1 x_{1i} + \cdots + \beta_{p-1} x_{(p-1)i}
+\end{align*}\]</span> where <span class="math inline">\(\lambda_i\)</span> is the parameter for the Poisson distribution from which the <span class="math inline">\(i\)</span>th response is drawn.</p>
+<p>If all of the data is not measured over the same unit of time, an offset variable is added to the equation: <span class="math display">\[\begin{align*}
+\log(\lambda_i) = \left(\log(T_i) + \beta_0\right) + \beta_1 x_{1i} + \cdots + \beta_{p-1} x_{(p-1)i}
+\end{align*}\]</span></p>
+<p>Lastly, a critical assumption of poisson regression is that the data behaves like it’s poisson distributed, with equal mean and variance (<a href="#fig-means_vars" class="quarto-xref">Figure&nbsp;2</a>). Otherwise, another type of regression (negative binomial, quasi-poisson, etc.) should be used.</p>
+</section>
+</section>
+<section id="the-study" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="the-study"><span class="header-section-number">1.2</span> The Study</h2>
+<p><img src="seedling.jpg" class="img-fluid" style="width:80.0%"></p>
+<p>Jie et al.&nbsp;look to further investigate the Janzen-Connell effect, which looks to explain the mechanism behind biodiversity, or why a single tree or plant species doesn’t just dominate a forest. In order for a plant to survive, it needs to not be eaten or destroyed by natural enemies (insects, animals, fungi, etc.). A common explanation behind biodiversity says that natural enemies specialize in eating/killing a specific plant over time, and those natural enemies accumulate in areas where there’s high densities of those specific plants. Because of this, a new seedling might actually have an easier time in an area without a lot of members of its own species because those natural enemies have not accumulated so heavily. Essentially, there’s always a push-and-pull between the plants and enemies in an area, and they balance each other out. <span class="citation" data-cites="Jia2020">(<a href="#ref-Jia2020" role="doc-biblioref">Jia et al. 2020</a>)</span>.</p>
+<p>For one of their analyses, the researchers here look to test factors that can affect a seedlings ability to survive around a lot of members of its own species (a.k.a recruitment):</p>
+<ul>
+<li>How does the density of a plant’s own species affect its seedlings’ recruitment?</li>
+<li>Which natural enemies drive seedling recruitment?</li>
+</ul>
+<p>To control which natural enemies are present, a fence was used to keep out herbivores, and insecticides/fungicides were used to discourage insects/fungus.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Study Animals (Jia et al.)</figcaption>
+<p><img src="animals.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>To set up the experiment the researchers took 3 plots from a forest in China and divided them up into subplots:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Study Design Layout (Jia et al.)</figcaption>
+<p><img src="plots.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>Within each plot, half was fenced, and within each half, 10 squares were control, 10 had insecticide, and 10 had fungicide.</p>
+</section>
+<section id="goal-of-statistical-analysis" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="goal-of-statistical-analysis"><span class="header-section-number">1.3</span> Goal of Statistical Analysis</h2>
+<p>For their regression equation, they regress seedling recruitment with fixed factors:</p>
+<ul>
+<li>Pesticide treatment</li>
+<li>Fencing exclosure</li>
+<li>Density of adult plants (same species)</li>
+<li>Density of adult plants (different species)</li>
+<li>Plot</li>
+<li>Census Date</li>
+</ul>
+<p>Including a three-way interaction and pairwise two-way interactions between the first three.</p>
+<p>And random factors:</p>
+<ul>
+<li>Subplot (random intercept)</li>
+<li>Species (random intercept)</li>
+<li>Effect of census on subplots (random effect)</li>
+</ul>
+<p><strong>Also, same species density has been log transformed and Z-scored</strong></p>
+<p>In <em>R</em>, our formula call looks like this:</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>formula <span class="ot">&lt;-</span> recruits <span class="sc">~</span> pesticide<span class="sc">*</span>exclosure<span class="sc">*</span>con_crowding <span class="sc">+</span> het_crowding <span class="sc">+</span> plot <span class="sc">+</span> census  <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span> subplot) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">0</span><span class="sc">+</span>census <span class="sc">|</span> subplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+</section>
+</section>
+<section id="reproduction-of-the-study" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Reproduction of the Study</h1>
+<section id="data-cleaning" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="data-cleaning"><span class="header-section-number">2.1</span> Data Cleaning</h2>
+<p>I did some renaming of variables to fit my personal liking and some decoding for interpretation ease.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'seeds.csv'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>dat<span class="sc">$</span>plot <span class="ot">&lt;-</span> <span class="fu">as.character</span>(dat<span class="sc">$</span>plot)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>dat<span class="sc">$</span>exclosure <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dat<span class="sc">$</span>exclosure <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"Fenced"</span>, <span class="st">"Open"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>dat<span class="sc">$</span>exclosure <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>exclosure, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Open"</span>, <span class="st">"Fenced"</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a>  <span class="fu">mutate</span>(<span class="at">pesticide =</span> <span class="fu">case_when</span>(pesticide <span class="sc">==</span> <span class="st">"W"</span> <span class="sc">~</span> <span class="st">"Control"</span>, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a>                               pesticide <span class="sc">==</span> <span class="st">"I"</span> <span class="sc">~</span> <span class="st">"Insecticide"</span>, </span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a>                               pesticide <span class="sc">==</span> <span class="st">"F"</span> <span class="sc">~</span> <span class="st">"Fungicide"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+</section>
+<section id="data-summary" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="data-summary"><span class="header-section-number">2.2</span> Data Summary</h2>
+<p>Let’s take a quick summary of our recruitment levels across treatment and exclosure:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sum_treat_exclosure" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_treat_exclosure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Treatment and Exclosure Summary
+</figcaption>
+<div aria-describedby="fig-sum_treat_exclosure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-sum_treat_exclosure-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Not a whole lot we can tell from this so far.</p>
+<p>Here’s how our recruitment levels differ by same species density:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sum_density" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Density Summary
+</figcaption>
+<div aria-describedby="fig-sum_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-sum_density-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Not really any conclusive evidence for how same species density affects seedling recruitment based on this alone.</p>
+<p>For a frankenstein plot combining all of these:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sum_combined" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Combined Summary
+</figcaption>
+<div aria-describedby="fig-sum_combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-sum_combined-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Fun, but not super helpful.</p>
+<p>As an aside, we can see how our data maps onto a poisson distribution:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-data_poisson" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-data_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Poisson Distribution Mapped Onto Data
+</figcaption>
+<div aria-describedby="fig-data_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-data_poisson-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Our data appears more right-skewed and more weighted towards $= 1$ than an assumed poisson distribution with mean recruits <span class="math inline">\(\lambda = 3.6\)</span>. Let’s see if this affects the assumptions of our model.</p>
+</section>
+<section id="model-assumptions" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="model-assumptions"><span class="header-section-number">2.3</span> Model Assumptions</h2>
+<section id="gaussian-residuals" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="gaussian-residuals"><span class="header-section-number">2.3.1</span> Gaussian Residuals</h3>
+<p>Since our model is a generalized linear mixed effect model, we need to check the assumption that our random effects are (multivariate) gaussian.</p>
+<p>First we’ll check the random intercepts for species:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-residual_species" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-residual_species-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Random intercepts of Species
+</figcaption>
+<div aria-describedby="fig-residual_species-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-residual_species-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Even with a small sample (<span class="math inline">\(n=16\)</span> species), our random intercepts look roughly gaussian and follow the qq-plot pretty well.</p>
+<p>Next, the random intercepts for subplots:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-residual_subplot_intercepts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-residual_subplot_intercepts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Random intercepts of Subplots
+</figcaption>
+<div aria-describedby="fig-residual_subplot_intercepts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-residual_subplot_intercepts-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Even though the shapiro-wilks test indicates a deviation from normality, the histogram shows a roughly gaussian shape of our random intercepts for subplot centered at zero. The qq-plot looks a little wonky towards the right tail, but I don’t think it’s a huge problem.</p>
+<p>Lastly, we check the multivariate normality of the effect of census on subplots:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-distances" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Mahalanobis Distances of Census Effects on Subplots
+</figcaption>
+<div aria-describedby="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-distances-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The multivariate normality of the effects of census on subplots follows closely to a <span class="math inline">\(\chi^2\)</span> distribution by fitting the qq-plot closely.</p>
+</section>
+<section id="dispersion" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="dispersion"><span class="header-section-number">2.3.2</span> Dispersion</h3>
+<p>Dispertion ratios aren’t quite as straightforward for mixed models, so we’ll be using this approximation function provided by Dr.&nbsp;Ben Bolker, a mathematical statistician at McMaster University <span class="citation" data-cites="bolker_glmmfaq">(<a href="#ref-bolker_glmmfaq" role="doc-biblioref"><span class="nocase">Bolker et al.</span> 2025</a>)</span>.</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-residual_poisson" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-residual_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Randomized Quantile Residuals of Poisson Model
+</figcaption>
+<div aria-describedby="fig-residual_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-residual_poisson-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Our dispersion ratio here is very good. The bottom left of the cluster of points highlights the high amount of 1’s observed in the recruit measurement. Still, this is promising for our model.</p>
+<p>We can also check our predictions against the standardized Pearson residuals:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-predictions_residuals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Predictions Against Pearson Residuals
+</figcaption>
+<div aria-describedby="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-predictions_residuals-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>This is a good sign, as there’s a nice relatively flat line near 1.</p>
+</section>
+<section id="multicollinearity" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="multicollinearity"><span class="header-section-number">2.3.3</span> Multicollinearity</h3>
+<p></p>
+<div class="cell">
+<div id="tbl-model_vif" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_vif-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Model VIF
+</figcaption>
+<div aria-describedby="tbl-model_vif-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 69%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Term</th>
+<th style="text-align: right;">VIF</th>
+<th style="text-align: right;">Lower CI</th>
+<th style="text-align: right;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Pesticide Treatment</td>
+<td style="text-align: right;">4.353</td>
+<td style="text-align: right;">3.919</td>
+<td style="text-align: right;">4.851</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Exclosure</td>
+<td style="text-align: right;">3.287</td>
+<td style="text-align: right;">2.974</td>
+<td style="text-align: right;">3.649</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Same Species Density</td>
+<td style="text-align: right;">2.942</td>
+<td style="text-align: right;">2.668</td>
+<td style="text-align: right;">3.259</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Different Species Density</td>
+<td style="text-align: right;">1.241</td>
+<td style="text-align: right;">1.167</td>
+<td style="text-align: right;">1.349</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Plot</td>
+<td style="text-align: right;">1.137</td>
+<td style="text-align: right;">1.078</td>
+<td style="text-align: right;">1.240</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Census Date</td>
+<td style="text-align: right;">1.010</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">6.656</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pesticide Treatment: Exclosure</td>
+<td style="text-align: right;">9.388</td>
+<td style="text-align: right;">8.382</td>
+<td style="text-align: right;">10.531</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pesticide Treatment: Same Species Density</td>
+<td style="text-align: right;">7.227</td>
+<td style="text-align: right;">6.467</td>
+<td style="text-align: right;">8.093</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Exclosure : Same Species Crowding</td>
+<td style="text-align: right;">4.431</td>
+<td style="text-align: right;">3.988</td>
+<td style="text-align: right;">4.939</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pesticide Treatment : Exclosure : Same Species Crowding</td>
+<td style="text-align: right;">10.772</td>
+<td style="text-align: right;">9.609</td>
+<td style="text-align: right;">12.092</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>The collinearity for the model looks good, with only some slight colinearity for pesticide treatment, exclosure, and same species density. VIF values for interaction terms are usually high, so there’s not really anything to worry about here.</p>
+</section>
+<section id="influential-observations" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="influential-observations"><span class="header-section-number">2.3.4</span> Influential Observations</h3>
+<p>Testing influence through leverage, Cook’s D, DFFITs, and studentized residuals is very difficult for glmer() models. Trust me. I tried.</p>
+</section>
+<section id="sufficient-sample-size-for-predictors" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="sufficient-sample-size-for-predictors"><span class="header-section-number">2.3.5</span> Sufficient Sample Size for Predictors</h3>
+<p>Ideally we should have at least 10 events counted per predictor:</p>
+<p><span class="math display">\[\begin{align*}
+\sum_{i=1}^{n = 1019} \lambda_{i} = 3666 \geq 10p = 10(10) = 100 \quad \checkmark
+\end{align*}\]</span></p>
+</section>
+</section>
+<section id="model-fit" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="model-fit"><span class="header-section-number">2.4</span> Model Fit</h2>
+<p>We can obtain an overall model fit:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_performance" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Model Fit
+</figcaption>
+<div aria-describedby="tbl-model_performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 15%">
+<col style="width: 12%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">AIC</th>
+<th style="text-align: right;">AICc</th>
+<th style="text-align: right;">BIC</th>
+<th style="text-align: right;">R2_conditional</th>
+<th style="text-align: right;">R2_marginal</th>
+<th style="text-align: right;">ICC</th>
+<th style="text-align: right;">RMSE</th>
+<th style="text-align: right;">Sigma</th>
+<th style="text-align: right;">Score_log</th>
+<th style="text-align: right;">Score_spherical</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4574.138</td>
+<td style="text-align: right;">4575.065</td>
+<td style="text-align: right;">4677.596</td>
+<td style="text-align: right;">0.468</td>
+<td style="text-align: right;">0.108</td>
+<td style="text-align: right;">0.404</td>
+<td style="text-align: right;">2.331</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">-2.002</td>
+<td style="text-align: right;">0.027</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Our fixed effects explain 10.8% of the variance in seedling recruitment. The total model including the random effects explains 46.8% of the variance in seedling recruitment. With our ICC, our random effects explain 40.4% of the variance in seedling recruitment.</p>
+<p>The researchers mention testing the model fit when they drop some of the interaction terms. Since a three-way interaction can be very tricky to interpret, I wanted to test the fit between our normal model and a model with the three-way interaction term dropped in favor of just the pairwise two-way interactions.</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_comparison" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Model Comparison
+</figcaption>
+<div aria-describedby="tbl-model_comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 15%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 3%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;"># Parameters</th>
+<th style="text-align: right;">AIC</th>
+<th style="text-align: right;">BIC</th>
+<th style="text-align: right;">log Likelihood</th>
+<th style="text-align: right;">Deviance</th>
+<th style="text-align: right;">Chi-Sq</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dropped Interaction Model</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">4572.236</td>
+<td style="text-align: right;">4665.841</td>
+<td style="text-align: right;">-2267.118</td>
+<td style="text-align: right;">4534.236</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Original Model</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">4574.138</td>
+<td style="text-align: right;">4677.596</td>
+<td style="text-align: right;">-2266.069</td>
+<td style="text-align: right;">4532.138</td>
+<td style="text-align: right;">2.097</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.35</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Really not much difference between the two models, so begrudgingly, we’ll move forward with the three-way interaction.</p>
+</section>
+<section id="model-inference" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="model-inference"><span class="header-section-number">2.5</span> Model Inference</h2>
+<p>Now to the heart of the analysis:</p>
+<ul>
+<li>Do the fenced in plots have more seedlings?</li>
+<li>Does the pesticide treatment affect the number of seedlings?</li>
+<li>Is there an interactive effect between pesticide, exclosure, and same species crowding?</li>
+</ul>
+<p>A general summary our model gives us:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_sum" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Model Summary
+</figcaption>
+<div aria-describedby="tbl-model_sum-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 49%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">significance</th>
+<th style="text-align: center;">Percent Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Intercept</td>
+<td style="text-align: center;">0.837</td>
+<td style="text-align: right;">0.161</td>
+<td style="text-align: right;">5.209</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">***</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pesticide = Fungicide</td>
+<td style="text-align: center;">0.070</td>
+<td style="text-align: right;">0.084</td>
+<td style="text-align: right;">0.830</td>
+<td style="text-align: right;">0.407</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">7.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pesticide = Insecticide</td>
+<td style="text-align: center;">-0.146</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: right;">-1.646</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">-13.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fenced</td>
+<td style="text-align: center;">-0.167</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: right;">-1.879</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">.</td>
+<td style="text-align: center;">-15.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Same Species Density</td>
+<td style="text-align: center;">0.023</td>
+<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">0.429</td>
+<td style="text-align: right;">0.668</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">2.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Different Species Density</td>
+<td style="text-align: center;">-0.028</td>
+<td style="text-align: right;">0.030</td>
+<td style="text-align: right;">-0.938</td>
+<td style="text-align: right;">0.348</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">-2.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Plot 2</td>
+<td style="text-align: center;">0.184</td>
+<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">2.924</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">**</td>
+<td style="text-align: center;">20.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Plot 3</td>
+<td style="text-align: center;">-0.159</td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: right;">-2.376</td>
+<td style="text-align: right;">0.018</td>
+<td style="text-align: right;">*</td>
+<td style="text-align: center;">-14.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Census Date = 2017 Spring</td>
+<td style="text-align: center;">-0.400</td>
+<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">-7.501</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">***</td>
+<td style="text-align: center;">-33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pesticide = Fungicide : Fenced</td>
+<td style="text-align: center;">0.178</td>
+<td style="text-align: right;">0.120</td>
+<td style="text-align: right;">1.481</td>
+<td style="text-align: right;">0.139</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">19.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pesticide = Insecticide : Fenced</td>
+<td style="text-align: center;">0.273</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: right;">2.182</td>
+<td style="text-align: right;">0.029</td>
+<td style="text-align: right;">*</td>
+<td style="text-align: center;">31.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pesticide = Fungicide : Same Species Density</td>
+<td style="text-align: center;">0.178</td>
+<td style="text-align: right;">0.064</td>
+<td style="text-align: right;">2.804</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">**</td>
+<td style="text-align: center;">19.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pesticide = Insecticide : Same Species Density</td>
+<td style="text-align: center;">0.039</td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: right;">0.586</td>
+<td style="text-align: right;">0.558</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fenced : Same Species Density</td>
+<td style="text-align: center;">-0.082</td>
+<td style="text-align: right;">0.066</td>
+<td style="text-align: right;">-1.244</td>
+<td style="text-align: right;">0.214</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">-7.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pesticide = Fungicide : Fenced : Same Species Density</td>
+<td style="text-align: center;">0.104</td>
+<td style="text-align: right;">0.093</td>
+<td style="text-align: right;">1.111</td>
+<td style="text-align: right;">0.266</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">10.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pesticide = Insecticide : Fenced : Same Species Crowding</td>
+<td style="text-align: center;">0.131</td>
+<td style="text-align: right;">0.095</td>
+<td style="text-align: right;">1.376</td>
+<td style="text-align: right;">0.169</td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>where the percent change <span class="math inline">\(= (e^{\text{estimate}}-1) \times 100\)</span>.</p>
+<p>Our model says, for the non-interaction fixed effects (deep breath):</p>
+<ul>
+<li>For the intercept, we’d expect to find <span class="math inline">\(e^{0.837} = 3.598\)</span> seedlings on a control subplot, that’s open, has a same species &amp; different species density of 0, on plot 1, and in the spring of 2016.</li>
+<li>For every standard deviation increase in different species density, we’d expect to see 2.8% fewer seedlings</li>
+<li>We’d expect to see 20.2% more seedlings on plot 2 than plot 1.</li>
+<li>We’d expect to 14.7% fewer seedlings on plot 3 than plot 1.</li>
+<li>We’d expect to see 33% fewer seedlings in the spring of 2017 compared to the spring of 2016</li>
+</ul>
+<p>For the statistical discernability of our terms:</p>
+<ul>
+<li>There are marginally fewer seedlings in the fenced plots than the non-fenced plots (<span class="math inline">\(Z = -1.879, p = 0.06\)</span>)</li>
+<li>There are discernibly more seedlings on plot 2 than plot 1 (<span class="math inline">\(Z = 2.924, p = 0.003\)</span>)</li>
+<li>There are discernibly fewer seedlings on plot 3 than plot 1 (<span class="math inline">\(Z = -2.376, p = 0.018\)</span>)</li>
+<li>There are discernibly fewer seedslings in the spring of 2017 than the spring of 2016 (<span class="math inline">\(Z = -7.501, p &lt;0.001\)</span>)</li>
+<li>The two-way interaction between insecticide and fenced plots is statistically discernible (<span class="math inline">\(Z = 2.182, p = 0.029\)</span>)</li>
+<li>The two-way interaction between fungicide and same species density is statistically discernible (<span class="math inline">\(Z = 2.804, p = 0.005\)</span>)</li>
+</ul>
+<p>Testing the effect sizes of our fixed effects <span class="citation" data-cites="r2glmm">(<a href="#ref-r2glmm" role="doc-biblioref">Jaeger 2025</a>)</span>:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_eff" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_eff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Model Effect Sizes
+</figcaption>
+<div aria-describedby="tbl-model_eff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 62%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Effect</th>
+<th style="text-align: right;">R-Squared</th>
+<th style="text-align: right;">Lower CI</th>
+<th style="text-align: right;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Model</td>
+<td style="text-align: right;">0.077</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.122</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Pesticide</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.015</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Exclosure</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Census</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.067</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Plot</td>
+<td style="text-align: right;">0.017</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">0.038</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Same Species Density</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Different Species Density</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Pesticide : Exclosure</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.016</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Pesticide : Same Species Density</td>
+<td style="text-align: right;">0.004</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.017</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Exclosure : Same Species Density</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.007</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Pesticide : Exclosure : Same Species Density</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">0.010</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>The largest effect of any term, besides the model, is the census term, which explains 4% of the variance in seed recruitments.</p>
+<p>Now let’s try to untangle all those interactions <span class="citation" data-cites="emmeans">(<a href="#ref-emmeans" role="doc-biblioref">Lenth 2025</a>)</span>.</p>
+</section>
+<section id="model-interactions" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="model-interactions"><span class="header-section-number">2.6</span> Model Interactions</h2>
+<section id="same-species-density-trend" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="same-species-density-trend"><span class="header-section-number">2.6.1</span> Same Species Density Trend</h3>
+<p>First, we’ll see if the density of a plant’s own species affects its seedlings’ recruitment through estimated marginal trends:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_emt_density" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_emt_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Same Species Density Estimated Marginal Trend
+</figcaption>
+<div aria-describedby="tbl-model_emt_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 19%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Same Species Density Trend</th>
+<th style="text-align: center;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0.093</td>
+<td style="text-align: center;">0.033</td>
+<td style="text-align: right;">2.85</td>
+<td style="text-align: right;">0.004</td>
+<td style="text-align: center;">9.769</td>
+<td style="text-align: center;">2.954</td>
+<td style="text-align: center;">17.035</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Let’s see the predicted number of seedlings across the same species density:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-emtrend_density" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emtrend_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: Same Species Estimated Marginal Trend
+</figcaption>
+<div aria-describedby="fig-emtrend_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-emtrend_density-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Interestingly, the overall effect of same species density is to positively affect the number of seedling recruits expected. Our model predicts that for every standard deviation increase in same species density, the number of seedling recruits increases by 9.8% (95% CI: [3.0, 17.0]). This trend is statistically disernible (<span class="math inline">\(Z = 2.85, p = 0.004\)</span>).</p>
+</section>
+<section id="effect-of-fencing-in-plots" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="effect-of-fencing-in-plots"><span class="header-section-number">2.6.2</span> Effect of Fencing in Plots</h3>
+<p>Next, we’ll see if fencing off the plots from herbivores increases the number of seedlings:</p>
+<p>Averaging across other variables, we see a contrast between the fenced-in and non-fenced-in plots:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_emm_exclosure" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_emm_exclosure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Contrast of Exclosure Types
+</figcaption>
+<div aria-describedby="tbl-model_emm_exclosure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 20%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: center;">p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Upper CI</th>
+<th style="text-align: center;">Lower CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Open - Fenced</td>
+<td style="text-align: center;">0.016</td>
+<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: center;">0.754</td>
+<td style="text-align: center;">1.64</td>
+<td style="text-align: center;">12.526</td>
+<td style="text-align: center;">-8.193</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Plotting the predicted number of seedlings by exclosure type:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-emm_ex" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13: Exclosure Type Estimated Marginal Means
+</figcaption>
+<div aria-describedby="fig-emm_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-emm_ex-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Our model predicts that an open plot will have 1.6% more seedlings than a fenced in plot (95% CI: [-8.2, 8.2]). As we can see from the table and plot, the global effect of exclosure type is not statistically discernible (<span class="math inline">\(Z = 0.313, p = 0.754\)</span>).</p>
+</section>
+<section id="effect-of-pesticides" class="level3" data-number="2.6.3">
+<h3 data-number="2.6.3" class="anchored" data-anchor-id="effect-of-pesticides"><span class="header-section-number">2.6.3</span> Effect of Pesticides</h3>
+<p>We’ve tried to see the effects of one kind of natural threat to seedlings, herbivores, now we’ll see if pesticides, thought to discourage insects and fungi, affects the number of seedlings:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_pairs_pest" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_pairs_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Contrast of Pesticide Types
+</figcaption>
+<div aria-describedby="tbl-model_pairs_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 15%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: center;">p</th>
+<th style="text-align: center;">Adjusted-p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Control - Fungicide</td>
+<td style="text-align: center;">-0.159</td>
+<td style="text-align: right;">0.060</td>
+<td style="text-align: right;">-2.634</td>
+<td style="text-align: center;">0.023</td>
+<td style="text-align: center;">0.034</td>
+<td style="text-align: center;">-14.730</td>
+<td style="text-align: center;">-26.001</td>
+<td style="text-align: center;">-1.742</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Insecticide</td>
+<td style="text-align: center;">0.009</td>
+<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">0.144</td>
+<td style="text-align: center;">0.989</td>
+<td style="text-align: center;">0.989</td>
+<td style="text-align: center;">0.906</td>
+<td style="text-align: center;">-12.858</td>
+<td style="text-align: center;">16.845</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Fungicide - Insecticide</td>
+<td style="text-align: center;">0.168</td>
+<td style="text-align: right;">0.061</td>
+<td style="text-align: right;">2.766</td>
+<td style="text-align: center;">0.016</td>
+<td style="text-align: center;">0.034</td>
+<td style="text-align: center;">18.338</td>
+<td style="text-align: center;">2.605</td>
+<td style="text-align: center;">36.483</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Plotting the predicted number of seedlings by pesticide type:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-emm_pest" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14: Pesticide Type Estimated Marginal Means
+</figcaption>
+<div aria-describedby="fig-emm_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-emm_pest-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The global effect of fungicide is statistically more favorable to seedlings than insecticide (<span class="math inline">\(Z = -2.634, p = 0.023\)</span>, adjusted-<span class="math inline">\(p = 0.034\)</span>) and the control (<span class="math inline">\(Z = 2.766, p = 0.016\)</span>, adjusted-<span class="math inline">\(p = 0.034\)</span>). Our model predicts that the fungicide plots will have 14.7% more seedlings (95% CI: [1.7, 26.0]) than the control plots, and 18.3% more seedlings (95% CI: [2.6, 36.5]) than the insecticide plots.</p>
+</section>
+<section id="pesticide-type-and-exclosure-type-interaction" class="level3" data-number="2.6.4">
+<h3 data-number="2.6.4" class="anchored" data-anchor-id="pesticide-type-and-exclosure-type-interaction"><span class="header-section-number">2.6.4</span> Pesticide Type and Exclosure Type Interaction</h3>
+<p>Based on a significant interaction term between fungicide and the fenced plots, we’ll probe into that interaction here:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_emm_pest_ex" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;9: Contrast of Insecticide Types by Exclosure Types
+</figcaption>
+<div aria-describedby="tbl-model_emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 14%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Exclosure Type</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: center;">p</th>
+<th style="text-align: center;">Adjusted-p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Control - Fungicide</td>
+<td style="text-align: center;">Open</td>
+<td style="text-align: center;">-0.070</td>
+<td style="text-align: right;">0.084</td>
+<td style="text-align: right;">-0.830</td>
+<td style="text-align: center;">0.684</td>
+<td style="text-align: center;">0.684</td>
+<td style="text-align: center;">-6.771</td>
+<td style="text-align: center;">-23.518</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Insecticide</td>
+<td style="text-align: center;">Open</td>
+<td style="text-align: center;">0.146</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: right;">1.646</td>
+<td style="text-align: center;">0.226</td>
+<td style="text-align: center;">0.401</td>
+<td style="text-align: center;">15.689</td>
+<td style="text-align: center;">-5.986</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Fungicide - Insecticide</td>
+<td style="text-align: center;">Open</td>
+<td style="text-align: center;">0.216</td>
+<td style="text-align: right;">0.087</td>
+<td style="text-align: right;">2.483</td>
+<td style="text-align: center;">0.035</td>
+<td style="text-align: center;">0.104</td>
+<td style="text-align: center;">24.091</td>
+<td style="text-align: center;">1.219</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Fungicide</td>
+<td style="text-align: center;">Fenced</td>
+<td style="text-align: center;">-0.249</td>
+<td style="text-align: right;">0.086</td>
+<td style="text-align: right;">-2.882</td>
+<td style="text-align: center;">0.011</td>
+<td style="text-align: center;">0.066</td>
+<td style="text-align: center;">-22.009</td>
+<td style="text-align: center;">-36.284</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Control - Insecticide</td>
+<td style="text-align: center;">Fenced</td>
+<td style="text-align: center;">-0.128</td>
+<td style="text-align: right;">0.089</td>
+<td style="text-align: right;">-1.442</td>
+<td style="text-align: center;">0.319</td>
+<td style="text-align: center;">0.401</td>
+<td style="text-align: center;">-11.987</td>
+<td style="text-align: center;">-28.484</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Fungicide - Insecticide</td>
+<td style="text-align: center;">Fenced</td>
+<td style="text-align: center;">0.121</td>
+<td style="text-align: right;">0.086</td>
+<td style="text-align: right;">1.413</td>
+<td style="text-align: center;">0.334</td>
+<td style="text-align: center;">0.401</td>
+<td style="text-align: center;">12.850</td>
+<td style="text-align: center;">-7.653</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Plotting the predicted number of seedlings by exclosure and pesticide type:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-emm_pest_ex" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15: Pesticide Type by Exclosure Type Estimated Marginal Means
+</figcaption>
+<div aria-describedby="fig-emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-emm_pest_ex-1.png" class="img-fluid figure-img" width="960">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Even though the interaction term in the overall model is significant, none of the contrasts remain statistically discernible after adjustment. It’s interesting to see how the relationship between each pesticide type changes between fenced and non-fenced in plots.</p>
+</section>
+<section id="pesticide-type-and-same-species-density-interaction" class="level3" data-number="2.6.5">
+<h3 data-number="2.6.5" class="anchored" data-anchor-id="pesticide-type-and-same-species-density-interaction"><span class="header-section-number">2.6.5</span> Pesticide Type and Same Species Density Interaction</h3>
+<p>For our last interaction, we’ll see if the effect of the same species density changes depending on the pesticide type used:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-model_emt_pest_density" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model_emt_pest_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;10: Estimated Marginal Trend of Same Species Density by Pesticide Type
+</figcaption>
+<div aria-describedby="tbl-model_emt_pest_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 25%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Pesticide Type</th>
+<th style="text-align: center;">Same Species Density Trend</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: right;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Control</td>
+<td style="text-align: center;">-0.018</td>
+<td style="text-align: right;">0.042</td>
+<td style="text-align: right;">-0.437</td>
+<td style="text-align: right;">0.662</td>
+<td style="text-align: right;">0.662</td>
+<td style="text-align: right;">-1.825</td>
+<td style="text-align: center;">-9.607</td>
+<td style="text-align: center;">6.628</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Fungicide</td>
+<td style="text-align: center;">0.212</td>
+<td style="text-align: right;">0.042</td>
+<td style="text-align: right;">5.002</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">23.603</td>
+<td style="text-align: center;">13.755</td>
+<td style="text-align: center;">34.303</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Insecticide</td>
+<td style="text-align: center;">0.086</td>
+<td style="text-align: right;">0.043</td>
+<td style="text-align: right;">1.991</td>
+<td style="text-align: right;">0.046</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">8.996</td>
+<td style="text-align: center;">0.135</td>
+<td style="text-align: center;">18.642</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Visualizing those trends:</p>
+<p></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-emt_pest_dens" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emt_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16: Estimated Marginal Trends of Same Species Density by Pesticide Type
+</figcaption>
+<div aria-describedby="fig-emt_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="WriteUp_files/figure-html/fig-emt_pest_dens-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Testing the differences in those trends:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-emt_pairs_pest_dens" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emt_pairs_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;11: Contrasts of Estimated Marginal Trend of Same Species Density by Pesticide Type
+</figcaption>
+<div aria-describedby="tbl-emt_pairs_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: right;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Control - Fungicide</td>
+<td style="text-align: center;">-0.230</td>
+<td style="text-align: right;">0.047</td>
+<td style="text-align: right;">-4.937</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">-20.572</td>
+<td style="text-align: center;">-28.800</td>
+<td style="text-align: center;">-11.394</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Insecticide</td>
+<td style="text-align: center;">-0.105</td>
+<td style="text-align: right;">0.047</td>
+<td style="text-align: right;">-2.203</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">-9.928</td>
+<td style="text-align: center;">-19.410</td>
+<td style="text-align: center;">0.670</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Fungicide - Insecticide</td>
+<td style="text-align: center;">0.126</td>
+<td style="text-align: right;">0.048</td>
+<td style="text-align: right;">2.639</td>
+<td style="text-align: right;">0.023</td>
+<td style="text-align: right;">0.034</td>
+<td style="text-align: right;">13.401</td>
+<td style="text-align: center;">1.417</td>
+<td style="text-align: center;">26.801</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>We can see:</p>
+<ul>
+<li>The trend for same species density is discernibly greater for the fungicide treatment versus the control (<span class="math inline">\(Z = 4.937, p&lt;0.001\)</span>, adjusted-<span class="math inline">\(p &lt; 0.001\)</span>). Our model predicts that for every standard deviation increase in same species density, the percent increase in seedlings is 20.572 greater (95% CI: [11.394, 28.800]) for the fungicide group than the control group.</li>
+<li>The trend for same species density is marginally greater for the insecticide treatment versus the control (<span class="math inline">\(Z = 2.203, p=0.071\)</span>, adjusted-<span class="math inline">\(p = 0.071\)</span>). Our model predicts that for every standard deviation increase in same species density, the percent increase in seedlings is 9.928 greater (95% CI: [-0.670, 19.410]) for the fungicide group than the control group.</li>
+<li>Lastly, the trend for same species density is discernibly greater for the fungicide treatment versus the insecticide treatment (<span class="math inline">\(Z = 2.639, p=0.023\)</span>, adjusted-<span class="math inline">\(p = 0.034\)</span>). Our model predicts that for every standard deviation increase in same species density, the percent increase in seedlings is 13.401 greater (95% CI: [1.417, 26.801]) for the fungicide group than the insecticide group.</li>
+</ul>
+</section>
+</section>
+<section id="conclusions" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="conclusions"><span class="header-section-number">2.7</span> Conclusions</h2>
+<p>If we harken back to the study background, the Janzen-Connell effect tells us that we should expect new seedlings to struggle propagating in an area that is already densely populated with its own species, as there is a higher chance that natural enemies have begun to accumulate there. What we found through our data doesn’t necessarily support this in every case however. Looking at the global trend of same species density, seedlings tends to be better off when there is a higher density of their own species (<a href="#fig-emtrend_density" class="quarto-xref">Figure&nbsp;12</a>), though this is only true for groups with insecticide and fungicide (<a href="#tbl-model_emt_pest_density" class="quarto-xref">Table&nbsp;10</a>). The trend for the control group isn’t statistically discernible from zero, so we can’t say for sure which direction this trend goes (<a href="#tbl-model_emt_pest_density" class="quarto-xref">Table&nbsp;10</a>). However, if we look at the hypothesis generously, we might say that the groups being treated with pesticides, especially fungicide (<a href="#tbl-emt_pairs_pest_dens" class="quarto-xref">Table&nbsp;11</a>) would have fewer natural enemies to fight off, and in that case a higher same species density would likely just indicate that that species happens to do well there, and it makes sense for more seedlings to appear. Lastly when discussing the same species trend, the three-way interaction between exclosure type, pesticide, and same species density did not indicate that any of those trends differed by whether they were enclosed or not (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>).</p>
+<p>When investigating which natural enemies have the strongest effect on seedling recruitment, the global trend indicates that the fungicide had the most noticeable effect on recruitment, being noticeably greater than the control and insecticide groups (<a href="#tbl-model_pairs_pest" class="quarto-xref">Table&nbsp;8</a>). Across exclosure types, the effect of pesticides and being in the control groups shifted heavily (<a href="#tbl-model_emm_pest_ex" class="quarto-xref">Table&nbsp;9</a>). While little change was noticed in the fungicide group, being fenced in helped the insecticide group but hurt the control group (<a href="#fig-emm_pest_ex" class="quarto-xref">Figure&nbsp;15</a>). The fungicide group was only better off compared to the insecticide group when the exclosure was open, but that effect reversed compared to the control when the exclosure was fenced (<a href="#tbl-model_emm_pest_ex" class="quarto-xref">Table&nbsp;9</a>). For the global effect of exclosure type, there was no statistically discernible difference between the open and fenced groups (<a href="#tbl-model_emm_exclosure" class="quarto-xref">Table&nbsp;7</a>).</p>
+</section>
+</section>
+<section id="disagreements-with-the-article" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Disagreements With the Article</h1>
+<section id="results" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="results"><span class="header-section-number">3.1</span> Results</h2>
+<section id="pesticide-and-same-species-density-interaction" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="pesticide-and-same-species-density-interaction"><span class="header-section-number">3.1.1</span> Pesticide and Same Species Density Interaction</h3>
+<p>For the interaction between fungicide and same species density, I agree partially with the article when they say:</p>
+<blockquote class="blockquote">
+<p>“Protection from fungi increased … recruitment … of seedlings when conspecific adult densities were high (Fungicide × conspecific adult density interactions, recruitment: Poisson GLMM, <span class="math inline">\(z = 4.87, P &lt; 0.001\)</span>…)”</p>
+</blockquote>
+<p>The interaction in my model summary wasn’t quite as strong as there’s though I still found it statistically discernible (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>). Their wording makes me think they looked at the effect of the pesticides and varying levels of same species density, which I reversed, looking at the effect of same species density on the pesticides. Still, I’m assuming this value comes from their model summary, which should be the same as mine. Also, I’ve only heard of staggering levels of a continuous variable in an estimated marginal means/trends setting, not for a standard GLMM summary, but they don’t mention either technique in the manuscript or supplemental materials.</p>
+<p>For the interaction between insecticide and same species density, I don’t get the same result as the article when they say:</p>
+<blockquote class="blockquote">
+<p>“Suppression of insects also increased seedling recruitment at high conspecific adult densities (Poisson GLMM: Insecticide × conspecific adult density interaction, <span class="math inline">\(z = 2.19, P = 0.029\)</span>)…”</p>
+</blockquote>
+<p>In my model summary, the interaction between same species density and the insecticide treatment was not statistically discernible from zero, and it wasn’t particularly close (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>).</p>
+<p>If we compare their figure looking at the interaction between same species density and pesticide to mine (<a href="#fig-emt_pest_dens" class="quarto-xref">Figure&nbsp;16</a>):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Jie et al.</figcaption>
+<p><img src="pest_crowding_fig.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>So while the authors use the GLMM predictions and each dot is the mean and SE of the observed values at that density level, I opted for the estimated marginal trends, as I think that does a nicer job of untangling those interactions while making the trends visually understandable. Their plot also has a much narrower range of x values compared to mine, so you’re seeing a much more truncated effect. I notice that their trends for the insecticide and fungicide groups have a logarithmic shape, whereas mine look more linear and quadratic for both groups respectively.</p>
+<p>I’ll try to recreate what I believe their analysis is doing:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-emm_pairs_pest_dens" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emm_pairs_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;12: Contrasts of Estimated Marginal Means of Pesticide Type by Same Species Density (Post-hoc)
+</figcaption>
+<div aria-describedby="tbl-emm_pairs_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Same Species Density (Z)</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Control - Fungicide</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">0.083</td>
+<td style="text-align: right;">0.851</td>
+<td style="text-align: right;">0.671</td>
+<td style="text-align: right;">0.863</td>
+<td style="text-align: center;">7.356</td>
+<td style="text-align: center;">-11.705</td>
+<td style="text-align: center;">30.531</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Insecticide</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: right;">0.114</td>
+<td style="text-align: right;">0.084</td>
+<td style="text-align: right;">1.346</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">0.573</td>
+<td style="text-align: center;">12.029</td>
+<td style="text-align: center;">-8.077</td>
+<td style="text-align: center;">36.532</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Fungicide - Insecticide</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: right;">0.043</td>
+<td style="text-align: right;">0.085</td>
+<td style="text-align: right;">0.500</td>
+<td style="text-align: right;">0.871</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: center;">4.353</td>
+<td style="text-align: center;">-14.539</td>
+<td style="text-align: center;">27.422</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Fungicide</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: right;">-0.159</td>
+<td style="text-align: right;">0.060</td>
+<td style="text-align: right;">-2.634</td>
+<td style="text-align: right;">0.023</td>
+<td style="text-align: right;">0.052</td>
+<td style="text-align: center;">-14.730</td>
+<td style="text-align: center;">-26.001</td>
+<td style="text-align: center;">-1.742</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Control - Insecticide</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">0.144</td>
+<td style="text-align: right;">0.989</td>
+<td style="text-align: right;">0.989</td>
+<td style="text-align: center;">0.906</td>
+<td style="text-align: center;">-12.858</td>
+<td style="text-align: center;">16.845</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Fungicide - Insecticide</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: right;">0.168</td>
+<td style="text-align: right;">0.061</td>
+<td style="text-align: right;">2.766</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.047</td>
+<td style="text-align: center;">18.338</td>
+<td style="text-align: center;">2.605</td>
+<td style="text-align: center;">36.483</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Control - Fungicide</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">-0.390</td>
+<td style="text-align: right;">0.069</td>
+<td style="text-align: right;">-5.674</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">-32.272</td>
+<td style="text-align: center;">-42.341</td>
+<td style="text-align: center;">-20.445</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control - Insecticide</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">-0.096</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: right;">-1.323</td>
+<td style="text-align: right;">0.382</td>
+<td style="text-align: right;">0.573</td>
+<td style="text-align: center;">-9.112</td>
+<td style="text-align: center;">-23.261</td>
+<td style="text-align: center;">7.647</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Fungicide - Insecticide</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">0.294</td>
+<td style="text-align: right;">0.068</td>
+<td style="text-align: right;">4.295</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">34.196</td>
+<td style="text-align: center;">14.297</td>
+<td style="text-align: center;">57.559</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>This clears a few things up. I should mention however, I don’t see in the article or the supplementary materials where they specify how they’re doing this calculation, so I don’t know for sure they’re using the same cutoffs for low, medium, and high levels of same species density. We do see now that there are discernibly more seedlings in the fungicide group compared to the control at 1 standard deviation above average for same species density (<span class="math inline">\(Z = 5.674, p&lt;0.001\)</span>, adjusted-<span class="math inline">\(p&lt;0.001\)</span>). We’d expect to see 32.272% more seedlings in the fungicide group compared to the control group (95% CI: [20.445, 42.341]) (<a href="#tbl-emm_pairs_pest_dens" class="quarto-xref">Table&nbsp;12</a>).</p>
+<p>To their second claim, there is a clear disagreement with the article. At one standard deviation above average for same species density, there is no discernible difference between the control group and the insecticide group (<span class="math inline">\(Z = 1.323, p = 0.382\)</span>, adjusted-<span class="math inline">\(p = 0.573\)</span>). We’d expect to see the insecticide group have 9.112% more seedlings than the control group (95% CI: [-7.647, 23.261])(<a href="#tbl-emm_pairs_pest_dens" class="quarto-xref">Table&nbsp;12</a>).</p>
+</section>
+<section id="effect-of-fencing-in-plots-1" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="effect-of-fencing-in-plots-1"><span class="header-section-number">3.1.2</span> Effect of Fencing in Plots</h3>
+<p>For the effect of fencing in the plots, I come to a similar conclusion but obtained different numbers:</p>
+<blockquote class="blockquote">
+<p>“The effect of large vertebrates was not estimated to be large in any of the models (Recruitment: Poisson GLMM, <span class="math inline">\(z = −0.23, P = 818\)</span>…)”</p>
+</blockquote>
+<p>I’m assuming that <span class="math inline">\(P = 818\)</span> is a typo. Either way, in my model summary, the coefficient estimate for fencing in the enclosures was marginally discernible, with very different statistics (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>). If we assume they’re talking about the estimated marginal means effect that isolates that variable, my methods also found a non-discernible effect of the enclosures, but with different statistics once again (<a href="#tbl-model_emm_exclosure" class="quarto-xref">Table&nbsp;7</a>).</p>
+</section>
+</section>
+<section id="discussion" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="discussion"><span class="header-section-number">3.2</span> Discussion</h2>
+<p>The first sentence of the discussion reads:</p>
+<blockquote class="blockquote">
+<p>“The deleterious effects of natural enemies on seedling recruitment and survival, assessed at the community scale, increase with the local density of conspecific adults.”</p>
+</blockquote>
+<p>I’d say this is only true for fungicide. Insecticide is not discernibly better than the control for seedlings at any level of same species density (<a href="#tbl-model_emm_exclosure" class="quarto-xref">Table&nbsp;7</a>). They seem to change their wording slightly later in the paragraph, so I’m not sure why they it isn’t consistent with the first sentence:</p>
+<blockquote class="blockquote">
+<p>“Thus, our results suggest that plant-associated fungi suppress the recruitment of tree species dominating the nearby canopy, which will increase turnover of tree species and could increase diversity.”</p>
+</blockquote>
+<p>Once again, they repeat:</p>
+<blockquote class="blockquote">
+<p>“While the evidence that natural enemies reduce seedling performance at high conspecific density in our system is in line with previous pesticide application experiments…”</p>
+</blockquote>
+<p>This is only true of the fungicide group. I also tested the effect of the exclosure at different levels of same species density:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-emm_pairs_ex_dens" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emm_pairs_ex_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;13: Contrasts of Estimated Marginal Means of Exclosure Type by Same Species Density (Post-hoc)
+</figcaption>
+<div aria-describedby="tbl-emm_pairs_ex_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Contrast</th>
+<th style="text-align: center;">Same Species Density (Z)</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Open - Fenced</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: right;">0.012</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">0.168</td>
+<td style="text-align: right;">0.867</td>
+<td style="text-align: right;">0.867</td>
+<td style="text-align: center;">1.203</td>
+<td style="text-align: center;">-12.012</td>
+<td style="text-align: center;">16.403</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Open - Fenced</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">0.313</td>
+<td style="text-align: right;">0.754</td>
+<td style="text-align: right;">0.867</td>
+<td style="text-align: center;">1.640</td>
+<td style="text-align: center;">-8.193</td>
+<td style="text-align: center;">12.526</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Open - Fenced</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">0.021</td>
+<td style="text-align: right;">0.059</td>
+<td style="text-align: right;">0.350</td>
+<td style="text-align: right;">0.726</td>
+<td style="text-align: right;">0.867</td>
+<td style="text-align: center;">2.078</td>
+<td style="text-align: center;">-9.012</td>
+<td style="text-align: center;">14.520</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>As we can see, the effect of exclosure type, ostensibly meant to correspond with natural herbivores, is not discernible from zero at any level of same species density (<a href="#tbl-emm_pairs_ex_dens" class="quarto-xref">Table&nbsp;13</a>).</p>
+<p>They repeat the same claim I think is too broad later on as well:</p>
+<blockquote class="blockquote">
+<p>“Instead, our results suggest that density of adult conspecifics is a better predictor of natural enemy impacts on recruitment and survival of seedlings.”</p>
+</blockquote>
+<section id="effect-of-same-species-density-on-unmanipulated-plots" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="effect-of-same-species-density-on-unmanipulated-plots"><span class="header-section-number">3.2.1</span> Effect of Same Species Density on Unmanipulated Plots</h3>
+<p>Later in the discussion, they make the claim:</p>
+<blockquote class="blockquote">
+<p>“These natural enemy impacts appear to be important, even though the net effect of conspecific density is only weakly negative in plots when natural enemies are unmanipulated.”</p>
+</blockquote>
+<p>I calculated the effects of same species density at various groups of pesticide and exclosure types:</p>
+<p></p>
+<div class="cell">
+<div id="tbl-emt_ex_pest_dens" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emt_ex_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;14: Estimated Marginal Trends of Same Species Density by Pesticide and Exclosure (Post-hoc)
+</figcaption>
+<div aria-describedby="tbl-emt_ex_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 22%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Pesticide</th>
+<th style="text-align: center;">Exclosure</th>
+<th style="text-align: right;">Same Species Density Trend</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">adjusted-p</th>
+<th style="text-align: center;">Percent Change</th>
+<th style="text-align: center;">Lower CI</th>
+<th style="text-align: center;">Upper CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Control</td>
+<td style="text-align: center;">Open</td>
+<td style="text-align: right;">0.023</td>
+<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">0.429</td>
+<td style="text-align: right;">0.668</td>
+<td style="text-align: right;">0.668</td>
+<td style="text-align: center;">2.305</td>
+<td style="text-align: center;">-7.806</td>
+<td style="text-align: center;">13.524</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Fungicide</td>
+<td style="text-align: center;">Open</td>
+<td style="text-align: right;">0.201</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: right;">3.751</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">22.297</td>
+<td style="text-align: center;">10.088</td>
+<td style="text-align: center;">35.859</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Insecticide</td>
+<td style="text-align: center;">Open</td>
+<td style="text-align: right;">0.062</td>
+<td style="text-align: right;">0.058</td>
+<td style="text-align: right;">1.072</td>
+<td style="text-align: right;">0.284</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: center;">6.398</td>
+<td style="text-align: center;">-5.008</td>
+<td style="text-align: center;">19.174</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Control</td>
+<td style="text-align: center;">Fenced</td>
+<td style="text-align: right;">-0.060</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: right;">-1.102</td>
+<td style="text-align: right;">0.271</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: center;">-5.788</td>
+<td style="text-align: center;">-15.268</td>
+<td style="text-align: center;">4.753</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Fungicide</td>
+<td style="text-align: center;">Fenced</td>
+<td style="text-align: right;">0.223</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: right;">4.108</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: right;">&lt;0.001</td>
+<td style="text-align: center;">24.923</td>
+<td style="text-align: center;">12.338</td>
+<td style="text-align: center;">38.918</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Insecticide</td>
+<td style="text-align: center;">Fenced</td>
+<td style="text-align: right;">0.110</td>
+<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">2.082</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">0.075</td>
+<td style="text-align: center;">11.658</td>
+<td style="text-align: center;">0.649</td>
+<td style="text-align: center;">23.871</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Contrary to their claim, the effect of same species density on the unmanipulated plots, a.k.a., the open exclosure and control pesticide group, is not discernibly different than zero (<span class="math inline">\(Z = 0.429, p = 0.668\)</span>, adjusted-<span class="math inline">\(p = 0.668\)</span>). Important to their claim however, the esimated trend is actually slightly <em>positive</em>, as we’d expect for an unmanipulated plot, for every standard deviation increase in same species density would result in 2.305% <em>more</em> seedlings (95% CI: [-7.806, 13.524]) (<a href="#tbl-emt_ex_pest_dens" class="quarto-xref">Table&nbsp;14</a>).</p>
+<p>When the authors claim,</p>
+<blockquote class="blockquote">
+<p>“Our results extend the experimental evidence that seedling performance is suppressed by adult conspecifics to a community scale.”</p>
+</blockquote>
+<p>This is simply not true for seedling recruitment. None of the groups across pesticide and exclosure types had a statistically discernible negative trend of same species density on seedling recruitment(<a href="#tbl-emt_ex_pest_dens" class="quarto-xref">Table&nbsp;14</a>).</p>
+<p>Later on the authors again claim:</p>
+<blockquote class="blockquote">
+<p>“…on the basis of the evidence presented here, insects and plant-associated fungi appear to play a greater role in mediating conspecific density dependence than large herbivores.”</p>
+</blockquote>
+<p>I don’t see how they can claim this when the effect of insecticide on seedling recruitment is not discernible at any level of same species density (<a href="#tbl-emm_pairs_pest_dens" class="quarto-xref">Table&nbsp;12</a>).</p>
+</section>
+<section id="diagnosing-the-differences" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="diagnosing-the-differences"><span class="header-section-number">3.2.2</span> Diagnosing the Differences</h3>
+<p>To try and understand how these differences arose, I checked to see if their were any differences in our code, and I think I understand some of them. As for the first difference in the interaction between fungicide and same species density, the authors of the paper changed the glm() formula once they found out that the three-way interaction between pesticide, exclosure, and same species density was not significant. After changing the model to only a two-way interaction between pesticide and same species density, that interaction between fungicide and same species density was a lot stronger.</p>
+<p>Here’s their first model with very similar estimates to mine (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Jie et al.</figcaption>
+<p><img src="paper_first_mod.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<p>Here’s the second that now makes the interaction appear more significant. Note they have another type, where their <span class="math inline">\(Z=4.817\)</span> and in the paper they say <span class="math inline">\(Z=4.87\)</span>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Jie et al.</figcaption>
+<p><img src="paper_second_mod.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<p>Later on, because the effect of exclosure is not statistically significant, the authors recode the model to exclude that term:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Jie et al.</figcaption>
+<p><img src="paper_excluded_model.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<p>These kind of post-hoc statistical adjustments, I believe, are very antithetical to what statisticians are telling us about responsible research ethics. There’s a reason that high standard journals, like Nature, are starting to require pre-approved methods before running any analysis on an experiment. Picking and choosing variables like this by testing different models is certain to bias the experiment. At least with an algorithmic selection approach like Lasso, the decisions are not being made subjectively by humans. I would at least expect the researchers to provide <span class="math inline">\(p\)</span>-value adjustments to their coefficients given they’ve created several models. Not as important, but also frustrating is the fact that their code doesn’t run cleanly from start to finish, and different scripts require objects defined in the other (or not at all), indicating that nobody thought to check that they run on a new session in <em>R</em>.</p>
+</section>
+</section>
+</section>
+<section id="acknowledgement" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Acknowledgement</h1>
+<p>I would like to thank the researchers who published this paper: Shihong Jia, Xugao Wang, Zuoqiang Yuan, Fei Lin, Ji Ye, Guigang Lin, Zhanqing Hao &amp; Robert Bagchi. Transparency in data and code availability is hugely important for research ethics, and it makes my project possible.</p>
+</section>
+<section id="ai-use" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> AI Use</h1>
+<p>All of the guidance given by generative AI for this article can be found in <a href="https://claude.ai/share/6299e41e-dcf8-43a5-ab13-27a29c77ddf3">this conversation</a>.</p>
+</section>
+<section id="statistical-packages-used" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Statistical Packages Used</h1>
+<ul>
+<li><em>tidyverse</em> for… everything it’s <em>tidyverse</em> <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span></li>
+<li><em>ggplot2</em> for plotting <span class="citation" data-cites="ggplot2">(<a href="#ref-ggplot2" role="doc-biblioref">Wickham 2016</a>)</span></li>
+<li><em>ggthemes</em> for theme_clean() <span class="citation" data-cites="ggthemes">(<a href="#ref-ggthemes" role="doc-biblioref">Arnold 2024</a>)</span></li>
+<li><em>patchwork</em> for combined plots <span class="citation" data-cites="patchwork">(<a href="#ref-patchwork" role="doc-biblioref">Pedersen 2025</a>)</span></li>
+<li><em>lmerTest</em> for inference of GLMER model <span class="citation" data-cites="lmerTest">(<a href="#ref-lmerTest" role="doc-biblioref">Kuznetsova et al. 2017</a>)</span></li>
+<li><em>r2glmm</em> for effect sizes <span class="citation" data-cites="r2glmm">(<a href="#ref-r2glmm" role="doc-biblioref">Jaeger 2025</a>)</span></li>
+<li><em>performance</em> for model fit statistics <span class="citation" data-cites="performance">(<a href="#ref-performance" role="doc-biblioref">Lüdecke et al. 2021</a>)</span></li>
+<li><em>emmeans</em> for interaction analysis <span class="citation" data-cites="emmeans">(<a href="#ref-emmeans" role="doc-biblioref">Lenth 2025</a>)</span></li>
+</ul>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-ggthemes" class="csl-entry" role="listitem">
+Arnold, Jeffrey B. 2024. <em>Ggthemes: Extra Themes, Scales and Geoms for ’Ggplot2’</em>. <a href="https://CRAN.R-project.org/package=ggthemes">https://CRAN.R-project.org/package=ggthemes</a>.
+</div>
+<div id="ref-bolker_glmmfaq" class="csl-entry" role="listitem">
+<span class="nocase">Bolker, Ben et al.</span> 2025. <em><span>GLMM FAQ</span></em>. <a href="https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html" class="uri">Https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html</a>.
+</div>
+<div id="ref-r2glmm" class="csl-entry" role="listitem">
+Jaeger, Byron. 2025. <em>R2glmm: Computes r Squared for Mixed (Multilevel) Models</em>. <a href="https://CRAN.R-project.org/package=r2glmm">https://CRAN.R-project.org/package=r2glmm</a>.
+</div>
+<div id="ref-Jia2020" class="csl-entry" role="listitem">
+Jia, Shuai, Xugao Wang, Zuoqiang Yuan, et al. 2020. <span>“Tree Species Traits Affect Which Natural Enemies Drive the <span>Janzen-Connell</span> Effect in a Temperate Forest.”</span> <em>Nature Communications</em> 11 (1): 286. <a href="https://doi.org/10.1038/s41467-019-14140-y">https://doi.org/10.1038/s41467-019-14140-y</a>.
+</div>
+<div id="ref-lmerTest" class="csl-entry" role="listitem">
+Kuznetsova, Alexandra, Per B. Brockhoff, and Rune H. B. Christensen. 2017. <span>“<span class="nocase">lmerTest</span> Package: Tests in Linear Mixed Effects Models.”</span> <em>Journal of Statistical Software</em> 82 (13): 1–26. <a href="https://doi.org/10.18637/jss.v082.i13">https://doi.org/10.18637/jss.v082.i13</a>.
+</div>
+<div id="ref-emmeans" class="csl-entry" role="listitem">
+Lenth, Russell V. 2025. <em>Emmeans: Estimated Marginal Means, Aka Least-Squares Means</em>. <a href="https://CRAN.R-project.org/package=emmeans">https://CRAN.R-project.org/package=emmeans</a>.
+</div>
+<div id="ref-performance" class="csl-entry" role="listitem">
+Lüdecke, Daniel, Mattan S. Ben-Shachar, Indrajeet Patil, Philip Waggoner, and Dominique Makowski. 2021. <span>“<span class="nocase">performance</span>: An <span>R</span> Package for Assessment, Comparison and Testing of Statistical Models.”</span> <em>Journal of Open Source Software</em> 6 (60): 3139. <a href="https://doi.org/10.21105/joss.03139">https://doi.org/10.21105/joss.03139</a>.
+</div>
+<div id="ref-OxfordMathCenter" class="csl-entry" role="listitem">
+Oxford College of Emory University, Math Center. n.d. <em>The Connection Between the Poisson and Binomial Distributions</em>. <a href="https://mathcenter.oxford.emory.edu/site/math117/connectingPoissonAndBinomial/" class="uri">Https://mathcenter.oxford.emory.edu/site/math117/connectingPoissonAndBinomial/</a>.
+</div>
+<div id="ref-patchwork" class="csl-entry" role="listitem">
+Pedersen, Thomas Lin. 2025. <em>Patchwork: The Composer of Plots</em>. <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-soch_statproofbook" class="csl-entry" role="listitem">
+Soch, Joram, and The Book of Statistical Proofs contributors. 2020. <em>The Book of Statistical Proofs</em>. <a href="https://statproofbook.github.io/" class="uri">Https://statproofbook.github.io/</a>. <a href="https://doi.org/10.5281/zenodo.4305949">https://doi.org/10.5281/zenodo.4305949</a>.
+</div>
+<div id="ref-ggplot2" class="csl-entry" role="listitem">
+Wickham, Hadley. 2016. <em>Ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-tidyverse" class="csl-entry" role="listitem">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, et al. 2019. <span>“Welcome to the <span class="nocase">tidyverse</span>.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/MaxWarriner\.github\.io\/maxwarriner\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Colgate University Student Portfolio</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/MaxWarriner">GitHub Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

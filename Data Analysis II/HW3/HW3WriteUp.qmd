@@ -1,0 +1,931 @@
+---
+title: HW3           # Title of the document
+
+# Bibliography Details
+bibliography: HW3References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa                   # Bibliography style
+
+execute:
+  warning: false
+  message: false
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("HW3WriteUp.qmd")
+format:
+  html: 
+    number-sections: TRUE
+    code-fold: TRUE
+    code-line-numbers: TRUE
+    cap-location: top 
+  pdf:
+    documentclass: article
+    number-sections: TRUE
+    reference-section-title: "References" 
+    code-fold: TRUE
+    code-line-numbers: TRUE
+    cap-location: top 
+    include-in-header:
+      - text: |
+          \usepackage{amsmath}
+          \usepackage[dvipsnames]{xcolor}
+          \usepackage[shortlabels]{enumitem}
+          \usepackage{parskip}
+          \usepackage{hyperref}
+          \usepackage{geometry}
+          \usepackage{float}
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+format-links: [pdf]
+---
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+library(ggthemes)
+library(emmeans)
+```
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+
+```
+
+# Question 1
+
+@Greenberg26 investigate the geographic patterning of federal environmental crime prosecutions in the United States between 2011 and 2020 to determine how environmental and social factors influence where the strongest forms of law enforcement occur. 
+
+The study specifically addresses whether the US Environmental Protection Agency (EPA) and Department of Justice (DOJ) equitably protect communities by examining if criminal prosecutions are concentrated in the most polluted or socioeconomically disadvantaged areas. 
+
+To address these questions, the researchers analyzed data from 732 EPA-referred criminal prosecutions across 3,143 US counties. They collected information regarding:
+
+* EPA Criminal Prosecutions: The number of criminal prosecutions from 2011 to 2020.
+* Overall Environmental Quality Index: A composite measure that combines environmental and social factors to provide a holistic view of a county's conditions.
+* Water Quality Index: A measure of various factors related to the quality of water within a county. Higher values indicate better quality.
+* Air Quality Index: A measure of various factors related to the quality of air within a county. Higher values indicate better quality.
+* Land Quality Index: A measure of various factors related to the quality of land and soil within a county. Higher values indicate better quality.
+* Socioeconomic Index: A sociodemographic measure within the Environmental Quality Index that evaluates the socioeconomic status of a county's population. A higher score indicates higher status.
+* Percent Racial Minority: The percentage of non-white residents in each county, included separately because race is not part of the EPA's sociodemographic index.
+* Metropolitan Status: A urban/rural indicator based on USDA rural-urban continuum codes (1 = metropolitan, 0 = non-metropolitan).
+* County-level GDP (in billions of dollars): A measure of total economic production within a county that also indicates the level of industrial or commercial activity.
+* Past Number of EPA Civil Penalties: A count of previous civil enforcement actions in the county, indicating historical levels of non-compliance.
+* Distance from EPA Region Criminal Prosecution Office: The distance in kilometers from the county to the nearest office.
+* EPA Region (1-10): an indicator to one of the ten geographic administrative districts established by the U.S. Environmental Protection Agency. Region 1 is the New England Area. 
+
+## Part a
+Fit a Poisson regression model for EPA Criminal Prosecutions (`FinalEC`) using Overall Environmental Quality Index (`eqi_2jan2018_vc`), Percent Racial Minority (`pctnonwhite10`), Metropolitan Status (`metro`), County-level GDP (`gdp2017b`), Past Number of EPA Civil Penalties (`fac_penalty_count`), Distance from EPA Region Criminal Prosecution Office (`CIDDist`), and
+EPA Region (`EPAregion`). Assess whether the model is appropriately fit.
+
+### Answer
+
+Fitting the model here:
+
+```{r}
+
+formula <- FinalEC ~ eqi_2jan2018_vc + pctnonwhite10 + metro + gdp2017b + fac_penalty_count + CIDDist + EPAregion
+
+dat <- read_csv('Greenberg26.csv')
+
+#Data had some NAs that were screwing with the RQR's
+
+dat <- dat |>
+  drop_na()
+
+pois_mod <- glm(formula, data = dat, family = poisson)
+
+```
+
+First checking the dispersion ratio of our model:
+
+```{r}
+#| label: fig-dispersion_poisson
+#| fig-cap: "Randomized Quantile Residuals of the Poisson Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+lambdas <- predict(pois_mod, type = "response")
+n = nrow(dat)
+y = dat$FinalEC
+rqr <- rep(NA, n)
+for(i in 1:n){
+  ai <- ppois(y[i]-1, lambda=lambdas[i])
+  bi <- ppois(y[i], lambda=lambdas[i])
+  ui <- runif(1, ai, bi)
+  rqr[i] <- qnorm(ui)
+}
+
+pearson.ratio <- sum(residuals(pois_mod, type = "pearson")^2) /pois_mod$df.residual
+
+p1 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals")
+p2 <- ggplot(data=tibble(e=rqr)) +
+  stat_qq(aes(sample=e)) +
+  stat_qq_line(aes(sample=e)) +
+  theme_bw() +
+  ggtitle(paste("Dispersion Ratio =", round(pearson.ratio, 4)))
+p1+p2
+
+```
+
+**EEK.**
+
+Our dispersion ratio is quite a bit higher than we'd like to see. We also see a big clump of $\lambda$'s near zero, which may be negatively affecting our model. 
+
+Checking our predictions against the standardized Pearson residuals:
+
+```{r}
+#| label: fig-poisson_predictions_residuals
+#| fig-cap: "Predictions Against Pearson Residuals for the Poisson Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+
+ggdat <- tibble(r2= resid(pois_mod, type = "pearson")^2,
+                lambdas = fitted(pois_mod))
+
+p.1 <- ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_bw() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2))
+
+p.2 <- ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_bw() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2)) + 
+  ylim(0,100) +
+  labs(caption = "Y-Axis limits shrunk")
+
+p.1 + p.2
+
+```
+
+Looking at the shrunk down version, a curved shape indicates that another model like a quasi-poisson or negative binomial might be more appropriate here. 
+
+## Part b
+Fit a Negative Binomial regression model that matches the Poisson model in part (a). Assess whether the model is appropriately fit.
+
+### Answer
+
+```{r}
+
+nbinom_mod <- MASS::glm.nb(formula, data = dat)
+
+```
+
+Once again, let's check our dispersion ratio and our randomized-quantile residuals:
+
+```{r}
+#| label: fig-dispersion_nbinom
+#| fig-cap: "Randomized Quantile Residuals of the Negative Binomial Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+lambdas <- predict(nbinom_mod, type = "response")
+n = nrow(dat)
+y = dat$FinalEC
+rqr <- rep(NA, n)
+for(i in 1:n){
+  ai <- ppois(y[i]-1, lambda=lambdas[i])
+  bi <- ppois(y[i], lambda=lambdas[i])
+  ui <- runif(1, ai, bi)
+  rqr[i] <- qnorm(ui)
+}
+
+pearson.ratio <- sum(residuals(nbinom_mod, type = "pearson")^2) /nbinom_mod$df.residual
+
+p1 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals")
+
+p2 <- ggplot(data=tibble(e=rqr)) +
+  stat_qq(aes(sample=e)) +
+  stat_qq_line(aes(sample=e)) +
+  theme_bw() +
+  ggtitle(paste("Dispersion Ratio =", round(pearson.ratio, 4)))
+
+p3 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals") + 
+      xlim(0,5) + 
+      ylim(-5, 5) + 
+      labs(caption = "Axis limits shrunk down")
+
+(p1 + p2) / p3
+
+```
+
+Our dispersion ratio here is definitely better. It's a bit hard to see the pattern of the residuals because of the massive negative outliers though. When the axis limits are shrunk down, the residuals look consistent with a good model fit. 
+
+```{r}
+#| label: fig-nbinom_predictions_residuals
+#| fig-cap: "Predictions Against Pearson Residuals for the Negative Binomial Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+
+ggdat <- tibble(r2= resid(nbinom_mod, type = "pearson")^2,
+                lambdas = fitted(nbinom_mod))
+
+p.1 <- ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_bw() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2))
+
+p.2 <- ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_bw() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2)) + 
+  ylim(0, 10) +
+  xlim(0, 20) + 
+  labs(caption = "Y-Axis limits shrunk")
+
+p.1 + p.2
+
+```
+
+We're still seeing that curved pattern indicating that a standard negative binomial regression also might not be the best model fit.
+
+## Part c
+Use a likelihood ratio test to compare the Poisson model in part (a) to the Negative Binomial model in part (b).\
+
+**Note**: You can use the `lrtest(...)` function from the `lmtest` package [@lmtest].
+
+### Answer
+
+```{r}
+#| label: tbl-model_comparison
+
+test <- data.frame(lmtest::lrtest(pois_mod, nbinom_mod, name = function(x) paste(family(x)$family, family(x)$link)))
+
+colnames(test) <- c("X-df", "Log-Likelihood", "df", "Chi-Sq", "p")
+rownames(test) <- c("Poisson Model", "Negative Binomial Model")
+test$p <- ifelse(is.na(test$p), "", "<0.001")
+test$`Chi-Sq`[1] <- ""
+test$`Chi-Sq`[2] <- round(as.numeric(test$`Chi-Sq`[2]), 3)
+test$df[1] <- ""
+
+knitr::kable(test, label = "model_comparison", caption = "Model Comparison", include.rownames = T)
+
+
+```
+
+Our negative binomial model has a discernibly greater Log-Likelihood than our poisson model ($\chi^2 = 252.557, p<0.001$). 
+
+
+## Part d
+The researchers wanted to evaluate whether the specific indexes Water Quality Index,  Air Quality Index,  Land Quality Index were more informative than the Overall Environmental Quality Index. Further, they wanted to evaluate if including the Socioeconomic Index would explain additional variability in the outcome compared to the model with just the Percent Racial Minority as a socioeconomic predictor.
+
+Fit a Poisson regression model for EPA Criminal Prosecutions (`FinalEC`) using Water Quality Index (`water_eqi_2jan2018_vc`),  Air Quality Index (`air_eqi_2jan2018_vc`),  Land Quality Index (`land_eqi_2jan2018_vc`), Socioeconomic Index (`sociod_eqi_2jan2018_vc`) Percent Racial Minority (`pctnonwhite10`), Metropolitan Status (`metro`), County-level GDP (`gdp2017b`), Past Number of EPA Civil Penalties (`fac_penalty_count`), Distance from EPA Region Criminal Prosecution Office (`CIDDist`), and
+EPA Region (`EPAregion`).  Assess whether the model is appropriately fit.
+
+### Answer
+
+```{r}
+#| label: fig-dispersion_poisson_socio
+#| fig-cap: "Randomized Quantile Residuals of the Socioeconomic and Specific Indexes Poisson Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+pois_socio_mod <- glm(FinalEC ~ water_eqi_2jan2018_vc + air_eqi_2jan2018_vc + land_eqi_2jan2018_vc + sociod_eqi_2jan2018_vc + pctnonwhite10 + metro + gdp2017b + fac_penalty_count + CIDDist + EPAregion, data = dat, family = poisson)
+
+lambdas <- predict(pois_socio_mod, type = "response")
+n = nrow(dat)
+y = dat$FinalEC
+rqr <- rep(NA, n)
+for(i in 1:n){
+  ai <- ppois(y[i]-1, lambda=lambdas[i])
+  bi <- ppois(y[i], lambda=lambdas[i])
+  ui <- runif(1, ai, bi)
+  rqr[i] <- qnorm(ui)
+}
+
+pearson.ratio <- sum(residuals(pois_socio_mod, type = "pearson")^2) /pois_socio_mod$df.residual
+
+p1 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals")
+p2 <- ggplot(data=tibble(e=rqr)) +
+  stat_qq(aes(sample=e)) +
+  stat_qq_line(aes(sample=e)) +
+  theme_bw() +
+  ggtitle(paste("Dispersion Ratio =", round(pearson.ratio, 4)))
+p1+p2
+
+```
+
+Our dispersion ratio here is borderline good to a little overdispersed. 
+
+```{r}
+#| label: fig-poisson_socio_predictions_residuals
+#| fig-cap: "Predictions Against Pearson Residuals for the Poisson Socioeconomic and Specific Indexes Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+
+ggdat <- tibble(r2= resid(pois_socio_mod, type = "pearson")^2,
+                lambdas = fitted(pois_socio_mod))
+
+p.1 <- ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_bw() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2))
+
+p.2 <- ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_bw() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2)) + 
+  ylim(0,50) +
+  xlim(0,4) + 
+  labs(caption = "Axis limits shrunk")
+
+p.1 + p.2
+
+```
+
+Looking at the plot with the limits shrunk, we see a slight curved pattern that's a little above 1. 
+
+## Part e
+Fit a Negative Binomial regression model that matches the Poisson model in part (d).  Assess whether the model is appropriately fit.
+
+### Answer
+
+```{r}
+#| label: fig-dispersion_nbinom_socio
+#| fig-cap: "Randomized Quantile Residuals of the Socioeconomic and Specific Indexes Negative Binomial Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+nbinom_socio_mod <- MASS::glm.nb(FinalEC ~ water_eqi_2jan2018_vc + air_eqi_2jan2018_vc + land_eqi_2jan2018_vc + sociod_eqi_2jan2018_vc + pctnonwhite10 + metro + gdp2017b + fac_penalty_count + CIDDist + EPAregion, data = dat)
+
+lambdas <- predict(nbinom_socio_mod, type = "response")
+n = nrow(dat)
+y = dat$FinalEC
+rqr <- rep(NA, n)
+for(i in 1:n){
+  ai <- ppois(y[i]-1, lambda=lambdas[i])
+  bi <- ppois(y[i], lambda=lambdas[i])
+  ui <- runif(1, ai, bi)
+  rqr[i] <- qnorm(ui)
+}
+
+pearson.ratio <- sum(residuals(nbinom_socio_mod, type = "pearson")^2) /nbinom_socio_mod$df.residual
+
+p1 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals")
+
+p2 <- ggplot(data=tibble(e=rqr)) +
+  stat_qq(aes(sample=e)) +
+  stat_qq_line(aes(sample=e)) +
+  theme_bw() +
+  ggtitle(paste("Dispersion Ratio =", round(pearson.ratio, 4)))
+
+p3 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals") + 
+      ylim(-5, 5) + 
+      xlim(0,5) + 
+      labs(caption = "Axis limits shrunk")
+
+(p1+p2) / p3
+
+```
+
+Our dispersion ratio here is a little better than the same formula under the poisson distribution. The randomized quantile residuals also look good outside of the big outliers. 
+
+## Part f
+Use a likelihood ratio test to compare the Poisson model in part (d) to the Negative Binomial model in part (e).\
+
+**Note**: You can use the `lrtest(...)` function from the `lmtest` package [@lmtest].
+
+### Answer
+
+```{r}
+#| label: tbl-model_comparison_socio
+
+test <- data.frame(lmtest::lrtest(pois_socio_mod, nbinom_socio_mod, name = function(x) paste(family(x)$family, family(x)$link)))
+
+colnames(test) <- c("X-df", "Log-Likelihood", "df", "Chi-Sq", "p")
+rownames(test) <- c("Poisson Model", "Negative Binomial Model")
+test$p <- ifelse(is.na(test$p), "", "<0.001")
+test$`Chi-Sq`[1] <- ""
+test$`Chi-Sq`[2] <- round(as.numeric(test$`Chi-Sq`[2]), 3)
+test$df[1] <- ""
+
+knitr::kable(test, label = "model_comparison_socio", caption = "Comparison of Socioeconomic and Specific Indices Models", include.rownames = T)
+
+
+```
+
+For these models, the negative binomial model has a discernibly greater Log-Likelihood ($chi^2 = 213.592, p < 0.001$) than the poisson model. 
+
+## Part g
+Use the "winning" model in part (c) to show how 
+EPA Criminal Prosecutions change with the the Overall Environmental Quality Index. Use the "winning" model in part (f) to show how 
+EPA Criminal Prosecutions change with the Water Quality Index,  Air Quality Index,  Land Quality Index, Socioeconomic Index, and Percent Racial Minority. Combine the plots using `patchwork` so that it matches Figure 2 in [the manuscript](https://www.nature.com/articles/s41893-025-01736-0#Fig2).
+
+
+```{r}
+#| echo: false
+#| label: fig-emtrend_patch
+#| fig-cap: "Effect of Indices on EPA Criminal Prosecutions"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+# Overall
+emt_grid_overall <- data.frame(emmeans(nbinom_mod, ~ eqi_2jan2018_vc, at = list(eqi_2jan2018_vc = -3:3), type = "response"))
+
+overall <- ggplot(dat = emt_grid_overall, aes(x = eqi_2jan2018_vc, y = response,)) +
+  geom_point() + 
+  geom_line() + 
+  geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.25) +
+  theme_bw() + 
+  xlab('Overall Environmental Quality Index') +
+  ylab("Estimated EPA Criminal Prosections") + 
+  scale_x_continuous(breaks = c(-3:3)) + 
+  ggtitle('a') & 
+  theme(plot.title = element_text(face = "bold"))
+
+#Water Quality
+
+emt_grid_water <- data.frame(emmeans(nbinom_socio_mod, ~ water_eqi_2jan2018_vc, at = list(water_eqi_2jan2018_vc = -3:3), type = "response"))
+
+water <- ggplot(dat = emt_grid_water, aes(x = water_eqi_2jan2018_vc, y = response,)) +
+  geom_point() + 
+  geom_line() + 
+  geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.25) +
+  theme_bw() + 
+  xlab('Water Quality Index') +
+  ylab("Estimated EPA Criminal Prosections") + 
+  scale_x_continuous(breaks = c(-3:3)) + 
+  ggtitle('b') & 
+  theme(plot.title = element_text(face = "bold"))
+
+#Air Quality
+
+emt_grid_air <- data.frame(emmeans(nbinom_socio_mod, ~ air_eqi_2jan2018_vc, at = list(air_eqi_2jan2018_vc = -3:3), type = "response"))
+
+air <- ggplot(dat = emt_grid_air, aes(x = air_eqi_2jan2018_vc, y = response,)) +
+  geom_point() + 
+  geom_line() + 
+  geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.25) +
+  theme_bw() + 
+  xlab('Air Quality Index') +
+  ylab("Estimated EPA Criminal Prosections") + 
+  scale_x_continuous(breaks = c(-3:3)) + 
+  ggtitle('c') & 
+  theme(plot.title = element_text(face = "bold"))
+
+#Land Quality
+
+emt_grid_land <- data.frame(emmeans(nbinom_socio_mod, ~ land_eqi_2jan2018_vc, at = list(land_eqi_2jan2018_vc = -3:3), type = "response"))
+
+land <- ggplot(dat = emt_grid_land, aes(x = land_eqi_2jan2018_vc, y = response,)) +
+  geom_point() + 
+  geom_line() + 
+  geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.25) +
+  theme_bw() + 
+  xlab('Land Quality Index') +
+  ylab("Estimated EPA Criminal Prosections") + 
+  scale_x_continuous(breaks = c(-3:3)) + 
+  ggtitle('d') & 
+  theme(plot.title = element_text(face = "bold"))
+
+#Sociodemographic 
+
+emt_grid_socio <- data.frame(emmeans(nbinom_socio_mod, ~ sociod_eqi_2jan2018_vc, at = list(sociod_eqi_2jan2018_vc = -3:3), type = "response"))
+
+socio <- ggplot(dat = emt_grid_socio, aes(x = sociod_eqi_2jan2018_vc, y = response,)) +
+  geom_point() + 
+  geom_line() + 
+  geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.25) +
+  theme_bw() + 
+  xlab('Sociodemographic Index') +
+  ylab("Estimated EPA Criminal Prosections") + 
+  scale_x_continuous(breaks = c(-3:3)) + 
+  ggtitle('e') & 
+  theme(plot.title = element_text(face = "bold"))
+
+#Racial Minority
+
+emt_grid_race <- data.frame(emmeans(nbinom_socio_mod, ~ pctnonwhite10, at = list(pctnonwhite10 = -3:3), type = "response"))
+
+race <- ggplot(dat = emt_grid_race, aes(x = pctnonwhite10, y = response,)) +
+  geom_point() + 
+  geom_line() + 
+  geom_errorbar(aes(ymin = asymp.LCL, ymax = asymp.UCL), width = 0.25) +
+  theme_bw() + 
+  xlab('Percentage of racial minority') +
+  ylab("Estimated EPA Criminal Prosections") + 
+  scale_x_continuous(breaks = c(-3:3)) + 
+  ggtitle('f') & 
+  theme(plot.title = element_text(face = "bold"))
+
+overall + water + air + land + socio + race
+
+
+```
+
+
+**Note**: I would create the plot differently than the authors have, though I see why they did it this way.
+
+## Part h
+Compare the "winning" model in part (c) with the "winning" model in part (f) using a non-nested Vuong test. First, explain why the Vuong test is necessary and then interpret the result in the context of the research question.
+
+**Note**: You can use the `vuongtest(...)` function from the `nonnest2` package [@nonnest2].
+
+
+```{r}
+#| label: tbl-model_vuong_test
+
+test <- nonnest2::vuongtest(nbinom_mod, nbinom_socio_mod)
+
+test <- data.frame(Z = 2.534, p = 0.006)
+rownames(test) <- c("Hypothesis: Specific Model Fits Better")
+
+knitr::kable(test, label = "model_comparison_binoms", caption = "Vuong Test on Negative Binomial Models", include.rownames = T)
+
+```
+
+A Vuong test here is necessary because it's designed to test non-nested models. Nested models, or models that are the same except for added/removed terms from the model equation, can be evalutated using an ANOVA test of log-likelihoods. The Vuong test is more complex and factors in the number of parameters and the standard deviations of the differences in likelihoods.
+
+A Vuong test of the two negative binomial models shows us that the model with added specific environmental quality indices has a discernibly better fit than the model with just the overall environmental quality index ($Z = 2.534, p = 0.006$)
+
+This tells us that just using the overall environmental quality index loses too much valuable information that would help the models in explaining the number of EPA criminal prosecutions. So in this case, the extra dimensionality of adding the specific indices is still worth it because of the information those variables provide the model. 
+
+# Question 2
+
+## Part a
+In class we discussed data from @Mcmillan01, who recorded the number of capuchin monkeys caught by Ache tribe members.
+
+As part of this work, the researchers also recorded the number of nine-banded armadillo (Dasypus novemcinctus) they captured. Of note, these animals are most important in terms of biomass harvested.
+
+Recall the capuchin monkeys required
+complex tasks of chasing the monkeys and showing an arrow straight up. In contrast, armadillos, which are burrowing animals, are caught by hand.
+
+**Research Question**: Is the hunting of armadillo a skill that requires long periods of learning? Do those skills diminish with age?
+
+Use the data on $n=38$ hunters in `McMillanAcheArmadillo.csv` to answer the research question. Show that you have selected a reasonable model for the data and interpret your model to answer the research question.
+
+### Fitting The Model
+
+Here  I'm loading the data and specifying the formula before fitting the model:
+```{r}
+
+dat <- read_csv('McMillanAcheArmadillo.csv')
+
+formula <- Armadillos ~ Age + Age^2
+
+pois_mod <- glm(formula, family = poisson, offset = log(Treks), data = dat)
+
+```
+
+Because the researchers want to see if the skill for hunting armadillos peaks at a certain point, representing the gaining of knowledge before the loss of skill due to age, adding the quadratic term should be the best way to answer that. Because the number of treks is not consistent among the hunters, we'll use the number of treks as an offset so we're regressing the number of armadillos caught per trek. Lastly, I'm starting out with a poisson model because of the nature of the data as capturable events. We'll see how it fits and if another model is more justified later. 
+
+### Model Assumptions
+
+First, we'll look at the randomized quantile residuals and the dispersion ratio of the poisson model:
+
+```{r}
+#| label: fig-residual_poisson
+#| fig-cap: "Randomized Quantile Residuals of Poisson Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+lambdas <- predict(pois_mod, type = "response")
+n = nrow(dat)
+y = dat$Armadillos
+rqr <- rep(NA, n)
+for(i in 1:n){
+  ai <- ppois(y[i]-1, lambda=lambdas[i])
+  bi <- ppois(y[i], lambda=lambdas[i])
+  ui <- runif(1, ai, bi)
+  rqr[i] <- qnorm(ui)
+}
+
+
+pearson.ratio <- sum(residuals(pois_mod, type = "pearson")^2) /pois_mod$df.residual
+
+p1 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals")
+p2 <- ggplot(data=tibble(e=rqr)) +
+  stat_qq(aes(sample=e)) +
+  stat_qq_line(aes(sample=e)) +
+  theme_bw() +
+  ggtitle(paste("Dispersion Ratio =", round(pearson.ratio, 4)))
+p1+p2
+
+```
+
+This dispersion ratio is very very high. If we look at the predictions against pearson residuals: 
+
+```{r}
+#| label: fig-predictions_residuals_poisson
+#| fig-cap: "Predictions Against Pearson Residuals for the Poisson Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+
+ggdat <- tibble(r2= resid(pois_mod, type = "pearson")^2,
+                lambdas = fitted(pois_mod))
+
+ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_clean() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2))
+
+
+```
+
+The curved shape along with the line not being particularly close to 1 is also not a very good sign for the poisson model. 
+
+If we specify the same formula but as a negative binomial model:
+
+```{r}
+#| label: fig-residual_nbinom
+#| fig-cap: "Randomized Quantile Residuals of Negative Binomial Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+nbinom_mod <- MASS::glm.nb(Armadillos ~ Age + I(Age^2) + offset(log(Treks)), data = dat)
+
+lambdas <- predict(nbinom_mod, type = "response")
+n = nrow(dat)
+y = dat$Armadillos
+rqr <- rep(NA, n)
+for(i in 1:n){
+  ai <- ppois(y[i]-1, lambda=lambdas[i])
+  bi <- ppois(y[i], lambda=lambdas[i])
+  ui <- runif(1, ai, bi)
+  rqr[i] <- qnorm(ui)
+}
+
+
+pearson.ratio <- sum(residuals(nbinom_mod, type = "pearson")^2) /nbinom_mod$df.residual
+
+p1 <- ggplot(data=tibble(lambda=lambdas,
+                         e=rqr)) + 
+      geom_hline(yintercept=0, linetype="dotted")+
+      geom_point(aes(x=lambda, y=e)) +
+      theme_bw()+
+      xlab(bquote(lambda))+
+      ylab("Randomized Quantile Residuals")
+p2 <- ggplot(data=tibble(e=rqr)) +
+  stat_qq(aes(sample=e)) +
+  stat_qq_line(aes(sample=e)) +
+  theme_bw() +
+  ggtitle(paste("Dispersion Ratio =", round(pearson.ratio, 4)))
+p1+p2
+
+```
+
+The plot of the randomized quantile residuals looks pretty similar but our dispersion ratio here is much closer to our ideal value of 1. 
+
+```{r}
+#| label: fig-predictions_residuals_nbinom
+#| fig-cap: "Predictions Against Pearson Residuals for the Negative Binomial Model"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+
+ggdat <- tibble(r2= resid(nbinom_mod, type = "pearson")^2,
+                lambdas = fitted(nbinom_mod))
+
+ggplot(ggdat) + 
+  geom_point(aes(x=lambdas, y=r2)) +
+  geom_hline(yintercept = 1, linetype="dotted", color="red") +
+  geom_smooth(aes(x=lambdas, y=r2)) +
+  theme_clean() + 
+  xlab(bquote(lambda)) +
+  ylab(bquote(r^2))
+
+
+```
+
+Welp. That looks pretty bad too, if  not worse. 
+
+If we test out the likelihood of both models:
+
+```{r}
+#| label: tbl-model_comparison_armadillos
+
+test <- data.frame(lmtest::lrtest(pois_mod, nbinom_mod, name = function(x) paste(family(x)$family, family(x)$link)))
+
+colnames(test) <- c("X-df", "Log-Likelihood", "df", "Chi-Sq", "p")
+rownames(test) <- c("Poisson Model", "Negative Binomial Model")
+test$p <- ifelse(is.na(test$p), "", "<0.001")
+test$`Chi-Sq`[1] <- ""
+test$`Chi-Sq`[2] <- round(as.numeric(test$`Chi-Sq`[2]), 3)
+test$df[1] <- ""
+
+knitr::kable(test, label = "model_comparison_armadillos", caption = "Comparison of Poisson and Negative Binomial Models for Armadillo Data", include.rownames = T)
+
+
+```
+
+Our negative binomial model has a discernibly greater log-likelihood than the poisson model ($\chi^2 = 87.106, p < 0.001$). Because of this, we'll move forward with the negative binomial model. 
+
+Since there's only one factor, age, there's no need to test for multicollinearity. 
+
+Ideally we should have at least 10 events counted per predictor: 
+
+\begin{align*}
+\sum_{i=1}^{n = 38} \lambda_{i} = 459 \geq 10p = 10(1) = 10 \quad \checkmark
+\end{align*}
+
+### Model Fit
+
+We can obtain an overall model fit:
+
+```{r}
+#| echo: false
+#| label: tbl-model_performance
+
+mod_performance <- data.frame(performance::model_performance(nbinom_mod))
+
+knitr::kable(mod_performance, digits = 3, label = "model_fit", caption = "Model Fit", include.rownames = F)
+
+```
+
+Our Nagelkerke $R^2$ shows that age accounts for roughly 71.8\% of the variance in the number of armadillos caught among the hunters. 
+
+### Model Summary
+
+A general summary our model gives us:
+
+```{r}
+#| label: tbl-model_sum
+
+sum <- data.frame(summary(nbinom_mod)$coefficients)
+rownames(sum) <- c("Intercept", "Age", "Age^2")
+colnames(sum) <- c("Estimate", "SE", "Z", "p")
+
+sum$p <- ifelse(sum$p<0.001, "<0.001", round(sum$p, 3))
+
+sum <- sum |>
+  mutate(significance = case_when(p == "<0.001" ~ "***", 
+                                  p < 0.01 ~ "**", 
+                                  p < 0.05 ~ "*", 
+                                  p < 0.1 ~ ".", 
+                                  p >= 0.1 ~ ""), 
+        `Percent Change` = (exp(Estimate)-1)*100)
+
+sum$`Percent Change` <- round(sum$`Percent Change`, 1)
+sum$`Percent Change`[1] <- ""
+
+knitr::kable(sum, digits = 3, align = c("c", "r", "r", "r", "r"), label = "model_sum", caption = "Model Summary", include.rownames = F)
+
+```
+
+Both age and age-squared are discernible predictors of the number of armadillos caught by members of the tribe. 
+
+- Our intercept shows the the model predicts a newborn baby would catch -6.802 armadillos per trek. I'm not confident that'd get past the institutional review board so that claim will most likely remain untested. 
+- For the linear effect of age, for every year increase in age, we'd expect to see that hunter catch 29.7% more armadillos per trek ($Z = 4.860, p<0.001$). 
+- For the quadratic effect of age, for every year increase in age-squared, we'd expect to see that hunter catch 0.3\% fewer armadillos per trek ($Z = -4.493, p < 0.001$).
+
+### Effect of Age
+
+To see the full effect of age on the number of armadillos caught, we can use the estimated marginal means at different ages:
+
+```{r}
+#| label: fig-emtrend_age
+#| fig-cap: "Age Estimated Marginal Trend"
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 6
+
+
+ages <- seq(min(dat$Age), max(dat$Age), length.out = 1000)
+
+emt_grid <- data.frame(emmeans(nbinom_mod, ~ Age, at = list(Age = ages), type = "response", offset = log(1)))
+
+ggplot(dat = emt_grid, aes(x = Age, y = response)) +
+  geom_ribbon(aes(ymin = asymp.LCL, ymax = asymp.UCL), alpha = 0.2, color = NA) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept=emt_grid$Age[which.max(emt_grid$response)], 
+             linetype="dotted") +
+  theme_clean() + 
+  xlab('Age') +
+  ylab("Expected Armadillos Caught per Trek") + 
+  ggtitle("Optimal Age for Catching Armadillos is 47 - 48 Years Old")
+
+```
+
+The skill of catching armadillos takes decades to fully learn. Our model predicts that it takes a member of the tribe till the age of 41 to achieve 90\% of their peak catching armadillo talent. Around 6 years after that, they've reached their peak talent at the age of 47-48. After that, the talent recedes relatively quickly, as they lose 50\% of their ability to catch armadillos only 16 years after peaking, around the age 63. 
+
+```{r}
+
+# peak of the fitted curve
+pk_i      <- which.max(emt_grid$response)
+peak_age  <- emt_grid$Age[pk_i]
+peak_rate <- emt_grid$response[pk_i]
+
+rising  <- emt_grid[seq_len(pk_i), ]            # grid up to the peak
+falling <- emt_grid[pk_i:nrow(emt_grid), ]      # grid from the peak on
+
+age_90_rise  <- approx(rising$response,  rising$Age,  xout = 0.9 * peak_rate)$y
+age_50_decay <- approx(falling$response, falling$Age, xout = 0.5 * peak_rate)$y
+
+```
+
+
+# AI Use
+
+All use of generative AI can be found in [this conversation](https://claude.ai/share/37fb3778-6940-461f-9143-c58de7cc19ad). 
