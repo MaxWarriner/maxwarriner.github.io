@@ -543,10 +543,13 @@ window.Quarto = {
   <ul>
   <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="header-section-number">1</span> Background</a>
   <ul class="collapse">
-  <li><a href="#bernoulli-distribution" id="toc-bernoulli-distribution" class="nav-link" data-scroll-target="#bernoulli-distribution"><span class="header-section-number">1.1</span> Bernoulli Distribution</a></li>
-  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">1.2</span> Logistic Regression</a></li>
-  <li><a href="#the-study" id="toc-the-study" class="nav-link" data-scroll-target="#the-study"><span class="header-section-number">1.3</span> The Study</a></li>
-  <li><a href="#goal-of-statistical-analysis" id="toc-goal-of-statistical-analysis" class="nav-link" data-scroll-target="#goal-of-statistical-analysis"><span class="header-section-number">1.4</span> Goal of Statistical Analysis</a></li>
+  <li><a href="#understanding-the-technique" id="toc-understanding-the-technique" class="nav-link" data-scroll-target="#understanding-the-technique"><span class="header-section-number">1.1</span> Understanding the Technique</a>
+  <ul class="collapse">
+  <li><a href="#bernoulli-distribution" id="toc-bernoulli-distribution" class="nav-link" data-scroll-target="#bernoulli-distribution"><span class="header-section-number">1.1.1</span> Bernoulli Distribution</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">1.1.2</span> Logistic Regression</a></li>
+  </ul></li>
+  <li><a href="#the-study" id="toc-the-study" class="nav-link" data-scroll-target="#the-study"><span class="header-section-number">1.2</span> The Study</a></li>
+  <li><a href="#goal-of-statistical-analysis" id="toc-goal-of-statistical-analysis" class="nav-link" data-scroll-target="#goal-of-statistical-analysis"><span class="header-section-number">1.3</span> Goal of Statistical Analysis</a></li>
   </ul></li>
   <li><a href="#reproduction-of-the-study" id="toc-reproduction-of-the-study" class="nav-link" data-scroll-target="#reproduction-of-the-study"><span class="header-section-number">2</span> Reproduction of the Study</a>
   <ul class="collapse">
@@ -601,8 +604,10 @@ window.Quarto = {
 <p></p>
 <section id="background" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Background</h1>
-<section id="bernoulli-distribution" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="bernoulli-distribution"><span class="header-section-number">1.1</span> Bernoulli Distribution</h2>
+<section id="understanding-the-technique" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="understanding-the-technique"><span class="header-section-number">1.1</span> Understanding the Technique</h2>
+<section id="bernoulli-distribution" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="bernoulli-distribution"><span class="header-section-number">1.1.1</span> Bernoulli Distribution</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption>Wikipedia</figcaption>
@@ -658,8 +663,8 @@ Figure&nbsp;1: Bernoulli Variable Variance
 <p></p>
 <p>The variance of a bernoulli variable is greatest when <span class="math inline">\(p = 0.5\)</span>.</p>
 </section>
-<section id="logistic-regression" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">1.2</span> Logistic Regression</h2>
+<section id="logistic-regression" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">1.1.2</span> Logistic Regression</h3>
 <p>Typical linear regression is based on the linear combination of factors modelling a continuous variable:</p>
 <p><span class="math display">\[\begin{align*}
 Y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \cdots + \beta_{p-1} x_{(p-1)i} + \epsilon_i
@@ -678,8 +683,9 @@ Y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \cdots + \beta_{p-1} x_{(p-1)i
 \end{align*}\]</span></p>
 <p>That prediction is what we’ll compare our actual data to assess model success.</p>
 </section>
-<section id="the-study" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="the-study"><span class="header-section-number">1.3</span> The Study</h2>
+</section>
+<section id="the-study" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="the-study"><span class="header-section-number">1.2</span> The Study</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <figcaption>Disney</figcaption>
@@ -697,8 +703,8 @@ Y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \cdots + \beta_{p-1} x_{(p-1)i
 </div>
 <p>In a 2025 article, Boutelle et al.&nbsp;investigate biological factors, such as body temperature, phylogenetic relatedness, weight, and others and their relationship to whether a HSE occurs, to complement the existing literature on genomic factors on HSEs. By considering every terestrial mammal species as a candidate, and scraping PubMed articles for known HSEs for that species, the researchers were able to create a dataset to test with a logistic regression model <span class="citation" data-cites="boutelle">(<a href="#ref-boutelle" role="doc-biblioref">Boutelle et al. 2025</a>)</span>.</p>
 </section>
-<section id="goal-of-statistical-analysis" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="goal-of-statistical-analysis"><span class="header-section-number">1.4</span> Goal of Statistical Analysis</h2>
+<section id="goal-of-statistical-analysis" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="goal-of-statistical-analysis"><span class="header-section-number">1.3</span> Goal of Statistical Analysis</h2>
 <p>The article uses the following variables as proxies for ecological and biological mechanisms for the spread of rabies:</p>
 <ul>
 <li>Relatedness: How similar the host and reservoir species are genetically (patristic distance: greater means less related)</li>
@@ -733,7 +739,7 @@ Y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \cdots + \beta_{p-1} x_{(p-1)i
 <section id="reproduction-of-the-study" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Reproduction of the Study</h1>
 <p>I’d like to highlight the work of the <a href="https://shiny.colgate.edu/index.html">Colgate Data Science Collaboratory</a>, whose apps I’ve contributed to and, therefore, my analysis of the logistic regression model will closely resemble the <a href="https://shiny.colgate.edu/apps/Collaboratory-Apps/Logistic-Regression/">logistic regression app</a>.</p>
-<p><strong>Note that going forward, I’m going to refer to, what the authors call ‘relatedness,’ as (phylogenetic) dissimilarity, to avoid confusion about direction.</strong></p>
+<p><strong>Note that going forward I’m going to refer to what the authors call ‘relatedness’ as (phylogenetic) dissimilarity to avoid confusion about direction.</strong></p>
 <section id="data-cleaning" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="data-cleaning"><span class="header-section-number">2.1</span> Data Cleaning</h2>
 <p></p>
@@ -1450,7 +1456,7 @@ Figure&nbsp;10: Model Risk Ratios by HSE
 <li><em>tidyverse</em> for… everything it’s <em>tidyverse</em> <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span></li>
 <li><em>ggplot2</em> for plotting <span class="citation" data-cites="ggplot2">(<a href="#ref-ggplot2" role="doc-biblioref">Wickham 2016</a>)</span></li>
 <li><em>GGally</em> for <em>ggpairs()</em> plot <span class="citation" data-cites="GGally">(<a href="#ref-GGally" role="doc-biblioref">Schloerke et al. 2025</a>)</span></li>
-<li><em>ggthemes</em> for theme_clean() <span class="citation" data-cites="ggthemes">(<a href="#ref-ggthemes" role="doc-biblioref">Arnold 2024</a>)</span></li>
+<li><em>ggthemes</em> for <em>theme_clean()</em> <span class="citation" data-cites="ggthemes">(<a href="#ref-ggthemes" role="doc-biblioref">Arnold 2024</a>)</span></li>
 <li><em>patchwork</em> for combined plots <span class="citation" data-cites="patchwork">(<a href="#ref-patchwork" role="doc-biblioref">Pedersen 2025</a>)</span></li>
 <li><em>car</em> for the ANOVA test <span class="citation" data-cites="car">(<a href="#ref-car" role="doc-biblioref">Fox and Weisberg 2019</a>)</span></li>
 <li><em>performance</em> for model fit statistics <span class="citation" data-cites="performance">(<a href="#ref-performance" role="doc-biblioref">Lüdecke et al. 2021</a>)</span></li>
