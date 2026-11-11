@@ -64,7 +64,11 @@ website:
               - href: Data Analysis II\poisson\WriteUp.qmd
                 text: "Poisson Regression Article"
               - href: Data Analysis II\negative_binomial\WriteUp.qmd
-                text: "Negative Binomial Regression Article"                     
+                text: "Negative Binomial Regression Article"
+              - href: Data Analysis II\zero_inflated\WriteUp.qmd
+                text: "Zero Inflated Count Regression Article"
+              - href: Data Analysis II\logistic\WriteUp.qmd
+                text: "Logistic Regression Article"                
         # Geoinformatics
           - section: "Geoinformatics"
             contents:
@@ -118,7 +122,7 @@ website:
         - href: dsc.qmd
           text: "Colgate Data Science Collaboratory"
         - href: voting.qmd
-          text: "County Voting Data for Michigan"                    
+          text: "County Voting Data for Michigan"                
 
 
   page-footer:
