@@ -661,13 +661,13 @@ P(X = x) &amp;= f_x(x) = {}_nC_x(\frac{\lambda}{n})^x(1-\frac{\lambda}{n})^{n-x}
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-poisson_dist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-poisson_dist" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-poisson_dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Poisson Distribution Examples
 </figcaption>
 <div aria-describedby="fig-poisson_dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-poisson_dist-1.png" class="img-fluid figure-img" width="576">
+<img src="WriteUp_files/figure-html/fig-poisson_dist-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -747,13 +747,13 @@ Var(X) =&amp; E(X^2) - E(X)^2 \\
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-means_vars" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-means_vars" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-means_vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Poisson Means and Variances
 </figcaption>
 <div aria-describedby="fig-means_vars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-means_vars-1.png" class="img-fluid figure-img" width="576">
+<img src="WriteUp_files/figure-html/fig-means_vars-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -780,7 +780,7 @@ log(\lambda_i) = \beta_0 + \beta_1 x_{1i} + \cdots + \beta_{p-1} x_{(p-1)i}
 <section id="the-study" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="the-study"><span class="header-section-number">1.2</span> The Study</h2>
 <p><img src="seedling.jpg" class="img-fluid" style="width:80.0%"></p>
-<p>Jie et al.&nbsp;look to further investigate the Janzen-Connell effect, which looks to explain the mechanism behind biodiversity, or why a single tree or plant species doesn’t just dominate a forest. In order for a plant to survive, it needs to not be eaten or destroyed by natural enemies (insects, animals, fungi, etc.). A common explanation behind biodiversity says that natural enemies specialize in eating/killing a specific plant over time, and those natural enemies accumulate in areas where there’s high densities of those specific plants. Because of this, a new seedling might actually have an easier time in an area without a lot of members of its own species because those natural enemies have not accumulated so heavily. Essentially, there’s always a push-and-pull between the plants and enemies in an area, and they balance each other out. <span class="citation" data-cites="Jia2020">(<a href="#ref-Jia2020" role="doc-biblioref">Jia et al. 2020</a>)</span>.</p>
+<p>Jia et al.&nbsp;look to further investigate the Janzen-Connell effect, which looks to explain the mechanism behind biodiversity, or why a single tree or plant species doesn’t just dominate a forest. In order for a plant to survive, it needs to not be eaten or destroyed by natural enemies (insects, animals, fungi, etc.). A common explanation behind biodiversity says that natural enemies specialize in eating/killing a specific plant over time, and those natural enemies accumulate in areas where there’s high densities of those specific plants. Because of this, a new seedling might actually have an easier time in an area without a lot of members of its own species because those natural enemies have not accumulated so heavily. Essentially, there’s always a push-and-pull between the plants and enemies in an area, and they balance each other out. <span class="citation" data-cites="Jia2020">(<a href="#ref-Jia2020" role="doc-biblioref">Jia et al. 2020</a>)</span>.</p>
 <p>For one of their analyses, the researchers here look to test factors that can affect a seedlings ability to survive around a lot of members of its own species (a.k.a recruitment):</p>
 <ul>
 <li>How does the density of a plant’s own species affect its seedlings’ recruitment?</li>
@@ -826,7 +826,9 @@ log(\lambda_i) = \beta_0 + \beta_1 x_{1i} + \cdots + \beta_{p-1} x_{(p-1)i}
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>formula <span class="ot">&lt;-</span> recruits <span class="sc">~</span> pesticide<span class="sc">*</span>exclosure<span class="sc">*</span>con_crowding <span class="sc">+</span> het_crowding <span class="sc">+</span> plot <span class="sc">+</span> census  <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span> subplot) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">0</span><span class="sc">+</span>census <span class="sc">|</span> subplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>formula <span class="ot">&lt;-</span> recruits <span class="sc">~</span> pesticide<span class="sc">*</span>exclosure<span class="sc">*</span>con_crowding <span class="sc">+</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>  het_crowding <span class="sc">+</span> plot <span class="sc">+</span> census  <span class="sc">+</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>  (<span class="dv">1</span><span class="sc">|</span> subplot) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">0</span><span class="sc">+</span>census <span class="sc">|</span> subplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p></p>
@@ -861,13 +863,13 @@ log(\lambda_i) = \beta_0 + \beta_1 x_{1i} + \cdots + \beta_{p-1} x_{(p-1)i}
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-sum_treat_exclosure" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-sum_treat_exclosure" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_treat_exclosure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Treatment and Exclosure Summary
 </figcaption>
 <div aria-describedby="fig-sum_treat_exclosure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-sum_treat_exclosure-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-sum_treat_exclosure-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -879,13 +881,13 @@ Figure&nbsp;3: Treatment and Exclosure Summary
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-sum_density" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-sum_density" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Density Summary
 </figcaption>
 <div aria-describedby="fig-sum_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-sum_density-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-sum_density-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -897,13 +899,13 @@ Figure&nbsp;4: Density Summary
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-sum_combined" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-sum_combined" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-sum_combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: Combined Summary
 </figcaption>
 <div aria-describedby="fig-sum_combined-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-sum_combined-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-sum_combined-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -915,20 +917,20 @@ Figure&nbsp;5: Combined Summary
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-data_poisson" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-data_poisson" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-data_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Poisson Distribution Mapped Onto Data
 </figcaption>
 <div aria-describedby="fig-data_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-data_poisson-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-data_poisson-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
 </div>
 </div>
 <p></p>
-<p>Our data appears more right-skewed and more weighted towards $= 1$ than an assumed poisson distribution with mean recruits <span class="math inline">\(\lambda = 3.6\)</span>. Let’s see if this affects the assumptions of our model.</p>
+<p>Our data appears more right-skewed and more weighted towards <span class="math inline">\(\lambda = 1\)</span> than an assumed poisson distribution with mean recruits <span class="math inline">\(\lambda = 3.6\)</span>. Let’s see if this affects the assumptions of our model.</p>
 </section>
 <section id="model-assumptions" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="model-assumptions"><span class="header-section-number">2.3</span> Model Assumptions</h2>
@@ -939,13 +941,13 @@ Figure&nbsp;6: Poisson Distribution Mapped Onto Data
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-residual_species" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-residual_species" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-residual_species-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: Random intercepts of Species
 </figcaption>
 <div aria-describedby="fig-residual_species-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-residual_species-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-residual_species-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -957,13 +959,13 @@ Figure&nbsp;7: Random intercepts of Species
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-residual_subplot_intercepts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-residual_subplot_intercepts" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-residual_subplot_intercepts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Random intercepts of Subplots
 </figcaption>
 <div aria-describedby="fig-residual_subplot_intercepts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-residual_subplot_intercepts-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-residual_subplot_intercepts-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -975,13 +977,13 @@ Figure&nbsp;8: Random intercepts of Subplots
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-distances" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-distances" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;9: Mahalanobis Distances of Census Effects on Subplots
 </figcaption>
 <div aria-describedby="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-distances-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-distances-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -996,13 +998,13 @@ Figure&nbsp;9: Mahalanobis Distances of Census Effects on Subplots
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-residual_poisson" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-residual_poisson" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-residual_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10: Randomized Quantile Residuals of Poisson Model
 </figcaption>
 <div aria-describedby="fig-residual_poisson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-residual_poisson-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-residual_poisson-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -1014,13 +1016,13 @@ Figure&nbsp;10: Randomized Quantile Residuals of Poisson Model
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-predictions_residuals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-predictions_residuals" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;11: Predictions Against Pearson Residuals
 </figcaption>
 <div aria-describedby="fig-predictions_residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-predictions_residuals-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-predictions_residuals-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -1637,13 +1639,13 @@ Table&nbsp;6: Same Species Density Estimated Marginal Trend
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-emtrend_density" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-emtrend_density" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emtrend_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;12: Same Species Estimated Marginal Trend
 </figcaption>
 <div aria-describedby="fig-emtrend_density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-emtrend_density-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-emtrend_density-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -1711,13 +1713,13 @@ Table&nbsp;7: Contrast of Exclosure Types
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-emm_ex" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-emm_ex" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;13: Exclosure Type Estimated Marginal Means
 </figcaption>
 <div aria-describedby="fig-emm_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-emm_ex-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-emm_ex-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -1809,13 +1811,13 @@ Table&nbsp;8: Contrast of Pesticide Types
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-emm_pest" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-emm_pest" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;14: Pesticide Type Estimated Marginal Means
 </figcaption>
 <div aria-describedby="fig-emm_pest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-emm_pest-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-emm_pest-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -1940,13 +1942,13 @@ Table&nbsp;9: Contrast of Insecticide Types by Exclosure Types
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-emm_pest_ex" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-emm_pest_ex" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;15: Pesticide Type by Exclosure Type Estimated Marginal Means
 </figcaption>
 <div aria-describedby="fig-emm_pest_ex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-emm_pest_ex-1.png" class="img-fluid figure-img" width="960">
+<img src="WriteUp_files/figure-html/fig-emm_pest_ex-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -2038,13 +2040,13 @@ Table&nbsp;10: Estimated Marginal Trend of Same Species Density by Pesticide Typ
 <p></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-emt_pest_dens" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-emt_pest_dens" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emt_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;16: Estimated Marginal Trends of Same Species Density by Pesticide Type
 </figcaption>
 <div aria-describedby="fig-emt_pest_dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="WriteUp_files/figure-html/fig-emt_pest_dens-1.png" class="img-fluid figure-img" width="576">
+<img src="WriteUp_files/figure-html/fig-emt_pest_dens-1.png" class="img-fluid figure-img" data-fig-pos="H" width="576">
 </div>
 </figure>
 </div>
@@ -2161,7 +2163,7 @@ Table&nbsp;11: Contrasts of Estimated Marginal Trend of Same Species Density by 
 <p>If we compare their figure looking at the interaction between same species density and pesticide to mine (<a href="#fig-emt_pest_dens" class="quarto-xref">Figure&nbsp;16</a>):</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Jie et al.</figcaption>
+<figcaption>Jia et al.</figcaption>
 <p><img src="pest_crowding_fig.png" class="img-fluid figure-img" style="width:60.0%"></p>
 </figure>
 </div>
@@ -2575,21 +2577,21 @@ Table&nbsp;14: Estimated Marginal Trends of Same Species Density by Pesticide an
 <p>Here’s their first model with very similar estimates to mine (<a href="#tbl-model_sum" class="quarto-xref">Table&nbsp;4</a>):</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Jie et al.</figcaption>
+<figcaption>Jia et al.</figcaption>
 <p><img src="paper_first_mod.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 <p>Here’s the second that now makes the interaction appear more significant. Note they have another type, where their <span class="math inline">\(Z=4.817\)</span> and in the paper they say <span class="math inline">\(Z=4.87\)</span>:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Jie et al.</figcaption>
+<figcaption>Jia et al.</figcaption>
 <p><img src="paper_second_mod.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 <p>Later on, because the effect of exclosure is not statistically significant, the authors recode the model to exclude that term:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Jie et al.</figcaption>
+<figcaption>Jia et al.</figcaption>
 <p><img src="paper_excluded_model.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
