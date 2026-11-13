@@ -622,21 +622,27 @@ log(\mu_{Y_i|x_i}) = \beta_0 + \beta_1 x_{1i} + \cdots + \beta_{p-1} x_{(p-1)i}
 <h2 data-number="1.2" class="anchored" data-anchor-id="the-study"><span class="header-section-number">1.2</span> The Study</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Nick Anderson</figcaption>
+<figcaption>Article Title. Source: Nature</figcaption>
+<p><img src="title.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>Comic. Source: Nick Anderson</figcaption>
 <p><img src="comic.jpg" class="img-fluid figure-img" style="width:80.0%"></p>
 </figure>
 </div>
 <p>Surveillance, in any form, has long been controversial and politicized. Foucalt used the example of the panopticon to illustrate the way constant surveillance suffocates freedom and assures the maintenance of power <span class="citation" data-cites="foucault">(<a href="#ref-foucault" role="doc-biblioref">Foucault 2012</a>)</span>. 25 Years ago, the war on terror in the United States served as the pretense for the passing of the Patriot Act, allowing the U.S. government greater access to personal digital information for the ostensible cause of anti-terrorism <span class="citation" data-cites="patriot">(<a href="#ref-patriot" role="doc-biblioref">King 2026</a>)</span>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Newsweek</figcaption>
+<figcaption>George W. Source: Newsweek</figcaption>
 <p><img src="bush.jpg" class="img-fluid figure-img" style="width:80.0%"></p>
 </figure>
 </div>
 <p>Where surveillance in previous decades was limited by an understanding that the guard in the panopticon tower could not be constantly watching every person, and a government official could not sift through every possible online document, the ability of large language models to scrape information from massive databases in real time has pushed the envelope for surveillance.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>WBAL</figcaption>
+<figcaption>Flock Camera. Source: WBAL</figcaption>
 <p><img src="flock.jpg" class="img-fluid figure-img" style="width:80.0%"></p>
 </figure>
 </div>
@@ -661,14 +667,14 @@ Figure&nbsp;1: Google Trends of Flock Cameras
 <p>To collect their count of surveillance cameras, the authors first trained a machine learning image detection model on confirmed camera locations the ten most dense populated cities in the United States:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Dahir et al.</figcaption>
+<figcaption>City Studies. Source: Dahir et al.</figcaption>
 <p><img src="cities.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 <p>After model training, they randomly selected 100,000 points within each city, went to each of those points with Google Street View, and captured a 360° photo of the surroundings. They they ran all those photos through the camera detection models, and had humans validate the existence of cameras in photos flagged by the model (those poor undergrads). The researchers estimate that around 60% of cameras in the photos were detected by the model, so the magnitude of the data is likely undercounted. The count of the cameras was then combined with publicly available demographic data from where each photo was taken to create a combined dataset.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Dahir et al.</figcaption>
+<figcaption>Camera Detection. Source: Dahir et al.</figcaption>
 <p><img src="detection.png" class="img-fluid figure-img" style="width:60.0%"></p>
 </figure>
 </div>
@@ -4620,7 +4626,7 @@ Figure&nbsp;22: Cities Estimated Marginal Means (Weighted)
 <p>The main figure we can compare our results to in the paper is Figure 2, which I’ll split up by section. A difference that may or may not be visible is the fact that they authors actually have two separate models models, one with diversity, and one with individual black % white % variables.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Dahir et al.</figcaption>
+<figcaption>Article Figure 2a. Source: Dahir et al.</figcaption>
 <p><img src="2a.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
@@ -4634,7 +4640,7 @@ Figure&nbsp;22: Cities Estimated Marginal Means (Weighted)
 <p>Lastly, for the crime rate graph, they severly truncate their graph to only show a maximum of 2.5 standard deviations above the mean, so there’s no way to see the, in my opinion, more interesting relationship between crime and surveillance cameras in especially high crime rate areas. Even if the tail of our graph near 40 standard deviations is due to one outlier (<a href="#fig-emtrend_unw_crime" class="quarto-xref">Figure&nbsp;13</a>; <a href="#fig-emtrend_w_crime" class="quarto-xref">Figure&nbsp;14</a>), there are still a good amount of observations over 10 standard deviations above the mean, so it’s a shame they don’t show that. Still, the results are pretty similar between our analyses.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Dahir et al.</figcaption>
+<figcaption>Article Figure 2b. Source: Dahir et al.</figcaption>
 <p><img src="2b.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
@@ -4645,7 +4651,7 @@ Figure&nbsp;22: Cities Estimated Marginal Means (Weighted)
 <p>I’d have to push back on that slightly, as that is really heavily dependent on the model weights.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>Dahir et al.</figcaption>
+<figcaption>Article Figure 2c. Source: Dahir et al.</figcaption>
 <p><img src="2c.png" class="img-fluid figure-img" style="width:100.0%"></p>
 </figure>
 </div>
